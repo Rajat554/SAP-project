@@ -1,0 +1,129 @@
+<mvc:View
+	controllerName="sap.ui.demo.walkthrough.controller.ServiceRecords"
+	xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true"
+	xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+	<Page id="idServiceRecordsPage" title="Service Records" showHeader="false" class="sapUiResponsiveContentPadding">
+		<VBox class="sapUiSmallMargin">
+            <!-- Header Section -->
+            <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                <Title text="Service Records" level="H2" titleStyle="H2" />
+                <HBox alignItems="Center">
+                    <ObjectStatus text="{viewModel>/totalServices} Completed Services" inverted="true" state="Success" class="sapUiSmallMarginEnd customTag" />
+                    <Button icon="sap-icon://synchronize" text="Refresh" press=".onRefreshButtonPress" />
+                </HBox>
+            </HBox>
+
+            <!-- Search and Filter Section -->
+            <HBox class="sapUiSmallMarginBottom" alignItems="Center">
+                <SearchField id="idRecordsSearchField" width="30rem" placeholder="Search by customer name, vehicle number, or phone..." search=".onSearchFieldSearch" liveChange=".onSearchFieldLiveChange" class="sapUiSmallMarginEnd" />
+                <!-- Filter by Payment Method -->
+                <ComboBox id="idPaymentComboBox" placeholder="Payment Method" selectionChange=".onComboBoxSelectionChange" class="sapUiSmallMarginEnd">
+                    <core:Item key="All" text="All Payments" />
+                    <core:Item key="UPI" text="UPI" />
+                    <core:Item key="Card" text="Card" />
+                    <core:Item key="Cash" text="Cash" />
+                </ComboBox>
+                <!-- Filter by Service Type -->
+                <ComboBox id="idServiceComboBox" placeholder="Service Type" selectionChange=".onComboBoxSelectionChange">
+                    <core:Item key="All" text="All Services" />
+                    <core:Item key="Full Wash" text="Full Wash" />
+                    <core:Item key="Interior Cleaning" text="Interior Cleaning" />
+                    <core:Item key="Premium Wash" text="Premium Wash" />
+                </ComboBox>
+            </HBox>
+
+            <!-- List Section -->
+            <Panel class="customPanel" width="auto">
+                <headerToolbar>
+                    <Toolbar design="Transparent">
+                        <core:Icon src="sap-icon://document" color="#0070F2" />
+                        <Title text="Completed Services" level="H3" titleStyle="H3" />
+                        <ToolbarSpacer />
+                        <Text text="{viewModel>/pageHeaderInfo}" class="sapUiSmallMarginEnd" />
+                    </Toolbar>
+                </headerToolbar>
+                
+                <List
+                    id="idPagedServicesList"
+                    items="{viewModel>/pagedServices}"
+                    noDataText="No matching service records found."
+                    class="customServiceList">
+                    <items>
+                        <CustomListItem class="customListRow sapUiTinyMarginBottom">
+                            <HBox alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap" class="sapUiSmallMargin">
+                                <!-- Status Icon -->
+                                <core:Icon src="sap-icon://sys-enter-2" color="#28a745" size="1.2rem" class="sapUiMediumMarginEnd" />
+                                
+                                <!-- Customer Info -->
+                                <VBox width="13rem">
+                                    <Text text="{viewModel>CustomerName}" class="sapMTextBold" />
+                                    <HBox alignItems="Center" class="sapUiTinyMarginTop">
+                                        <core:Icon src="sap-icon://customer" size="0.6rem" class="sapUiTinyMarginEnd" color="#0070F2" />
+                                        <ObjectStatus text="{viewModel>CustomerId}" state="Information" inverted="true" />
+                                    </HBox>
+                                    <Text text="{viewModel>Phone}" class="sapUiTinyMarginTop" />
+                                </VBox>
+                                
+                                <!-- Vehicle Info -->
+                                <VBox width="10rem" alignItems="Center">
+                                    <Text text="Vehicle" class="sapUiTinyMarginBottom" />
+                                    <Text text="{viewModel>CarPlate}" class="sapMTextBold" />
+                                    <Text text="{viewModel>VehicleModel}" />
+                                </VBox>
+                                
+                                <!-- Service Info -->
+                                <VBox width="8rem" alignItems="Center">
+                                    <Text text="Services" class="sapUiTinyMarginBottom" />
+                                    <Text text="{viewModel>ServiceType}" />
+                                </VBox>
+
+                                <!-- Payment Info -->
+                                <VBox width="6rem" alignItems="Center">
+                                    <Text text="Payment" class="sapUiTinyMarginBottom" />
+                                    <ObjectStatus text="{viewModel>PaymentMethod}" inverted="true" state="{= ${viewModel>PaymentMethod} === 'UPI' ? 'Information' : 'Warning'}" />
+                                </VBox>
+
+                                <!-- Amount Info -->
+                                <VBox width="6rem" alignItems="Center">
+                                    <Text text="Amount" class="sapUiTinyMarginBottom" />
+                                    <Text text="₹{viewModel>Amount}" class="sapMTextBold" />
+                                </VBox>
+
+                                <!-- Date Info -->
+                                <VBox width="6rem" alignItems="Center">
+                                    <Text text="Date" class="sapUiTinyMarginBottom" />
+                                    <Text text="{
+                                        path: 'viewModel>Date',
+                                        formatter: '.formatter.formatDateString'
+                                    }" />
+                                </VBox>
+                                
+                                <!-- Actions -->
+                                <HBox alignItems="Center" width="8rem" justifyContent="End">
+                                    <Button icon="sap-icon://print" type="Transparent" press=".onButtonViewDocPress" class="sapUiTinyMarginEnd" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" class="sapUiTinyMarginEnd" />
+                                </HBox>
+                            </HBox>
+                        </CustomListItem>
+                    </items>
+                </List>
+
+                <!-- Pagination Footer -->
+                <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTopBottom">
+                    <Button text="&lt; Previous" type="Transparent" press=".onLtPreviousButtonPress" enabled="{viewModel>/hasPrevPage}" class="sapUiSmallMarginEnd" />
+                    <!-- Dynamic page numbers generated in controller, or simple static label -->
+                    <HBox class="sapUiSmallMarginBeginEnd">
+                        <!-- Simulated page buttons -->
+                        <Button text="1" type="{= ${viewModel>/currentPage} === 1 ? 'Emphasized' : 'Transparent'}" press=".onButtonPageSelectPress" class="sapUiTinyMarginEnd" />
+                        <Button text="2" type="{= ${viewModel>/currentPage} === 2 ? 'Emphasized' : 'Transparent'}" press=".onButtonPageSelectPress" enabled="{= ${viewModel>/totalPages} >= 2}" class="sapUiTinyMarginEnd" />
+                    </HBox>
+                    <Button text="Next &gt;" type="Transparent" press=".onNextGtButtonPress" enabled="{viewModel>/hasNextPage}" class="sapUiSmallMarginBegin" />
+                </HBox>
+
+            </Panel>
+		</VBox>
+	</Page>
+</mvc:View>
