@@ -77,7 +77,7 @@
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
         "viewPath": "sap.ui.demo.walkthrough.view",
-        "controlId": "appContent",
+        "controlId": "idContentApp",
         "controlAggregation": "pages",
         "async": true
       },
