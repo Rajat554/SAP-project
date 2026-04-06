@@ -1,0 +1,24 @@
+_schema-version: "3.2"
+ID: sap-project
+description: A Fiori application.
+version: 1.0.0
+
+parameters:
+  enable-parallel-executions: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+
+modules:
+  - name: sap-project-ui
+    type: html5
+    path: .
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm run build
+      supported-platforms: []
