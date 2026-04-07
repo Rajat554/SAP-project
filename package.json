@@ -1,13 +1,13 @@
 {
   "name": "sap-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "WashWizard Fiori Project",
   "license": "ISC",
-  "author": "",
+  "author": "Rajat Patel",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "build": "ui5 build --clean-dest",
+    "build": "ui5 build --clean-dest && cp Staticfile dist/ && zip -r dist.zip dist/",
     "start": "ui5 serve --open index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
