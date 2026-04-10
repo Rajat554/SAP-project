@@ -1,0 +1,11 @@
+{
+  "authenticationMethod": "none",
+  "routes": [
+    {
+      "source": "^/(.*)",
+      "target": "$1",
+      "destination": "ui_target",
+      "authenticationType": "none"
+    }
+  ]
+}

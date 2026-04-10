@@ -1,0 +1,208 @@
+{
+  "2 Wheeler": {
+    "Washing": [
+      { "name": "Full Wash", "price": 200 },
+      { "name": "Half Wash", "price": 100 },
+      { "name": "Top Wash", "price": 120 },
+      { "name": "Water Wash", "price": 140 },
+      { "name": "Deseil Wash", "price": 150 },
+      { "name": "Oil Spare", "price": 80 },
+      { "name": "Washing & Gressing", "price": 200 }
+    ],
+    "Interior": [],
+    "Coating": [
+      { "name": "Polymer Coating", "price": 550 },
+      { "name": "Synthetic Coating", "price": 700 },
+      { "name": "Teflon Paint Protection", "price": 900 },
+      { "name": "Ceramic Coating", "price": 1800 },
+      { "name": "Cutting Polish", "price": 650 }
+    ]
+  },
+  "3 Wheeler": {
+    "Washing": [
+      { "name": "Full Wash", "price": 200 },
+      { "name": "Half Wash", "price": 100 },
+      { "name": "Top Wash", "price": 120 },
+      { "name": "Water Wash", "price": 140 },
+      { "name": "Deseil Wash", "price": 150 },
+      { "name": "Oil Spare", "price": 80 },
+      { "name": "Washing & Gressing", "price": 200 }
+    ],
+    "Interior": [],
+    "Coating": [
+      { "name": "Polymer Coating", "price": 550 },
+      { "name": "Synthetic Coating", "price": 700 },
+      { "name": "Teflon Paint Protection", "price": 900 },
+      { "name": "Ceramic Coating", "price": 1800 },
+      { "name": "Cutting Polish", "price": 650 }
+    ]
+  },
+  "4 Wheeler": {
+    "Washing": [
+      { "name": "Full Wash", "price": 400 },
+      { "name": "Half Wash", "price": 150 },
+      { "name": "Top Wash", "price": 130 },
+      { "name": "Water Wash", "price": 200 },
+      { "name": "Deseil Wash", "price": 160 },
+      { "name": "Oil Spare", "price": 85 },
+      { "name": "Washing & Gressing", "price": 350 },
+      { "name": "Extra 1", "price": 50 }
+    ],
+    "Interior": [
+      { "name": "Full Interior Cleaning", "price": 350 },
+      { "name": "Seat Cleaning", "price": 200 },
+      { "name": "Fabric Cleaning", "price": 250 },
+      { "name": "Top-Floor Cleaning", "price": 180 }
+    ],
+    "Coating": [
+      { "name": "Polymer Coating", "price": 900 },
+      { "name": "Synthetic Coating", "price": 1100 },
+      { "name": "Teflon Paint Protection", "price": 1300 },
+      { "name": "Ceramic Coating", "price": 2200 },
+      { "name": "Under Body Protection", "price": 950 },
+      { "name": "Glass Coating", "price": 700 },
+      { "name": "Cutting Polish", "price": 750 },
+      { "name": "PPF", "price": 2700 }
+    ]
+  },
+  "6 Wheeler": {
+    "Washing": [
+      { "name": "Full Wash", "price": 400 },
+      { "name": "Half Wash", "price": 150 },
+      { "name": "Top Wash", "price": 130 },
+      { "name": "Water Wash", "price": 200 },
+      { "name": "Deseil Wash", "price": 160 },
+      { "name": "Oil Spare", "price": 85 },
+      { "name": "Washing & Gressing", "price": 350 },
+      { "name": "Extra 1", "price": 50 }
+    ],
+    "Interior": [
+      { "name": "Full Interior Cleaning", "price": 350 },
+      { "name": "Seat Cleaning", "price": 200 },
+      { "name": "Fabric Cleaning", "price": 250 },
+      { "name": "Top-Floor Cleaning", "price": 180 }
+    ],
+    "Coating": [
+      { "name": "Polymer Coating", "price": 900 },
+      { "name": "Synthetic Coating", "price": 1100 },
+      { "name": "Teflon Paint Protection", "price": 1300 },
+      { "name": "Ceramic Coating", "price": 2200 },
+      { "name": "Under Body Protection", "price": 950 },
+      { "name": "Glass Coating", "price": 700 },
+      { "name": "Cutting Polish", "price": 750 },
+      { "name": "PPF", "price": 2700 }
+    ]
+  },
+  "8 Wheeler": {
+    "Washing": [
+      { "name": "Full Wash", "price": 400 },
+      { "name": "Half Wash", "price": 150 },
+      { "name": "Top Wash", "price": 130 },
+      { "name": "Water Wash", "price": 200 },
+      { "name": "Deseil Wash", "price": 160 },
+      { "name": "Oil Spare", "price": 85 },
+      { "name": "Washing & Gressing", "price": 350 },
+      { "name": "Extra 1", "price": 50 }
+    ],
+    "Interior": [
+      { "name": "Full Interior Cleaning", "price": 350 },
+      { "name": "Seat Cleaning", "price": 200 },
+      { "name": "Fabric Cleaning", "price": 250 },
+      { "name": "Top-Floor Cleaning", "price": 180 }
+    ],
+    "Coating": [
+      { "name": "Polymer Coating", "price": 900 },
+      { "name": "Synthetic Coating", "price": 1100 },
+      { "name": "Teflon Paint Protection", "price": 1300 },
+      { "name": "Ceramic Coating", "price": 2200 },
+      { "name": "Under Body Protection", "price": 950 },
+      { "name": "Glass Coating", "price": 700 },
+      { "name": "Cutting Polish", "price": 750 },
+      { "name": "PPF", "price": 2700 }
+    ]
+  },
+  "10 Wheeler": {
+    "Washing": [
+      { "name": "Full Wash", "price": 400 },
+      { "name": "Half Wash", "price": 150 },
+      { "name": "Top Wash", "price": 130 },
+      { "name": "Water Wash", "price": 200 },
+      { "name": "Deseil Wash", "price": 160 },
+      { "name": "Oil Spare", "price": 85 },
+      { "name": "Washing & Gressing", "price": 350 },
+      { "name": "Extra 1", "price": 50 }
+    ],
+    "Interior": [
+      { "name": "Full Interior Cleaning", "price": 350 },
+      { "name": "Seat Cleaning", "price": 200 },
+      { "name": "Fabric Cleaning", "price": 250 },
+      { "name": "Top-Floor Cleaning", "price": 180 }
+    ],
+    "Coating": [
+      { "name": "Polymer Coating", "price": 900 },
+      { "name": "Synthetic Coating", "price": 1100 },
+      { "name": "Teflon Paint Protection", "price": 1300 },
+      { "name": "Ceramic Coating", "price": 2200 },
+      { "name": "Under Body Protection", "price": 950 },
+      { "name": "Glass Coating", "price": 700 },
+      { "name": "Cutting Polish", "price": 750 },
+      { "name": "PPF", "price": 2700 }
+    ]
+  },
+  "12 Wheeler": {
+    "Washing": [
+      { "name": "Full Wash", "price": 400 },
+      { "name": "Half Wash", "price": 150 },
+      { "name": "Top Wash", "price": 130 },
+      { "name": "Water Wash", "price": 200 },
+      { "name": "Deseil Wash", "price": 160 },
+      { "name": "Oil Spare", "price": 85 },
+      { "name": "Washing & Gressing", "price": 350 },
+      { "name": "Extra 1", "price": 50 }
+    ],
+    "Interior": [
+      { "name": "Full Interior Cleaning", "price": 350 },
+      { "name": "Seat Cleaning", "price": 200 },
+      { "name": "Fabric Cleaning", "price": 250 },
+      { "name": "Top-Floor Cleaning", "price": 180 }
+    ],
+    "Coating": [
+      { "name": "Polymer Coating", "price": 900 },
+      { "name": "Synthetic Coating", "price": 1100 },
+      { "name": "Teflon Paint Protection", "price": 1300 },
+      { "name": "Ceramic Coating", "price": 2200 },
+      { "name": "Under Body Protection", "price": 950 },
+      { "name": "Glass Coating", "price": 700 },
+      { "name": "Cutting Polish", "price": 750 },
+      { "name": "PPF", "price": 2700 }
+    ]
+  },
+  "14 Wheeler": {
+    "Washing": [
+      { "name": "Full Wash", "price": 400 },
+      { "name": "Half Wash", "price": 150 },
+      { "name": "Top Wash", "price": 130 },
+      { "name": "Water Wash", "price": 200 },
+      { "name": "Deseil Wash", "price": 160 },
+      { "name": "Oil Spare", "price": 85 },
+      { "name": "Washing & Gressing", "price": 350 },
+      { "name": "Extra 1", "price": 50 }
+    ],
+    "Interior": [
+      { "name": "Full Interior Cleaning", "price": 350 },
+      { "name": "Seat Cleaning", "price": 200 },
+      { "name": "Fabric Cleaning", "price": 250 },
+      { "name": "Top-Floor Cleaning", "price": 180 }
+    ],
+    "Coating": [
+      { "name": "Polymer Coating", "price": 900 },
+      { "name": "Synthetic Coating", "price": 1100 },
+      { "name": "Teflon Paint Protection", "price": 1300 },
+      { "name": "Ceramic Coating", "price": 2200 },
+      { "name": "Under Body Protection", "price": 950 },
+      { "name": "Glass Coating", "price": 700 },
+      { "name": "Cutting Polish", "price": 750 },
+      { "name": "PPF", "price": 2700 }
+    ]
+  }
+}

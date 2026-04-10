@@ -1,0 +1,59 @@
+_schema-version: "3.2"
+ID: sap-project
+version: 1.0.0
+description: A Fiori application for WashWizard.
+
+parameters:
+  enable-parallel-executions: true
+
+modules:
+  # 1. The UI Module (Your Fiori Code)
+  # 1. Change type to "staticfile" for Standalone deployment
+  - name: sap-project-ui
+    type: javascript.nodejs # Change to this so it triggers a CF App
+    path: .
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+    parameters:
+      # This is the "Engine" that serves your HTML files
+      buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
+      memory: 128M
+      disk-quota: 256M
+    provides:
+      - name: ui_api
+        properties:
+          url: ${default-url}
+
+  # 2. Keep the Router (This is your Public Gateway)
+  - name: sap-project-router
+    type: approuter.nodejs
+    path: router 
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: ui_api
+        group: destinations
+        properties:
+          forwardAuthToken: false
+          name: ui_target
+          url: ~{url}
+
+resources:
+  - name: sap-project-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: sap-project-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      config:
+        xsappname: sap-project
+        tenant-mode: dedicated

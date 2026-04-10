@@ -1,0 +1,64 @@
+<mvc:View
+  controllerName="sap.ui.demo.walkthrough.controller.App"
+  xmlns:mvc="sap.ui.core.mvc"
+  displayBlock="true"
+  xmlns="sap.m"
+  xmlns:tnt="sap.tnt"
+  xmlns:core="sap.ui.core"
+>
+  <tnt:ToolPage id="idAppToolPage">
+    <tnt:header>
+      <tnt:ToolHeader>
+        <Button
+          id="idSideNavigationToggleButton"
+          icon="sap-icon://menu2"
+          type="Transparent"
+          press=".onButtonSideNavPress"
+          tooltip="Toggle Menu">
+          <layoutData>
+            <OverflowToolbarLayoutData priority="NeverOverflow" />
+          </layoutData>
+        </Button>
+        <!-- App Title Area -->
+        <HBox alignItems="Center">
+          <layoutData>
+            <OverflowToolbarLayoutData priority="NeverOverflow" />
+          </layoutData>
+          <core:Icon src="sap-icon://car-rental" size="1.25rem" class="sapUiTinyMarginEnd" color="#0070F2" />
+          <VBox class="sapUiTinyMarginBegin">
+            <Title text="WashWizard" class="brandTitle" />
+            <Text text="Manager" class="brandSubTitle hiddenOnSmall" />
+          </VBox>
+        </HBox>
+        <ToolbarSpacer />
+        <!-- User Profile Area -->
+        <HBox alignItems="Center" class="sapUiSmallMarginEnd">
+          <layoutData>
+            <OverflowToolbarLayoutData priority="NeverOverflow" />
+          </layoutData>
+          <Avatar initials="D" displaySize="XS" class="sapUiTinyMarginEnd" />
+          <VBox class="hiddenOnSmall">
+            <Text text="Demo User" class="userNameText" />
+            <Text text="demo@carwash.com" class="userEmailText" />
+          </VBox>
+        </HBox>
+      </tnt:ToolHeader>
+    </tnt:header>
+
+    <tnt:sideContent>
+      <tnt:SideNavigation id="idAppSideNavigation" itemSelect=".onSideNavigationItemSelect">
+        				<tnt:NavigationList>
+					<tnt:NavigationListItem text="Dashboard" icon="sap-icon://bbyd-dashboard" key="dashboard" />
+					<tnt:NavigationListItem text="Customers" icon="sap-icon://customer" key="customers" />
+          <tnt:NavigationListItem text="Service Records" icon="sap-icon://form" key="records" />
+          <tnt:NavigationListItem text="Analytics" icon="sap-icon://business-objects-experience" key="analytics" />
+          <tnt:NavigationListItem text="Settings" icon="sap-icon://action-settings" key="settings" />
+        </tnt:NavigationList>
+      </tnt:SideNavigation>
+    </tnt:sideContent>
+
+    <tnt:mainContents>
+      <App id="idContentApp" />
+    </tnt:mainContents>
+  </tnt:ToolPage>
+</mvc:View>

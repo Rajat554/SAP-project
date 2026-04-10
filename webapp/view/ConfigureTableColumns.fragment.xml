@@ -1,0 +1,21 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Dialog title="Configure Table Columns" contentWidth="400px" stretch="{device>/system/phone}">
+        <customHeader>
+            <Toolbar>
+                <Title text="Configure Table Columns" class="sapUiSmallMarginBegin" />
+                <ToolbarSpacer />
+                <Button text="Reset" press=".onResetButtonPress" type="Transparent" />
+            </Toolbar>
+        </customHeader>
+        <content>
+            <List id="idSettingsColumnsList" mode="MultiSelect" items="{viewModel>/settingsColumns}">
+                <StandardListItem title="{viewModel>header}" selected="{viewModel>visible}" />
+            </List>
+        </content>
+        <buttons>
+            <Button text="OK" type="Emphasized" press=".onOKButtonPress" />
+            <Button text="Cancel" press=".onCancelButtonPress" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>
