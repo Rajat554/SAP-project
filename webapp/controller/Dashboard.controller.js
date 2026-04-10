@@ -17,12 +17,33 @@ sap.ui.define([
             // but we can set up the basic view model now.
 			var oViewModel = new JSONModel({
 				currentDate: this._getFormattedDate(),
-				servicesCount: 0
+				servicesCount: 0,
+                selectedWheels: "2 Wheeler",
+                washingServices: [],
+                interiorServices: [],
+                coatingServices: [],
+                tableColumns: {
+                    Icon: true,
+                    Customer: true,
+                    Service: true,
+                    Amount: true,
+                    Actions: true
+                }
 			});
 			this.getView().setModel(oViewModel, "viewModel");
 
 			// Attach an event to update counts whenever the ServiceData model changes
 			this.getView().attachEventOnce("modelContextChange", this._updateServicesCount, this);
+            
+            var oOwnerComponent = this.getOwnerComponent();
+            if (oOwnerComponent) {
+                var oPricingModel = oOwnerComponent.getModel("PricingData");
+                if (oPricingModel) {
+                    oPricingModel.attachRequestCompleted(function() {
+                        this._updateServiceLists("2 Wheeler");
+                    }.bind(this));
+                }
+            }
 		},
 
 		_getFormattedDate: function() {
@@ -40,37 +61,67 @@ sap.ui.define([
 			}
 		},
 
-		onFullWashCheckBoxSelect: function (oEvent) { this.onServiceCheck(oEvent); },
-		onHalfWashCheckBoxSelect: function (oEvent) { this.onServiceCheck(oEvent); },
-		onTopWashCheckBoxSelect: function (oEvent) { this.onServiceCheck(oEvent); },
-		onWaterWashCheckBoxSelect: function (oEvent) { this.onServiceCheck(oEvent); },
-		onDeseilWashCheckBoxSelect: function (oEvent) { this.onServiceCheck(oEvent); },
-		onOilSpareCheckBoxSelect: function (oEvent) { this.onServiceCheck(oEvent); },
-		onWashingAmpGressingCheckBoxSelect: function (oEvent) { this.onServiceCheck(oEvent); },
-		onServiceCheck: function (oEvent) {
-            // Get CheckBox reference
-			var oCheckBox = oEvent.getSource();
-            // Get whether it's selected
-			var bSelected = oEvent.getParameter("selected");
-            // Get custom data 'price'
-			var sPrice = oCheckBox.data("price");
-			var iPrice = parseInt(sPrice, 10);
-            var sText = oCheckBox.getText();
+		onSelectWheelChange: function (oEvent) {
+            var sSelectedKey = oEvent.getParameter("selectedItem").getKey();
+            this._updateServiceLists(sSelectedKey);
+            
+            // Reset selection and totals whenever vehicle changes
+            var oWashingList = this.byId("idWashingServicesList");
+            var oInteriorList = this.byId("idInteriorServicesList");
+            var oCoatingList = this.byId("idCoatingServicesList");
+            
+            if (oWashingList) oWashingList.removeSelections(true);
+            if (oInteriorList) oInteriorList.removeSelections(true);
+            if (oCoatingList) oCoatingList.removeSelections(true);
+            
+            this._recalculateTotals();
+        },
+        
+        _updateServiceLists: function(sWheelType) {
+            var oPricingModel = this.getView().getModel("PricingData") || (this.getOwnerComponent() && this.getOwnerComponent().getModel("PricingData"));
+            if (!oPricingModel) return;
+            
+            var oPricingData = oPricingModel.getData();
+            var oSelectedData = oPricingData[sWheelType];
+            
+            if (oSelectedData) {
+            	var oViewModel = this.getView().getModel("viewModel");
+                oViewModel.setProperty("/washingServices", oSelectedData.Washing || []);
+                oViewModel.setProperty("/interiorServices", oSelectedData.Interior || []);
+                oViewModel.setProperty("/coatingServices", oSelectedData.Coating || []);
+            }
+        },
 
-			if (bSelected) {
-				this._totalAmount += iPrice;
-                this._selectedServices.push(sText);
-			} else {
-				this._totalAmount -= iPrice;
-                var index = this._selectedServices.indexOf(sText);
-                if (index > -1) {
-                    this._selectedServices.splice(index, 1);
-                }
-			}
+        onWashingServicesListSelectionChange: function (oEvent) { this._recalculateTotals(); },
+        onInteriorServicesListSelectionChange: function (oEvent) { this._recalculateTotals(); },
+        onCoatingServicesListSelectionChange: function (oEvent) { this._recalculateTotals(); },
 
-            // Update Amount Input Field
+        _recalculateTotals: function() {
+            this._totalAmount = 0;
+            this._selectedServices = [];
+            
+            var aLists = [
+                this.byId("idWashingServicesList"),
+                this.byId("idInteriorServicesList"),
+                this.byId("idCoatingServicesList")
+            ];
+            
+            aLists.forEach(function(oList) {
+                if (!oList) return;
+                var aSelectedItems = oList.getSelectedContexts();
+                aSelectedItems.forEach(function(oContext) {
+                    if (oContext) {
+                        var oData = oContext.getObject();
+                        this._totalAmount += parseInt(oData.price, 10);
+                        this._selectedServices.push(oData.name);
+                    }
+                }.bind(this));
+            }.bind(this));
+            
             var oAmountInput = this.byId("idAmountInput");
-			oAmountInput.setValue(this._totalAmount.toString());
+            if(oAmountInput) {
+				oAmountInput.setValue(this._totalAmount.toString());
+            }
 		},
 
 		onSaveServiceButtonPress: function () {
@@ -127,6 +178,74 @@ sap.ui.define([
 
         onButtonEditPress: function() {
             MessageToast.show("Edit clicked.");
+        },
+
+		onSelectWheelChange: function(oEvent) {
+            var sSelectedKey = oEvent.getParameter("selectedItem").getKey();
+            this._updateServiceLists(sSelectedKey);
+            
+            // Reset selection and totals whenever vehicle changes
+            var oWashingList = this.byId("idWashingServicesList");
+            var oInteriorList = this.byId("idInteriorServicesList");
+            var oCoatingList = this.byId("idCoatingServicesList");
+            
+            if (oWashingList) oWashingList.removeSelections(true);
+            if (oInteriorList) oInteriorList.removeSelections(true);
+            if (oCoatingList) oCoatingList.removeSelections(true);
+            
+            this._recalculateTotals();  
+		},
+
+        onButtonTableSettingsPress: function () {
+			var oView = this.getView();
+            var oViewModel = oView.getModel("viewModel");
+            
+            var oTableColumns = oViewModel.getProperty("/tableColumns");
+            var aSettingsColumns = Object.keys(oTableColumns).map(function(sKey) {
+                return { key: sKey, header: sKey, visible: oTableColumns[sKey] };
+            });
+            oViewModel.setProperty("/settingsColumns", aSettingsColumns);
+
+			if (!this._pSettingsDialog) {
+				this._pSettingsDialog = sap.ui.core.Fragment.load({
+					id: oView.getId(),
+					name: "sap.ui.demo.walkthrough.view.ConfigureTableColumns",
+					controller: this
+				}).then(function (oDialog) {
+					oView.addDependent(oDialog);
+					return oDialog;
+				});
+			}
+			this._pSettingsDialog.then(function(oDialog) {
+				oDialog.open();
+			});
+		},
+
+        onTableSettingsConfirm: function() {
+            var oViewModel = this.getView().getModel("viewModel");
+            var aSettingsColumns = oViewModel.getProperty("/settingsColumns");
+            var oTableColumns = {};
+            
+            aSettingsColumns.forEach(function(oCol) {
+                oTableColumns[oCol.key] = oCol.visible;
+            });
+            oViewModel.setProperty("/tableColumns", oTableColumns);
+            
+            this._pSettingsDialog.then(function(oDialog) { oDialog.close(); });
+            MessageToast.show("Table columns updated successfully.");
+        },
+
+        onTableSettingsCancel: function() {
+            this._pSettingsDialog.then(function(oDialog) { oDialog.close(); });
+        },
+
+        onResetTableColumnsPress: function() {
+            var oViewModel = this.getView().getModel("viewModel");
+            var aSettingsColumns = oViewModel.getProperty("/settingsColumns");
+            aSettingsColumns.forEach(function(oCol) {
+                oCol.visible = true;
+            });
+            oViewModel.setProperty("/settingsColumns", aSettingsColumns.slice()); // trigger binding update
         }
 	});
 });

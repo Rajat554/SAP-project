@@ -63,13 +63,10 @@
       "ServiceData": {
         "type": "sap.ui.model.json.JSONModel",
         "uri": "model/ServiceData.json"
-<<<<<<< HEAD
       },
       "PricingData": {
         "type": "sap.ui.model.json.JSONModel",
         "uri": "model/PricingData.json"
-=======
->>>>>>> aa4020fa23e76092d2bc6e6986b01c5347b5e852
       }
     },
     "resources": {
