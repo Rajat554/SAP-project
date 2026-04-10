@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "build": "ui5 build --clean-dest && cp Staticfile dist/ && zip -r dist.zip dist/",
+    "build": "ui5 build --clean-dest && cp Staticfile dist/",
     "start": "ui5 serve --open index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
