@@ -39,85 +39,74 @@
             <Panel class="customPanel" width="auto">
                 <headerToolbar>
                     <Toolbar design="Transparent">
-                        <core:Icon src="sap-icon://crm-service-manager" color="#0070F2" />
+                        <core:Icon src="sap-icon://document" color="#0070F2" />
                         <Title text="Completed Services" level="H3" titleStyle="H3" />
                         <ToolbarSpacer />
-                        <Button icon="sap-icon://action-settings" press=".onButtonTableSettingsPress" type="Transparent" tooltip="Config Columns" />
-                        <Text text="{viewModel>/pageHeaderInfo}" class="sapUiSmallMarginBegin sapUiSmallMarginEnd" />
+                        <Text text="{viewModel>/pageHeaderInfo}" class="sapUiSmallMarginEnd" />
                     </Toolbar>
                 </headerToolbar>
                 
-                <Table
-                    id="idPagedServicesTable"
+                <List
+                    id="idPagedServicesList"
                     items="{viewModel>/pagedServices}"
                     noDataText="No matching service records found."
-                    alternateRowColors="true"
-                    class="sapUiSizeCompact customServiceList">
-                    <columns>
-                        <Column width="16%" visible="{viewModel>/tableColumns/Customer}">
-                            <Text text="Customer" class="sapMTextBold" />
-                        </Column>
-                        <Column width="16%" visible="{viewModel>/tableColumns/Vehicle}">
-                            <Text text="Vehicle" class="sapMTextBold" />
-                        </Column>
-                        <Column width="10%" demandPopin="true" minScreenWidth="Tablet" visible="{viewModel>/tableColumns/Services}">
-                            <Text text="Services" class="sapMTextBold" />
-                        </Column>
-                        <Column width="11%" demandPopin="true" minScreenWidth="Tablet" hAlign="Center" visible="{viewModel>/tableColumns/Payment}">
-                            <Text text="Payment" class="sapMTextBold" />
-                        </Column>
-                        <Column width="10%" demandPopin="true" minScreenWidth="Tablet" hAlign="Center" visible="{viewModel>/tableColumns/Amount}">
-                            <Text text="Amount" class="sapMTextBold" />
-                        </Column>
-                        <Column width="10%" demandPopin="true" minScreenWidth="Desktop" hAlign="Center"  visible="{viewModel>/tableColumns/Date}">
-                            <Text text="Date" class="sapMTextBold" />
-                        </Column>
-                        <Column width="10%" hAlign="Center" visible="{viewModel>/tableColumns/Actions}">
-                            <Text text="Actions" class="sapMTextBold" />
-                        </Column>
-                    </columns>
+                    class="customServiceList">
                     <items>
-                        <ColumnListItem vAlign="Middle" class="customListRow">
-                            <cells>
+                        <CustomListItem class="customListRow sapUiTinyMarginBottom">
+                            <HBox alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap" class="sapUiSmallMargin">
+                                <!-- Status Icon -->
+                                <core:Icon src="sap-icon://sys-enter-2" color="#28a745" size="1.2rem" class="sapUiMediumMarginEnd" />
+                                
                                 <!-- Customer Info -->
-                                <VBox>
+                                <VBox width="13rem">
                                     <Text text="{viewModel>CustomerName}" class="sapMTextBold" />
-                                    <HBox alignItems="Center">
-                                        <Text text="{viewModel>Phone}" class="sapUiSmallMarginEnd" />
+                                    <HBox alignItems="Center" class="sapUiTinyMarginTop">
+                                        <core:Icon src="sap-icon://customer" size="0.6rem" class="sapUiTinyMarginEnd" color="#0070F2" />
                                         <ObjectStatus text="{viewModel>CustomerId}" state="Information" inverted="true" />
                                     </HBox>
+                                    <Text text="{viewModel>Phone}" class="sapUiTinyMarginTop" />
                                 </VBox>
                                 
                                 <!-- Vehicle Info -->
-                                <VBox>
+                                <VBox width="10rem" alignItems="Center">
+                                    <Text text="Vehicle" class="sapUiTinyMarginBottom" />
                                     <Text text="{viewModel>CarPlate}" class="sapMTextBold" />
                                     <Text text="{viewModel>VehicleModel}" />
                                 </VBox>
                                 
                                 <!-- Service Info -->
-                                <Text text="{viewModel>ServiceType}" />
+                                <VBox width="8rem" alignItems="Center">
+                                    <Text text="Services" class="sapUiTinyMarginBottom" />
+                                    <Text text="{viewModel>ServiceType}" />
+                                </VBox>
 
                                 <!-- Payment Info -->
-                                <ObjectStatus text="{viewModel>PaymentMethod}" inverted="true" state="{= ${viewModel>PaymentMethod} === 'UPI' ? 'Information' : 'Warning'}" />
+                                <VBox width="6rem" alignItems="Center">
+                                    <Text text="Payment" class="sapUiTinyMarginBottom" />
+                                    <ObjectStatus text="{viewModel>PaymentMethod}" inverted="true" state="{= ${viewModel>PaymentMethod} === 'UPI' ? 'Information' : 'Warning'}" />
+                                </VBox>
 
                                 <!-- Amount Info -->
-                                <Text text="₹{viewModel>Amount}" class="sapMTextBold" />
+                                <VBox width="6rem" alignItems="Center">
+                                    <Text text="Amount" class="sapUiTinyMarginBottom" />
+                                    <Text text="₹{viewModel>Amount}" class="sapMTextBold" />
+                                </VBox>
 
                                 <!-- Date Info -->
-                                <Text text="{
-                                    path: 'viewModel>Date',
-                                    formatter: '.formatter.formatDateString'
-                                }" />
+                                <VBox width="6rem" alignItems="Center">
+                                    <Text text="Date" class="sapUiTinyMarginBottom" />
+                                    <Text text="{path: 'viewModel>Date', formatter: '.formatter.formatDateString'}" />
+                                </VBox>
                                 
                                 <!-- Actions -->
-                                <HBox alignItems="Center" justifyContent="Center">
-                                    <Button icon="sap-icon://print" type="Transparent" press=".onButtonViewDocPress" class="sapUiSmallMarginEnd" tooltip="Print" />
-                                    <Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" tooltip="Delete" />
+                                <HBox alignItems="Center" width="8rem" justifyContent="End">
+                                    <Button icon="sap-icon://print" type="Transparent" press=".onButtonViewDocPress" class="sapUiTinyMarginEnd" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" class="sapUiTinyMarginEnd" />
                                 </HBox>
-                            </cells>
-                        </ColumnListItem>
+                            </HBox>
+                        </CustomListItem>
                     </items>
-                </Table>
+                </List>
 
                 <!-- Pagination Footer -->
                 <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTopBottom">

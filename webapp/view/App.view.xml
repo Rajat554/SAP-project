@@ -14,6 +14,7 @@
           icon="sap-icon://menu2"
           type="Transparent"
           press=".onButtonSideNavPress"
+<<<<<<< HEAD
           tooltip="Toggle Menu">
           <layoutData>
             <OverflowToolbarLayoutData priority="NeverOverflow" />
@@ -28,16 +29,33 @@
           <VBox class="sapUiTinyMarginBegin">
             <Title text="WashWizard" class="brandTitle" />
             <Text text="Manager" class="brandSubTitle hiddenOnSmall" />
+=======
+          tooltip="Toggle Menu" />
+        <tnt:ToolHeaderUtilitySeparator />
+        <!-- App Title Area -->
+        <HBox alignItems="Center">
+          <core:Icon src="sap-icon://car-rental" size="1.5rem" class="sapUiTinyMarginEnd" color="#0070F2" />
+          <VBox>
+            <Title text="WashWizard Manager" class="brandTitle" />
+            <Text text="Car Wash Management" class="brandSubTitle" />
+>>>>>>> aa4020fa23e76092d2bc6e6986b01c5347b5e852
           </VBox>
         </HBox>
         <ToolbarSpacer />
         <!-- User Profile Area -->
+<<<<<<< HEAD
         <HBox alignItems="Center" class="sapUiSmallMarginEnd">
           <layoutData>
             <OverflowToolbarLayoutData priority="NeverOverflow" />
           </layoutData>
           <Avatar initials="D" displaySize="XS" class="sapUiTinyMarginEnd" />
           <VBox class="hiddenOnSmall">
+=======
+        <tnt:ToolHeaderUtilitySeparator />
+        <HBox alignItems="Center" class="sapUiSmallMarginEnd">
+          <Avatar initials="D" displaySize="XS" class="sapUiTinyMarginEnd" />
+          <VBox>
+>>>>>>> aa4020fa23e76092d2bc6e6986b01c5347b5e852
             <Text text="Demo User" class="userNameText" />
             <Text text="demo@carwash.com" class="userEmailText" />
           </VBox>
