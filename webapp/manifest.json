@@ -9,26 +9,28 @@
     },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
-    "tags": {
-      "keywords": []
+    "crossNavigation": {
+      "inbound": {
+        "WashWizard-manage": {
+          "semanticObject": "WashWizard",
+          "action": "manage",
+          "title": "WashWizard Manager",
+          "subTitle": "Car Wash Center",
+          "icon": "sap-icon://car-facade"
+        }
+      }
     }
   },
   "sap.ui": {
     "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
     "deviceTypes": {
       "desktop": true,
       "tablet": true,
       "phone": true
     },
-    "supportedThemes": ["sap_horizon"]
+    "supportedThemes": [
+      "sap_horizon"
+    ]
   },
   "sap.ui5": {
     "rootView": {
@@ -39,19 +41,15 @@
     },
     "dependencies": {
       "minUI5Version": "1.120.0",
-        "libs": {
-          "sap.m": {},
-          "sap.f": {},
-          "sap.tnt": {},
-          "sap.ui.core": {},
-          "sap.ui.layout": {},
-          "sap.uxap": {},
-          "sap.viz": {}
-        }
-    },
-    "contentDensities": {
-      "compact": true,
-      "cozy": true
+      "libs": {
+        "sap.m": {},
+        "sap.f": {},
+        "sap.tnt": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.uxap": {},
+        "sap.viz": {}
+      }
     },
     "models": {
       "i18n": {
@@ -69,19 +67,12 @@
         "uri": "model/PricingData.json"
       }
     },
-    "resources": {
-      "css": [
-        {
-          "uri": "css/style.css"
-        }
-      ]
-    },
     "routing": {
       "config": {
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
         "viewPath": "sap.ui.demo.walkthrough.view",
-        "controlId": "idContentApp",
+        "controlId": "app",
         "controlAggregation": "pages",
         "async": true
       },
@@ -110,23 +101,19 @@
       "targets": {
         "dashboard": {
           "viewId": "dashboard",
-          "viewName": "Dashboard",
-          "transition": "show"
+          "viewName": "Dashboard"
         },
         "serviceRecords": {
           "viewId": "serviceRecords",
-          "viewName": "ServiceRecords",
-          "transition": "show"
+          "viewName": "ServiceRecords"
         },
         "analytics": {
           "viewId": "analytics",
-          "viewName": "Analytics",
-          "transition": "show"
+          "viewName": "Analytics"
         },
         "settings": {
           "viewId": "settings",
-          "viewName": "Settings",
-          "transition": "show"
+          "viewName": "Settings"
         }
       }
     }

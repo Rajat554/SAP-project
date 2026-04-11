@@ -7,10 +7,9 @@ parameters:
   enable-parallel-executions: true
 
 modules:
-  # 1. The UI Module (Your Fiori Code)
-  # 1. Change type to "staticfile" for Standalone deployment
+  # 1. The UI Module
   - name: sap-project-ui
-    type: javascript.nodejs # Change to this so it triggers a CF App
+    type: javascript.nodejs
     path: .
     build-parameters:
       build-result: dist
@@ -19,16 +18,17 @@ modules:
         - npm install
         - npm run build
     parameters:
-      # This is the "Engine" that serves your HTML files
       buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
       memory: 128M
       disk-quota: 256M
+    requires:
+      - name: sap-project-repo-host
     provides:
       - name: ui_api
         properties:
           url: ${default-url}
 
-  # 2. Keep the Router (This is your Public Gateway)
+  # 2. The Standalone Router (For Public Link)
   - name: sap-project-router
     type: approuter.nodejs
     path: router 
@@ -42,6 +42,7 @@ modules:
           forwardAuthToken: false
           name: ui_target
           url: ~{url}
+      - name: sap-project-dest-service # Required for Launchpad visibility
 
 resources:
   - name: sap-project-repo-host
@@ -49,6 +50,7 @@ resources:
     parameters:
       service: html5-apps-repo
       service-plan: app-host
+
   - name: sap-project-xsuaa
     type: org.cloudfoundry.managed-service
     parameters:
@@ -57,3 +59,10 @@ resources:
       config:
         xsappname: sap-project
         tenant-mode: dedicated
+
+  # ADDED: Destination service so the Launchpad can find the app
+  - name: sap-project-dest-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
