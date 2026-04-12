@@ -33,6 +33,13 @@
     ]
   },
   "sap.ui5": {
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
     "rootView": {
       "viewName": "sap.ui.demo.walkthrough.view.App",
       "type": "XML",
@@ -72,7 +79,7 @@
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
         "viewPath": "sap.ui.demo.walkthrough.view",
-        "controlId": "app",
+        "controlId": "idContentApp",
         "controlAggregation": "pages",
         "async": true
       },

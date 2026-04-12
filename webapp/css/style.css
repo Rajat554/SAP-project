@@ -1,214 +1,341 @@
-/* Global Settings */
-.dashboardBackground {
-    background-color: #F4F6FB !important; /* Soft greyish-blue from image */
+/* ============================================================
+   WashWizard Manager – Global Stylesheet
+   Full responsive, premium look for all screen sizes
+   ============================================================ */
+
+/* ── 1. APP SHELL BACKGROUND ─────────────────────────────── */
+
+/* Ensure the full UI5 App shell and ToolPage get the background */
+.sapUiBody,
+#content,
+.sapMApp,
+.sapTntToolPage,
+.sapTntToolPageMain,
+.sapTntToolPageContentWrapper,
+.sapTntToolPageContent {
 }
 
-/* Brand Area */
+
+/* ── 3. SIDE NAVIGATION ──────────────────────────────────── */
+.sapTntSideNavigation {
+    background-color: #ffffff !important;
+    border-right: 1px solid #E8EDF4 !important;
+}
+
+.sapTntNavigationList {
+    background-color: #ffffff !important;
+}
+
+.sapTntNavigationListItemSelected > .sapTntNavigationListItemInner {
+    background-color: #EBF3FF !important;
+    color: #0070F2 !important;
+    border-left: 3px solid #0070F2;
+}
+
+.sapTntNavigationListItem > .sapTntNavigationListItemInner:hover {
+    background-color: #F5F8FF !important;
+}
+
+/* ── 4. TOOL HEADER ──────────────────────────────────────── */
+.sapTntToolHeader {
+    background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%) !important;
+    border-bottom: 1px solid #E2E8F4 !important;
+    box-shadow: 0 2px 8px rgba(0, 112, 242, 0.06) !important;
+}
+
+/* ── 5. BRAND AREA ───────────────────────────────────────── */
 .brandTitle {
-    font-size: 1.25rem !important;
-    font-weight: bold;
-    color: #0070F2; /* SAP blue or similar */
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    color: #0070F2 !important;
+    letter-spacing: -0.3px;
 }
 
 .brandSubTitle {
-    font-size: 0.75rem !important;
-    color: #888;
+    font-size: 0.7rem !important;
+    color: #8A94A8;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-/* User Profile */
+/* ── 6. USER PROFILE ─────────────────────────────────────── */
 .userNameText {
-    font-weight: bold;
-    font-size: 0.8rem;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    color: #1A2335 !important;
 }
 .userEmailText {
-    font-size: 0.70rem;
-    color: #666;
+    font-size: 0.72rem !important;
+    color: #8A94A8 !important;
 }
 
-/* Dashboard Header */
+/* ── 7. DASHBOARD / PAGE TITLES ──────────────────────────── */
 .dashboardTitle {
     font-size: 1.5rem !important;
-    font-weight: bold;
-    color: #222;
+    font-weight: 700 !important;
+    color: #1A2335 !important;
+    letter-spacing: -0.4px;
 }
 
 .dateText {
-    color: #333; /* Darkened to make it visible */
+    color: #5A6478;
     font-size: 0.85rem;
     font-weight: 500;
 }
 
-/* Custom Tab Bar */
-.customTabBar .sapMITBHead {
-    border: none !important; /* Remove bottom border */
-    margin-bottom: 0px !important;
+/* ── 8. ICON TAB BAR ─────────────────────────────────────── */
+.customTabBar {
+    background: transparent !important;
 }
 
-.tabFilterButton > div {
-    /* Style the tabs like segmented buttons */
-    background: white;
-    border-radius: 8px 8px 0 0;
-    margin-right: 1rem;
-    padding: 0.5rem 2rem !important;
-    color: #555 !important;
-    font-weight: bold;
+.customTabBar .sapMITBHead {
+    background: transparent !important;
+    border-bottom: 2px solid #E2E8F4 !important;
+    padding-left: 0 !important;
 }
-.sapMITBSelected {
+
+.customTabBar .sapMITBItem {
+    background: transparent !important;
+}
+
+.customTabBar .sapMITBText {
+    color: #5A6478 !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+}
+
+.customTabBar .sapMITBSelected .sapMITBText {
     color: #0070F2 !important;
+    font-weight: 700 !important;
+}
+
+.customTabBar .sapMITBSelected {
     border-bottom: 3px solid #0070F2 !important;
 }
 
-/* Cards (3 Columns) */
+/* ── 9. CARDS ────────────────────────────────────────────── */
 .cardBox {
-    background: white !important;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    height: 100%; /* Make them equal height */
+    background: #ffffff !important;
+    border-radius: 14px !important;
+    padding: 1.5rem !important;
+    box-shadow: 0 2px 12px rgba(0, 30, 80, 0.07) !important;
+    border: 1px solid #EBF0F8 !important;
+    height: 100%;
     box-sizing: border-box;
+    transition: box-shadow 0.2s ease;
 }
 
-/* Flex Column to push button to bottom */
+.cardBox:hover {
+    box-shadow: 0 6px 24px rgba(0, 30, 80, 0.11) !important;
+}
+
+.customWhiteCard {
+    background-color: #ffffff !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 12px rgba(0, 30, 80, 0.07) !important;
+    border: 1px solid #EBF0F8 !important;
+    padding: 1.25rem !important;
+    transition: box-shadow 0.2s ease;
+}
+
+.customWhiteCard:hover {
+    box-shadow: 0 6px 24px rgba(0, 30, 80, 0.11) !important;
+}
+
+/* ── 10. CARD HEADERS ────────────────────────────────────── */
+.cardTitle {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: #1A2335 !important;
+}
+
+.iconTitle {
+    font-size: 1.2rem !important;
+}
+
+/* ── 11. FLEX UTILITIES ──────────────────────────────────── */
 .flexColumn {
     display: flex;
     flex-direction: column;
 }
 
-.iconTitle {
-    font-size: 1.25rem;
-}
-.cardTitle {
-    font-size: 1.1rem !important;
-    color: #333;
-    font-weight: 500;
-}
-
-/* Inputs and Labels */
+/* ── 12. INPUTS & LABELS ─────────────────────────────────── */
 .customLabel {
-    color: #444;
-    font-size: 0.85rem;
-    font-weight: 500;
+    color: #4A5568 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 4px !important;
 }
 
-.customInput .sapMInputBaseInner {
-    background-color: #F4F6F9 !important;
-    border: 1px solid #E2E6EE !important;
-    border-radius: 6px !important;
-    color: #333;
-}
-.customInput.amountField .sapMInputBaseInner {
-    /* Read-only look for amount */
-    background-color: #F4F6F9 !important;
-    font-weight: bold;
-}
-
-/* CheckBox Panels */
-.servicePanel {
-    border: 1px solid #E2E6EE !important;
+.customInput .sapMInputBaseInner,
+.customInput.sapMSelect .sapMSelectListItemBase {
+    background-color: #F7F9FC !important;
+    border: 1.5px solid #D6DFF0 !important;
     border-radius: 8px !important;
-    background-color: #F8F9FA !important;
+    color: #1A2335 !important;
+    font-size: 0.9rem !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+.customInput .sapMInputBaseInner:focus,
+.customInput .sapMInputBaseFocused .sapMInputBaseInner {
+    border-color: #0070F2 !important;
+    box-shadow: 0 0 0 3px rgba(0, 112, 242, 0.12) !important;
+    background-color: #ffffff !important;
+}
+
+.customInput.amountField .sapMInputBaseInner {
+    background-color: #EBF3FF !important;
+    font-weight: 700 !important;
+    color: #0070F2 !important;
+    border-color: #C5D8F8 !important;
+}
+
+/* ── 13. SERVICE PANELS ──────────────────────────────────── */
+.servicePanel {
+    border: 1.5px solid #E2E8F4 !important;
+    border-radius: 10px !important;
+    background-color: #F8FAFD !important;
+    overflow: hidden;
+}
+
 .servicePanel .sapMPanelHdr {
-    background-color: #F8F9FA !important;
-    border-bottom: none !important;
-    font-weight: bold;
+    border-bottom: 1px solid #E2E8F4 !important;
+    font-weight: 600 !important;
+    color: #1A2335 !important;
+    font-size: 0.88rem !important;
 }
 
 .priceText {
-    color: #555;
-    font-size: 0.85rem;
+    color: #5A6478;
+    font-size: 0.82rem;
 }
 
-/* Edge padding utility */
-.pbEdgePadding {
-    padding-bottom: 2rem;
-}
-
-/* Save Button */
+/* ── 14. BUTTONS ─────────────────────────────────────────── */
+/* Save / Primary Button */
 .customSaveBtn {
-    height: 48px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
 }
+
 .customSaveBtn .sapMBtnInner {
-    background-color: #0ea5e9 !important; /* light blue from screenshot */
-    border-color: #0ea5e9 !important;
-    border-radius: 8px;
-    color: white !important;
-    font-weight: bold !important;
-    height: 100% !important; /* expand inner to full height */
-    display: flex; /* use flex to align */
+    background: linear-gradient(135deg, #0070F2 0%, #005AC4 100%) !important;
+    border-color: #0070F2 !important;
+    border-radius: 10px !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    height: 44px !important;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0; 
-}
-.customSaveBtn .sapMBtnHoverable:hover {
-    background-color: #0284c7 !important;
-    border-color: #0284c7 !important;
-}
-.customSaveBtn .sapMBtnIcon {
-    color: white !important;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 112, 242, 0.25);
 }
 
-/* Current Services List */
-.noStandardBackgroundList {
-    background: transparent !important;
+.customSaveBtn .sapMBtnHoverable:hover .sapMBtnInner,
+.customSaveBtn .sapMBtnInner:hover {
+    background: linear-gradient(135deg, #005AC4 0%, #004AA0 100%) !important;
+    box-shadow: 0 6px 18px rgba(0, 112, 242, 0.35) !important;
 }
+
+.customSaveBtn .sapMBtnIcon {
+    color: #ffffff !important;
+}
+
+/* Complete Button */
+.completeBtn .sapMBtnInner {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+    border-color: #10B981 !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s ease;
+}
+
+.completeBtn .sapMBtnHoverable:hover .sapMBtnInner {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+}
+
+.completeBtn .sapMBtnIcon {
+    color: #ffffff !important;
+}
+
+/* Action Icon Buttons */
+.actionBtn .sapMBtnInner {
+    border: 1px solid #E2E8F4 !important;
+    border-radius: 8px !important;
+    color: #5A6478 !important;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.actionBtn .sapMBtnHoverable:hover .sapMBtnInner {
+    background: #EBF3FF !important;
+    color: #0070F2 !important;
+    border-color: #BDD6F8 !important;
+}
+
+/* ── 15. SERVICE RECORD CARDS (Table rows as cards) ──────── */
+.noStandardBackgroundList,
 .noStandardBackgroundList .sapMListBGSolid {
     background: transparent !important;
 }
+
 .currentServiceCard {
-    background: white !important;
+    background: #ffffff !important;
     border-radius: 12px !important;
-    border: none !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
-    padding: 1rem !important;
-    box-sizing: border-box !important;
+    border: 1px solid #EBF0F8 !important;
+    box-shadow: 0 2px 8px rgba(0, 30, 80, 0.05) !important;
+    margin-bottom: 0.5rem !important;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
 }
+
+.currentServiceCard:hover {
+    box-shadow: 0 6px 20px rgba(0, 30, 80, 0.10) !important;
+    transform: translateY(-1px);
+}
+
 .carIconCircle {
-    background-color: #EBF4FF;
+    background-color: #EBF3FF !important;
     color: #0070F2 !important;
-    padding: 0.8rem;
-    border-radius: 50%;
-    font-size: 1.2rem;
+    padding: 0.7rem !important;
+    border-radius: 50% !important;
+    font-size: 1.1rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
 }
+
 .customerNameText {
-    font-weight: 600;
-    color: #222;
+    font-weight: 600 !important;
+    color: #1A2335 !important;
+    font-size: 0.9rem !important;
 }
+
 .vehicleNumberText {
-    font-size: 0.8rem;
-    color: #888;
+    font-size: 0.78rem !important;
+    color: #8A94A8 !important;
 }
+
 .metaLabel {
-    font-size: 0.75rem;
-    color: #999;
+    font-size: 0.72rem !important;
+    color: #8A94A8 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
 }
+
 .metaValue {
-    font-weight: bold;
-    color: #333;
-}
-.actionBtn .sapMBtnInner {
-    background: white;
-    border: 1px solid #eee;
-    color: #555 !important;
+    font-weight: 600 !important;
+    color: #1A2335 !important;
+    font-size: 0.88rem !important;
 }
 
-.completeBtn .sapMBtnInner {
-    background-color: #0ea5e9 !important;
-    border-color: #0ea5e9 !important;
-    color: white !important;
-    border-radius: 8px;
-}
-.completeBtn .sapMBtnHoverable:hover {
-    background-color: #0284c7 !important;
-}
-.completeBtn .sapMBtnIcon {
-    color: white !important;
-}
-
-/* Utilities */
+/* ── 16. PADDING UTILITIES ───────────────────────────────── */
 .responsivePadding {
-    padding-left: 3rem !important;
-    padding-right: 3rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
     box-sizing: border-box !important;
 }
 
@@ -216,14 +343,85 @@
     gap: 1rem;
 }
 
-@media (max-width: 600px) {
+.pbEdgePadding {
+    padding-bottom: 2rem;
+}
+
+/* ── 17. STATUS BADGES ───────────────────────────────────── */
+.statusPending {
+    color: #F59E0B !important;
+    background: #FEF3C7 !important;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.statusComplete {
+    color: #10B981 !important;
+    background: #D1FAE5 !important;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* ── 18. ANALYTICS / CHART CONTAINERS ───────────────────── */
+.analyticsCard {
+    background: #ffffff !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 12px rgba(0, 30, 80, 0.07) !important;
+    border: 1px solid #EBF0F8 !important;
+    padding: 1.25rem !important;
+}
+
+/* ── 19. RESPONSIVE BREAKPOINTS ──────────────────────────── */
+
+/* Large Desktop (1400px+) */
+@media (min-width: 1400px) {
+    .responsivePadding {
+        padding-left: 2.5rem !important;
+        padding-right: 2.5rem !important;
+    }
+
+    .cardBox {
+        padding: 2rem !important;
+    }
+}
+
+/* Standard Desktop (1024px – 1399px) */
+@media (min-width: 1024px) and (max-width: 1399px) {
+    .responsivePadding {
+        padding-left: 1.75rem !important;
+        padding-right: 1.75rem !important;
+    }
+}
+
+/* Tablet (768px – 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .responsivePadding {
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+    }
+
+    .cardBox {
+        padding: 1.25rem !important;
+    }
+
+    .dashboardTitle {
+        font-size: 1.25rem !important;
+    }
+}
+
+/* Phone (< 768px) */
+@media (max-width: 767px) {
     .hiddenOnSmall {
         display: none !important;
     }
-    
+
     .responsivePadding {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
     }
 
     .responsiveServiceHBox {
@@ -237,11 +435,49 @@
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
     }
+
+    .cardBox {
+        padding: 1rem !important;
+        border-radius: 10px !important;
+    }
+
+    .customWhiteCard {
+        padding: 0.9rem !important;
+        border-radius: 10px !important;
+    }
+
+    .dashboardTitle {
+        font-size: 1.1rem !important;
+    }
+
+    .brandTitle {
+        font-size: 1rem !important;
+    }
+
+    .customSaveBtn {
+        height: 40px !important;
+    }
+
+    .customSaveBtn .sapMBtnInner {
+        height: 40px !important;
+    }
+
+    .carIconCircle {
+        width: 2rem !important;
+        height: 2rem !important;
+        padding: 0.5rem !important;
+        font-size: 0.9rem !important;
+    }
 }
 
-.customWhiteCard {
-    background-color: #ffffff !important;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    padding: 1rem;
+/* Very small phone (< 400px) */
+@media (max-width: 400px) {
+    .responsivePadding {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    .cardBox {
+        padding: 0.75rem !important;
+    }
 }
