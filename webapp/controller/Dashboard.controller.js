@@ -80,7 +80,7 @@ sap.ui.define([
         _updateServiceLists: function(sWheelType) {
             var oPricingModel = this.getView().getModel("PricingData") || (this.getOwnerComponent() && this.getOwnerComponent().getModel("PricingData"));
             if (!oPricingModel) return;
-            
+                
             var oPricingData = oPricingModel.getData();
             var oSelectedData = oPricingData[sWheelType];
             
