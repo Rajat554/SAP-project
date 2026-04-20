@@ -45,10 +45,11 @@
 
 /* ── 5. BRAND AREA ───────────────────────────────────────── */
 .brandTitle {
-    font-size: 1.2rem !important;
+    font-size: 1.3rem !important;
     font-weight: 700 !important;
     color: #0070F2 !important;
     letter-spacing: -0.3px;
+    padding-top: 0.4rem;
 }
 
 .brandSubTitle {
@@ -56,12 +57,13 @@
     color: #8A94A8;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    padding: 0%;
 }
 
 /* ── 6. USER PROFILE ─────────────────────────────────────── */
 .userNameText {
     font-weight: 600 !important;
-    font-size: 0.82rem !important;
+    font-size: 1rem !important;
     color: #1A2335 !important;
 }
 .userEmailText {
@@ -144,7 +146,7 @@
 
 /* ── 10. CARD HEADERS ────────────────────────────────────── */
 .cardTitle {
-    font-size: 1rem !important;
+    font-size: 1.3rem !important;
     font-weight: 600 !important;
     color: #1A2335 !important;
 }
@@ -162,7 +164,7 @@
 /* ── 12. INPUTS & LABELS ─────────────────────────────────── */
 .customLabel {
     color: #4A5568 !important;
-    font-size: 0.82rem !important;
+    font-size: 1rem !important;
     font-weight: 600 !important;
     margin-bottom: 4px !important;
 }
@@ -187,7 +189,7 @@
 .customInput.amountField .sapMInputBaseInner {
     background-color: #EBF3FF !important;
     font-weight: 700 !important;
-    color: #0070F2 !important;
+    color: #0070F2 !important;  
     border-color: #C5D8F8 !important;
 }
 
@@ -481,3 +483,176 @@
         padding: 0.75rem !important;
     }
 }
+
+.icon123{
+    padding-top: 0.4rem;    
+}
+
+/* ── 20. RESPONSIVE TABLE vs LIST TOGGLE ─────────────────── */
+/* Default: Show Table, Hide List */
+.hideOnMobile {
+    display: flex !important;
+    width: 100%;
+}
+.showOnMobile {
+    display: none !important;
+}
+
+@media (max-width: 1023px) {
+    /* On Tablet & Mobile: Hide Table, Show List */
+    .hideOnMobile {
+        display: none !important;
+    }
+    .showOnMobile {
+        display: block !important;
+        width: 100%;
+    }
+}
+
+/* ── 21. STITCH MOBILE/TABLET DETAILED CARDS ──────────────── */
+.stitchCardList .sapMListBGSolid {
+    background: transparent !important;
+}
+
+.stitchCard {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    border: 1px solid #EBF0F8 !important;
+    box-shadow: 0 4px 12px rgba(0, 30, 80, 0.05) !important;
+    margin-bottom: 1.5rem !important;
+    padding: 1.25rem !important;
+}
+
+.stitchCardTop {
+    margin-bottom: 1.25rem;
+}
+
+.stitchCheckIcon {
+    color: #10B981 !important;
+    background-color: #D1FAE5 !important;
+    padding: 4px;
+    border-radius: 50%;
+    font-size: 0.9rem !important;
+    margin-right: 0.75rem;
+}
+
+.stitchCheckIconWait {
+    color: #0ea5e9 !important;
+    background-color: #e0f2fe !important;
+    padding: 4px;
+    border-radius: 50%;
+    font-size: 0.9rem !important;
+    margin-right: 0.75rem;
+}
+
+.stitchCustomerName {
+    color: #1A2335 !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.stitchCustHBox {
+    background-color: #EBF3FF !important;
+    border-radius: 12px !important;
+    padding: 2px 8px !important;
+    display: inline-flex !important;
+    width: fit-content;
+    margin-bottom: 0.5rem;
+}
+
+.stitchCustIcon {
+    color: #0070F2 !important;
+    font-size: 0.75rem !important;
+    margin-right: 4px !important;
+}
+
+.stitchCustIdText {
+    color: #0070F2 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+}
+
+.stitchCarPlate {
+    color: #4A5568 !important;
+    font-size: 0.85rem !important;
+}
+
+.stitchAmount {
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #1A2335 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.stitchPaymentPill {
+    font-size: 0.75rem !important;
+    border-radius: 12px !important;
+    padding: 2px 12px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+}
+
+.pillCash { background-color: #10B981; color: white !important; }
+.pillCard { background-color: #8B5CF6; color: white !important; }
+.pillUPI  { background-color: #0ea5e9; color: white !important; }
+.pillOnline { background-color: #F59E0B; color: white !important; }
+.pillPending { background-color: #F59E0B; color: white !important; }
+
+.stitchMiddleSection {
+    margin-bottom: 1.25rem;
+}
+
+.stitchGreyIcon {
+    color: #A0AABF !important;
+    font-size: 0.95rem !important;
+    margin-right: 6px !important;
+}
+
+.stitchMetaText {
+    color: #4A5568 !important;
+    font-size: 0.9rem !important;
+}
+
+.stitchServicesSection {
+    margin-bottom: 1.5rem;
+}
+
+.stitchLabelText {
+    font-weight: 700 !important;
+    color: #1A2335 !important;
+    font-size: 0.85rem !important;
+    margin-right: 4px !important;
+}
+
+.stitchButtonSection {
+    gap: 1rem;
+    width: 100%;
+}
+
+.stitchActionBtn {
+    flex: 1;
+}
+
+.stitchActionBtn .sapMBtnInner {
+    border-radius: 8px !important;
+    background: transparent !important;
+    border: 1.5px solid #EBF0F8 !important;
+    font-weight: 600 !important;
+    height: 40px !important;
+}
+
+.stitchActionBtnBlue .sapMBtnIcon { color: #0070F2 !important; }
+.stitchActionBtnBlue .sapMBtnContent { color: #0070F2 !important; }
+
+.stitchActionBtnRed .sapMBtnIcon { color: #ef4444 !important; }
+.stitchActionBtnRed .sapMBtnContent { color: #ef4444 !important; }
+
+.stitchActionBtnGreen .sapMBtnIcon { color: #10B981 !important; }
+.stitchActionBtnGreen .sapMBtnContent { color: #10B981 !important; }
+
+.stitchFlex {
+    display: flex;
+    flex-direction: column;
+}
+

@@ -5,7 +5,7 @@
             <Toolbar>
                 <Title text="Configure Table Columns" class="sapUiSmallMarginBegin" />
                 <ToolbarSpacer />
-                <Button text="Reset" press=".onResetButtonPress" type="Transparent" />
+                <Button text="Reset" press=".onButtonResetPress" type="Transparent" />
             </Toolbar>
         </customHeader>
         <content>
@@ -14,8 +14,8 @@
             </List>
         </content>
         <buttons>
-            <Button text="OK" type="Emphasized" press=".onOKButtonPress" />
-            <Button text="Cancel" press=".onCancelButtonPress" />
+            <Button text="OK" type="Emphasized" press=".onButtonOKPress" />
+            <Button text="Cancel" press=".onButtonCancelPress" />
         </buttons>
     </Dialog>
 </core:FragmentDefinition>

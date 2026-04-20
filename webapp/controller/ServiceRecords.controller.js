@@ -3,8 +3,10 @@ sap.ui.define(
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
+    "sap/ui/core/UIComponent",
+    "sap/ui/core/Fragment",
   ],
-  function (Controller, JSONModel, MessageToast) {
+  function (Controller, JSONModel, MessageToast, UIComponent, Fragment) {
     "use strict";
 
     return Controller.extend(
@@ -28,7 +30,7 @@ sap.ui.define(
         },
 
         onInit: function () {
-          this._iItemsPerPage = 5;
+          this._iItemsPerPage = 10;
           this._aAllFilteredData = [];
 
           var oViewModel = new JSONModel({
@@ -51,14 +53,15 @@ sap.ui.define(
           });
           this.getView().setModel(oViewModel, "viewModel");
 
-          var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+          var oRouter = UIComponent.getRouterFor(this);
           oRouter
             .getRoute("serviceRecords")
             .attachPatternMatched(this._onObjectMatched, this);
         },
 
-        _onObjectMatched: function (oEvent) {
-          // Delay slightly to ensure formatting/data load is ready
+        // ── Private helpers ──────────────────────────────────
+
+        _onObjectMatched: function () {
           var that = this;
           setTimeout(function () {
             that._initializeData();
@@ -68,34 +71,12 @@ sap.ui.define(
         _initializeData: function () {
           var oModel = this.getView().getModel("ServiceData");
           if (!oModel) return;
-
           var aServices = oModel.getProperty("/Services") || [];
           this.getView()
             .getModel("viewModel")
             .setProperty("/totalServices", aServices.length);
-
-          // Initial filter is empty
           this._aAllFilteredData = aServices.slice();
           this._updatePagination(1);
-        },
-
-        onSearchFieldSearch: function (oEvent) {
-          this._applyFilters();
-        },
-        onSearchFieldLiveChange: function (oEvent) {
-          this._applyFilters();
-        },
-
-        onComboBoxSelectionChange: function (oEvent) {
-          this._applyFilters();
-        },
-
-        onRefreshButtonPress: function () {
-          this.byId("idRecordsSearchField").setValue("");
-          this.byId("idPaymentComboBox").setSelectedKey("All");
-          this.byId("idServiceComboBox").setSelectedKey("All");
-          this._applyFilters();
-          MessageToast.show("Data refreshed");
         },
 
         _applyFilters: function () {
@@ -104,233 +85,128 @@ sap.ui.define(
             this.byId("idPaymentComboBox").getSelectedKey() || "All";
           var sService =
             this.byId("idServiceComboBox").getSelectedKey() || "All";
-
           var oModel = this.getView().getModel("ServiceData");
           if (!oModel) return;
           var aServices = oModel.getProperty("/Services") || [];
 
-          this._aAllFilteredData = aServices.filter(function (oItem) {
-            var bMatchSearch = true;
+          this._aAllFilteredData = aServices.filter(function (o) {
+            var bSearch = true;
             if (sQuery && sQuery.trim() !== "") {
-              var sLowerQuery = sQuery.toLowerCase();
-              bMatchSearch =
-                (oItem.CustomerName &&
-                  oItem.CustomerName.toLowerCase().indexOf(sLowerQuery) !==
-                    -1) ||
-                (oItem.CarPlate &&
-                  oItem.CarPlate.toLowerCase().indexOf(sLowerQuery) !== -1) ||
-                (oItem.Phone && oItem.Phone.indexOf(sLowerQuery) !== -1);
+              var q = sQuery.toLowerCase();
+              bSearch =
+                (o.CustomerName &&
+                  o.CustomerName.toLowerCase().indexOf(q) !== -1) ||
+                (o.CarPlate && o.CarPlate.toLowerCase().indexOf(q) !== -1) ||
+                (o.Phone && o.Phone.indexOf(q) !== -1);
             }
-
-            var bMatchPayment = true;
-            if (sPayment !== "All" && sPayment !== "") {
-              bMatchPayment = oItem.PaymentMethod === sPayment;
-            }
-
-            var bMatchService = true;
-            if (sService !== "All" && sService !== "") {
-              bMatchService = oItem.ServiceType === sService;
-            }
-
-            return bMatchSearch && bMatchPayment && bMatchService;
+            var bPay = true;
+            if (sPayment !== "All" && sPayment !== "")
+              bPay = o.PaymentMethod === sPayment;
+            var bSvc = true;
+            if (sService !== "All" && sService !== "")
+              bSvc = o.ServiceType === sService;
+            return bSearch && bPay && bSvc;
           });
-
           this._updatePagination(1);
         },
 
         _updatePagination: function (iPage) {
-          var oViewModel = this.getView().getModel("viewModel");
-          var iTotalItems = this._aAllFilteredData.length;
-          var iTotalPages = Math.ceil(iTotalItems / this._iItemsPerPage) || 1;
-
+          var oVM = this.getView().getModel("viewModel");
+          var iTotal = this._aAllFilteredData.length;
+          var iPages = Math.ceil(iTotal / this._iItemsPerPage) || 1;
           if (iPage < 1) iPage = 1;
-          if (iPage > iTotalPages) iPage = iTotalPages;
-
-          var iStartIndex = (iPage - 1) * this._iItemsPerPage;
-          var iEndIndex = iStartIndex + this._iItemsPerPage;
-          var aPagedData = this._aAllFilteredData.slice(iStartIndex, iEndIndex);
-
-          oViewModel.setProperty("/pagedServices", aPagedData);
-          oViewModel.setProperty("/currentPage", iPage);
-          oViewModel.setProperty("/totalPages", iTotalPages);
-          oViewModel.setProperty("/hasPrevPage", iPage > 1);
-          oViewModel.setProperty("/hasNextPage", iPage < iTotalPages);
-          oViewModel.setProperty(
-            "/pageHeaderInfo",
-            "Page " + iPage + " of " + iTotalPages,
+          if (iPage > iPages) iPage = iPages;
+          var iStart = (iPage - 1) * this._iItemsPerPage;
+          oVM.setProperty(
+            "/pagedServices",
+            this._aAllFilteredData.slice(iStart, iStart + this._iItemsPerPage),
           );
+          oVM.setProperty("/currentPage", iPage);
+          oVM.setProperty("/totalPages", iPages);
+          oVM.setProperty("/hasPrevPage", iPage > 1);
+          oVM.setProperty("/hasNextPage", iPage < iPages);
+          oVM.setProperty("/pageHeaderInfo", "Page " + iPage + " of " + iPages);
         },
 
+        // ══════════════════════════════════════════════════════
+        // EVENT HANDLERS — names must match ServiceRecords.view.xml
+        // ══════════════════════════════════════════════════════
+
+        // Search
+        onSearchFieldSearch: function () {
+          this._applyFilters();
+        },
+        onSearchFieldLiveChange: function () {
+          this._applyFilters();
+        },
+
+        // ComboBox filters
+        onComboBoxSelectionChange: function () {
+          this._applyFilters();
+        },
+        onComboBoxSelectionChange: function () {
+          this._applyFilters();
+        },
+
+        // Refresh
+        onRefreshButtonPress: function () {
+          this.byId("idRecordsSearchField").setValue("");
+          this.byId("idPaymentComboBox").setSelectedKey("All");
+          this.byId("idServiceComboBox").setSelectedKey("All");
+          this._applyFilters();
+          MessageToast.show("Data refreshed");
+        },
+
+        // Pagination
         onLtPreviousButtonPress: function () {
-          var iCurrentPage = this.getView()
+          var p = this.getView()
             .getModel("viewModel")
             .getProperty("/currentPage");
-          this._updatePagination(iCurrentPage - 1);
+          this._updatePagination(p - 1);
         },
-
         onNextGtButtonPress: function () {
-          var iCurrentPage = this.getView()
+          var p = this.getView()
             .getModel("viewModel")
             .getProperty("/currentPage");
-          this._updatePagination(iCurrentPage + 1);
+          this._updatePagination(p + 1);
         },
-
         onButtonPageSelectPress: function (oEvent) {
-          var sPage = oEvent.getSource().getText();
-          this._updatePagination(parseInt(sPage, 10));
+          this._updatePagination(parseInt(oEvent.getSource().getText(), 10));
         },
 
-        onButtonViewDocPress: function (oEvent) {
-          MessageToast.show("View document clicked");
+        // Print
+        onPrintBillButtonPress: function () {
+          MessageToast.show("Print Bill button clicked.");
         },
 
-        onButtonDeletePress: function (oEvent) {
-          // Delete logic for UI demonstration
-          var oItem = oEvent.getSource().getParent().getParent(); // Item is CustomListItem
-          var oContext = oItem.getBindingContext("viewModel");
-          var oItemData = oContext.getObject();
-
-          var oModel = this.getView().getModel("ServiceData");
-          var aServices = oModel.getProperty("/Services");
-
-          // Find and remove from main model
-          for (var i = 0; i < aServices.length; i++) {
-            if (
-              aServices[i].CarPlate === oItemData.CarPlate &&
-              aServices[i].CustomerName === oItemData.CustomerName
-            ) {
-              aServices.splice(i, 1);
-              break;
-            }
-          }
-
-          oModel.setProperty("/Services", aServices);
-          this.getView()
-            .getModel("viewModel")
-            .setProperty("/totalServices", aServices.length);
-
-          this._applyFilters(); // Re-apply to refresh current view
-
-          MessageToast.show("Service record deleted.");
+        // Delete
+        onDeleteButtonPress: function () {
+          MessageToast.show("Delete button clicked.");
         },
 
+        // Table settings (gear icon)
         onButtonTableSettingsPress: function () {
-          var oView = this.getView();
-          var oViewModel = oView.getModel("viewModel");
-
-          var oTableColumns = oViewModel.getProperty("/tableColumns");
-          var aSettingsColumns = Object.keys(oTableColumns).map(
-            function (sKey) {
-              return { key: sKey, header: sKey, visible: oTableColumns[sKey] };
-            },
-          );
-          oViewModel.setProperty("/settingsColumns", aSettingsColumns);
-
-          if (!this._pSettingsDialog) {
-            this._pSettingsDialog = sap.ui.core.Fragment.load({
-              id: oView.getId(),
-              name: "sap.ui.demo.walkthrough.view.ConfigureTableColumns",
-              controller: this,
-            }).then(function (oDialog) {
-              oView.addDependent(oDialog);
-              return oDialog;
-            });
-          }
-          this._pSettingsDialog.then(function (oDialog) {
-            oDialog.open();
-          });
+          MessageToast.show("Table Settings button clicked.");
         },
 
-        onTableSettingsConfirm: function () {
-          var oViewModel = this.getView().getModel("viewModel");
-          var aSettingsColumns = oViewModel.getProperty("/settingsColumns");
-          var oTableColumns = {};
-
-          aSettingsColumns.forEach(function (oCol) {
-            oTableColumns[oCol.key] = oCol.visible;
-          });
-          oViewModel.setProperty("/tableColumns", oTableColumns);
-
-          this._pSettingsDialog.then(function (oDialog) {
-            oDialog.close();
-          });
-          MessageToast.show("Table columns updated successfully.");
+        // Desktop table action buttons
+        onButtonPrintBillPress: function () {
+          MessageToast.show("Print Bill button clicked.");
+        },
+        onButtonDeletePress: function () {
+          MessageToast.show("Delete button clicked.");
         },
 
-        onTableSettingsCancel: function () {
-          this._pSettingsDialog.then(function (oDialog) {
-            oDialog.close();
-          });
+        // Fragment handlers (used by ConfigureTableColumns.fragment.xml)
+        onButtonResetPress: function () {
+          MessageToast.show("Reset button clicked.");
         },
-
-        onResetButtonPress: function () {
-          var oViewModel = this.getView().getModel("viewModel");
-          var aSettingsColumns = oViewModel.getProperty("/settingsColumns");
-          aSettingsColumns.forEach(function (oCol) {
-            oCol.visible = true;
-          });
-          oViewModel.setProperty("/settingsColumns", aSettingsColumns.slice()); // trigger binding update
+        onButtonOKPress: function () {
+          MessageToast.show("OK button clicked.");
         },
-
-        onTableSettingsCancel: function (oEvent) {
-          this._pSettingsDialog.then(function (oDialog) {
-            oDialog.close();
-          });
+        onButtonCancelPress: function () {
+          MessageToast.show("Cancel button clicked.");
         },
-
-        onTableSettingsConfirm: function (oEvent) {
-          var oViewModel = this.getView().getModel("viewModel");
-          var aSettingsColumns = oViewModel.getProperty("/settingsColumns");
-          var oTableColumns = {};
-
-          aSettingsColumns.forEach(function (oCol) {
-            oTableColumns[oCol.key] = oCol.visible;
-          });
-          oViewModel.setProperty("/tableColumns", oTableColumns);
-
-          this._pSettingsDialog.then(function (oDialog) {
-            oDialog.close();
-          });
-          MessageToast.show("Table columns updated successfully.");
-        },
-
-        onTableSettingsConfirm: function (oEvent) {
-          var oViewModel = this.getView().getModel("viewModel");
-          var aSettingsColumns = oViewModel.getProperty("/settingsColumns");
-          var oTableColumns = {};
-
-          aSettingsColumns.forEach(function (oCol) {
-            oTableColumns[oCol.key] = oCol.visible;
-          });
-          oViewModel.setProperty("/tableColumns", oTableColumns);
-
-          this._pSettingsDialog.then(function (oDialog) {
-            oDialog.close();
-          });
-          MessageToast.show("Table columns updated successfully.");
-        },
-
-		onOKButtonPress: function(oEvent) {
-            var oViewModel = this.getView().getModel("viewModel");
-            var aSettingsColumns = oViewModel.getProperty("/settingsColumns");
-            var oTableColumns = {};
-
-            aSettingsColumns.forEach(function (oCol) {
-                oTableColumns[oCol.key] = oCol.visible;
-            });
-            oViewModel.setProperty("/tableColumns", oTableColumns);
-
-            this._pSettingsDialog.then(function (oDialog) {
-                oDialog.close();
-            });
-            MessageToast.show("Table columns updated successfully.");   
-		},
-
-		onCancelButtonPress: function(oEvent) {
-            this._pSettingsDialog.then(function (oDialog) {
-                oDialog.close();
-            }); 
-		},
       },
     );
   },

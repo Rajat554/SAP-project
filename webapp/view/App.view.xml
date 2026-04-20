@@ -24,10 +24,10 @@
           <layoutData>
             <OverflowToolbarLayoutData priority="NeverOverflow" />
           </layoutData>
-          <core:Icon src="sap-icon://car-rental" size="1.25rem" class="sapUiTinyMarginEnd" color="#0070F2" />
+          <core:Icon src="sap-icon://car-rental" size="1.25rem" class="sapUiTinyMarginEnd icon123" color="#0070F2" />
           <VBox class="sapUiTinyMarginBegin">
             <Title text="WashWizard" class="brandTitle" />
-            <Text text="Manager" class="brandSubTitle hiddenOnSmall" />
+            <!-- <Text text="Manager" class="brandSubTitle hiddenOnSmall" /> -->
           </VBox>
         </HBox>
         <ToolbarSpacer />
@@ -36,10 +36,10 @@
           <layoutData>
             <OverflowToolbarLayoutData priority="NeverOverflow" />
           </layoutData>
-          <Avatar initials="D" displaySize="XS" class="sapUiTinyMarginEnd" />
+          <Avatar initials="D" displaySize="XS" class="sapUiTinyMarginEnd"/>
           <VBox class="hiddenOnSmall">
             <Text text="Demo User" class="userNameText" />
-            <Text text="demo@carwash.com" class="userEmailText" />
+            <!-- <Text text="demo@carwash.com" class="userEmailText" /> -->
           </VBox>
         </HBox>
       </tnt:ToolHeader>

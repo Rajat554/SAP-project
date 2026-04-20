@@ -2,6 +2,6 @@
   "urls": [
     "https://d4850873trial.launchpad.cfapps.ap21.hana.ondemand.com/"
   ],
-  "intervalHours": 5,
+  "intervalHours": 1,
   "maxLogLines": 500
 }

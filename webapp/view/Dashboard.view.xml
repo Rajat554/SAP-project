@@ -1,176 +1,185 @@
-<mvc:View
-	controllerName="sap.ui.demo.walkthrough.controller.Dashboard"
+<mvc:View controllerName="sap.ui.demo.walkthrough.controller.Dashboard"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core"
-	xmlns:html="http://www.w3.org/1999/xhtml">
+	xmlns:l="sap.ui.layout">
 
 	<Page id="idDashboardPage" showHeader="false" class="dashboardBackground">
-		
-		<!-- Top Title Area -->
-		<!-- <HBox width="100%" justifyContent="SpaceBetween" alignItems="Center" class="responsivePadding sapUiMediumMarginTop sapUiMediumMarginBottom">
-			<Title text="Dashboard" level="H1" class="dashboardTitle"/>
-			<HBox alignItems="Center">
-				<core:Icon src="sap-icon://calendar" class="sapUiTinyMarginEnd" color="#333"/>
-				<Text text="{viewModel>/currentDate}" class="dateText"/>
-			</HBox>
-		</HBox> -->
 
 		<!-- Tabs -->
 		<IconTabBar id="idIconTabBar" class="responsivePadding customTabBar" stretchContentHeight="true">
 			<items>
 				<IconTabFilter text="Service Entry" key="entry" class="tabFilterButton">
-					
-					<!-- The 3 Column Form Layout using Bootstrap 5 -->
-					<html:div class="container-fluid g-0 mt-3 pb-5">
-						<html:div class="row g-4">
-							
-							<!-- Column 1: Contact Details -->
-							<html:div class="col-12 col-xl-4 col-lg-4 col-md-12">
-								<VBox class="cardBox flexColumn w-100">
-									<HBox alignItems="Center" class="sapUiMediumMarginBottom">
-										<core:Icon src="sap-icon://customer" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
-										<Title text="Contact Details" level="H3" class="cardTitle"/>
-									</HBox>
-									<Label text="Customer Name" required="true" class="customLabel"/>
-									<Input id="idRajatPatelInput" value="Rajat Patel" class="customInput sapUiSmallMarginBottom"/>
-									
-									<Label text="Phone Number" required="true" class="customLabel"/>
-									<Input value="2004550121" class="customInput sapUiSmallMarginBottom"/>
 
-									<Label text="Address" required="true" class="customLabel"/>
-									<Input value="0x372f5c9f040bdec4798b950dd7c02aee0812b362" class="customInput sapUiSmallMarginBottom"/>
+					<l:Grid defaultSpan="XL4 L4 M12 S12" class="sapUiSmallMarginTop">
 
-									<Label text="Car Model Name" required="true" class="customLabel"/>
-									<Input value="car1" class="customInput sapUiSmallMarginBottom"/>
+						<!-- Column 1: Contact Details -->
+						<VBox class="cardBox flexColumn w-100">
+							<HBox alignItems="Center" class="sapUiMediumMarginBottom">
+								<core:Icon src="sap-icon://customer" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
+								<Title text="Contact Details" level="H3" class="cardTitle"/>
+							</HBox>
+							<Label text="Customer Name" required="true" class="customLabel"/>
+							<Input id="idRajatPatelInput" value="Rajat Patel" class="customInput sapUiSmallMarginBottom"/>
+							<Label text="Phone Number" required="true" class="customLabel"/>
+							<Input value="2004550121" class="customInput sapUiSmallMarginBottom"/>
+							<Label text="Address" required="true" class="customLabel"/>
+							<Input value="0x372f5c9f040bdec4798b950dd7c02aee0812b362" class="customInput sapUiSmallMarginBottom"/>
+							<Label text="Car Model Name" required="true" class="customLabel"/>
+							<Input value="car1" class="customInput sapUiSmallMarginBottom"/>
+							<Label text="Vehicle Number" required="true" class="customLabel"/>
+							<Input id="idVehicleInput" value="" class="customInput sapUiSmallMarginBottom"/>
+						</VBox>
 
-									<Label text="Vehicle Number" required="true" class="customLabel"/>
-									<Input id="idVehicleInput" value="" class="customInput sapUiSmallMarginBottom"/>
-								</VBox>
-							</html:div>
+						<!-- Column 2: Service Details -->
+						<VBox class="cardBox flexColumn w-100">
+							<HBox alignItems="Center" class="sapUiMediumMarginBottom">
+								<core:Icon src="sap-icon://car-rental" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
+								<Title text="Service Details" level="H3" class="cardTitle"/>
+							</HBox>
+							<Label text="No. of Wheels" required="true" class="customLabel"/>
+							<Select id="idWheelSelect" selectedKey="{viewModel>/selectedWheels}" change=".onSelectChange" class="customInput sapUiMediumMarginBottom" width="100%">
+								<core:Item key="2 Wheeler" text="2 Wheeler"/>
+								<core:Item key="3 Wheeler" text="3 Wheeler"/>
+								<core:Item key="4 Wheeler" text="4 Wheeler"/>
+								<core:Item key="6 Wheeler" text="6 Wheeler"/>
+								<core:Item key="8 Wheeler" text="8 Wheeler"/>
+								<core:Item key="10 Wheeler" text="10 Wheeler"/>
+								<core:Item key="12 Wheeler" text="12 Wheeler"/>
+								<core:Item key="14 Wheeler" text="14 Wheeler"/>
+							</Select>
+							<Label text="Service Types (Select multiple)" required="true" class="customLabel"/>
+							<Panel expandable="true" expanded="true" headerText="Washing" width="auto" class="servicePanel sapUiSmallMarginBottom" visible="{= ${viewModel>/washingServices}.length > 0 }">
+								<List id="idWashingServicesList" items="{viewModel>/washingServices}" mode="MultiSelect" selectionChange=".onWashingServicesListSelectionChange">
+									<StandardListItem title="{viewModel>name}" info="₹{viewModel>price}" />
+								</List>
+							</Panel>
+							<Panel expandable="true" expanded="true" headerText="Interior" width="auto" class="servicePanel sapUiSmallMarginBottom" visible="{= ${viewModel>/interiorServices}.length > 0 }">
+								<List id="idInteriorServicesList" items="{viewModel>/interiorServices}" mode="MultiSelect" selectionChange=".onInteriorServicesListSelectionChange">
+									<StandardListItem title="{viewModel>name}" info="₹{viewModel>price}" />
+								</List>
+							</Panel>
+							<Panel expandable="true" expanded="false" headerText="Coating" width="auto" class="servicePanel">
+								<List id="idCoatingServicesList" items="{viewModel>/coatingServices}" mode="MultiSelect" selectionChange=".onCoatingServicesListSelectionChange">
+									<StandardListItem title="{viewModel>name}" info="₹{viewModel>price}" />
+								</List>
+							</Panel>
+						</VBox>
 
-							<!-- Column 2: Service Details -->
-							<html:div class="col-12 col-xl-4 col-lg-4 col-md-12">
-								<VBox class="cardBox flexColumn w-100">
-									<HBox alignItems="Center" class="sapUiMediumMarginBottom">
-										<core:Icon src="sap-icon://car-rental" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
-										<Title text="Service Details" level="H3" class="cardTitle"/>
-									</HBox>
-									<Label text="No. of Wheels" required="true" class="customLabel"/>
-									<Select id="idWheelSelect" selectedKey="{viewModel>/selectedWheels}" change=".onSelectWheelChange" class="customInput sapUiMediumMarginBottom" width="100%">
-										<core:Item key="2 Wheeler" text="2 Wheeler"/>
-										<core:Item key="3 Wheeler" text="3 Wheeler"/>
-										<core:Item key="4 Wheeler" text="4 Wheeler"/>
-										<core:Item key="6 Wheeler" text="6 Wheeler"/>
-										<core:Item key="8 Wheeler" text="8 Wheeler"/>
-										<core:Item key="10 Wheeler" text="10 Wheeler"/>
-										<core:Item key="12 Wheeler" text="12 Wheeler"/>
-										<core:Item key="14 Wheeler" text="14 Wheeler"/>
-									</Select>
-
-									<Label text="Service Types (Select multiple)" required="true" class="customLabel"/>
-									
-									<Panel expandable="true" expanded="true" headerText="Washing" width="auto" class="servicePanel sapUiSmallMarginBottom" visible="{= ${viewModel>/washingServices}.length > 0 }">
-										<List id="idWashingServicesList" items="{viewModel>/washingServices}" mode="MultiSelect" selectionChange=".onWashingServicesListSelectionChange">
-											<StandardListItem title="{viewModel>name}" info="₹{viewModel>price}" />
-										</List>
-									</Panel>
-
-									<Panel expandable="true" expanded="true" headerText="Interior" width="auto" class="servicePanel sapUiSmallMarginBottom" visible="{= ${viewModel>/interiorServices}.length > 0 }">
-										<List id="idInteriorServicesList" items="{viewModel>/interiorServices}" mode="MultiSelect" selectionChange=".onInteriorServicesListSelectionChange">
-											<StandardListItem title="{viewModel>name}" info="₹{viewModel>price}" />
-										</List>
-									</Panel>
-
-									<Panel expandable="true" expanded="false" headerText="Coating" width="auto" class="servicePanel">
-										<List id="idCoatingServicesList" items="{viewModel>/coatingServices}" mode="MultiSelect" selectionChange=".onCoatingServicesListSelectionChange">
-											<StandardListItem title="{viewModel>name}" info="₹{viewModel>price}" />
-										</List>
-									</Panel>
-								</VBox>
-							</html:div>
-
-							<!-- Column 3: Payment Details -->
-							<html:div class="col-12 col-xl-4 col-lg-4 col-md-12">
-								<VBox class="cardBox flexColumn w-100" justifyContent="SpaceBetween">
-									<VBox>
-										<HBox alignItems="Center" class="sapUiMediumMarginBottom">
-											<core:Icon src="sap-icon://credit-card" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
-											<Title text="Payment Details" level="H3" class="cardTitle"/>
-										</HBox>
-										
-										<Label text="Amount" required="true" class="customLabel"/>
-										<Input id="idAmountInput" value="0" class="customInput sapUiSmallMarginBottom amountField" editable="false"/>
-
-										<Label text="Payment Method" required="true" class="customLabel"/>
-										<Select selectedKey="Online" width="100%" class="customInput">
-											<core:Item key="Online" text="Online"/>
-											<core:Item key="Cash" text="Cash"/>
-										</Select>
-									</VBox>
-
-									<!-- Spacer to push button down -->
-									<ToolbarSpacer/>
-									<Button text="Save Service" width="100%" class="sapUiMediumMarginTop customSaveBtn" press=".onSaveServiceButtonPress" icon="sap-icon://save"/>
-								</VBox>
-							</html:div>
-						</html:div>
-					</html:div>
+						<!-- Column 3: Payment Details -->
+						<VBox class="cardBox flexColumn w-100" justifyContent="SpaceBetween">
+							<VBox>
+								<HBox alignItems="Center" class="sapUiMediumMarginBottom">
+									<core:Icon src="sap-icon://credit-card" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
+									<Title text="Payment Details" level="H3" class="cardTitle"/>
+								</HBox>
+								<Label text="Amount" required="true" class="customLabel"/>
+								<Input id="idAmountInput" value="0" class="customInput sapUiSmallMarginBottom amountField" editable="false"/>
+								<Label text="Payment Method" required="true" class="customLabel"/>
+								<Select selectedKey="Online" width="100%" class="customInput">
+									<core:Item key="Online" text="Online"/>
+									<core:Item key="Cash" text="Cash"/>
+								</Select>
+							</VBox>
+							<ToolbarSpacer/>
+							<Button text="Save Service" width="100%" class="sapUiMediumMarginTop customSaveBtn" press=".onSaveServiceButtonPress" icon="sap-icon://save"/>
+						</VBox>
+					</l:Grid>
 				</IconTabFilter>
 
 				<IconTabFilter text="Current Services ({viewModel>/servicesCount})" key="current" class="tabFilterButton">
-					<Table id="idServicesTable" items="{ServiceData>/Services}" class="sapUiSmallMarginTop noStandardBackgroundList">
+					<HBox class="sapUiSmallMarginBottom sapUiSmallMarginTop" alignItems="Center">
+						<SearchField id="idDashboardSearchField" width="30rem" placeholder="Search by customer name or vehicle..." search=".onSearchFieldSearch" liveChange=".onSearchFieldLiveChange" class="sapUiSmallMarginEnd" />
+					</HBox>
+					<Panel class="customPanel" width="auto">
 						<headerToolbar>
 							<Toolbar design="Transparent">
+								<core:Icon src="sap-icon://crm-service-manager" color="#0070F2" />
+								<Title text="Current Services Queue" level="H3" titleStyle="H3" />
 								<ToolbarSpacer />
 								<Button icon="sap-icon://action-settings" press=".onButtonTableSettingsPress" type="Transparent" tooltip="Config Columns" />
+								<Text text="{viewModel>/pageHeaderInfo}" class="sapUiSmallMarginBegin sapUiSmallMarginEnd" />
 							</Toolbar>
 						</headerToolbar>
-						<columns>
-							<Column width="3rem" visible="{viewModel>/tableColumns/Icon}">
-								<Text text="" />
-							</Column>
-							<Column visible="{viewModel>/tableColumns/Customer}">
-								<Text text="Customer" class="sapMTextBold" />
-							</Column>
-							<Column demandPopin="true" minScreenWidth="Tablet" visible="{viewModel>/tableColumns/Service}">
-								<Text text="Service" class="sapMTextBold" />
-							</Column>
-							<Column demandPopin="true" minScreenWidth="Tablet" visible="{viewModel>/tableColumns/Amount}">
-								<Text text="Amount" class="sapMTextBold" />
-							</Column>
-							<Column hAlign="End" visible="{viewModel>/tableColumns/Actions}">
-								<Text text="Actions" class="sapMTextBold" />
-							</Column>
-						</columns>
-						<items>
-							<ColumnListItem vAlign="Middle" class="currentServiceCard sapUiSmallMarginBottom">
-								<cells>
-									<!-- Car Icon -->
-									<core:Icon src="sap-icon://car-rental" class="carIconCircle sapUiSmallMarginEnd"/>
-									
-									<!-- Customer info -->
-									<VBox>
-										<Text text="{ServiceData>CustomerName}" class="customerNameText"/>
-										<Text text="{ServiceData>CarPlate}" class="vehicleNumberText"/>
-									</VBox>
-									
-									<!-- Service -->
-									<Text text="{= ${ServiceData>ServiceType} ? ${ServiceData>ServiceType} : 'Basic Wash' }" class="metaValue"/>
-									
-									<!-- Amount -->
-									<Text text="₹{= ${ServiceData>Amount} !== undefined ? ${ServiceData>Amount} : 200}" class="metaValue"/>
 
-									<!-- Actions -->
-									<HBox alignItems="Center" justifyContent="End">
-										<Button icon="sap-icon://edit" type="Transparent" press=".onButtonEditPress" class="actionBtn sapUiTinyMarginEnd" tooltip="Edit"/>
-										<Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" class="actionBtn sapUiTinyMarginEnd" tooltip="Delete"/>
-										<Button text="Complete" icon="sap-icon://accept" type="Emphasized" press=".onCompleteButtonPress" class="completeBtn hiddenOnSmall"/>
-									</HBox>
-								</cells>
-							</ColumnListItem>
-						</items>
-					</Table>
+						<!-- Desktop Table -->
+						<Table id="idPagedServicesTable" items="{viewModel>/pagedServices}" alternateRowColors="true" class="sapUiSizeCompact customServiceList hideOnMobile" noDataText="No pending services">
+							<columns>
+								<Column width="5%" visible="{viewModel>/tableColumns/Icon}">
+									<Text text="" />
+								</Column>
+								<Column width="25%" visible="{viewModel>/tableColumns/Customer}">
+									<Text text="Customer" class="sapMTextBold" />
+								</Column>
+								<Column width="30%" demandPopin="true" minScreenWidth="Tablet" visible="{viewModel>/tableColumns/Service}">
+									<Text text="Service" class="sapMTextBold" />
+								</Column>
+								<Column width="15%" demandPopin="true" minScreenWidth="Tablet" hAlign="End" visible="{viewModel>/tableColumns/Amount}">
+									<Text text="Amount" class="sapMTextBold" />
+								</Column>
+								<Column width="25%" hAlign="Center" visible="{viewModel>/tableColumns/Actions}">
+									<Text text="Actions" class="sapMTextBold" />
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem vAlign="Middle" class="customListRow">
+									<cells>
+										<core:Icon src="sap-icon://car-rental" color="#0070F2" />
+										<VBox>
+											<Text text="{viewModel>CustomerName}" class="sapMTextBold" />
+											<Text text="{viewModel>CarPlate}" />
+										</VBox>
+										<Text text="{= ${viewModel>ServiceType} ? ${viewModel>ServiceType} : 'Basic Wash' }" />
+										<Text text="₹{= ${viewModel>Amount} !== undefined ? ${viewModel>Amount} : 200}" class="sapMTextBold" />
+										<HBox justifyContent="Center" alignItems="Center">
+											<Button icon="sap-icon://edit" type="Transparent" press=".onButtonEditPress" tooltip="Edit" />
+											<Button icon="sap-icon://accept" type="Accept" text="Complete" press=".onCompleteButtonPress" class="sapUiTinyMarginBeginEnd" />
+											<Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" tooltip="Delete" />
+										</HBox>
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+
+						<!-- Mobile List -->
+						<List id="idPagedServicesMobileList" items="{viewModel>/pagedServices}" class="stitchCardList showOnMobile sapUiSmallMarginTop">
+							<items>
+								<CustomListItem class="stitchCard">
+									<VBox class="stitchFlex">
+										<HBox justifyContent="SpaceBetween" alignItems="Start" class="stitchCardTop">
+											<HBox>
+												<core:Icon src="sap-icon://car-rental" class="stitchCheckIconWait" />
+												<VBox class="stitchNameVBox" visible="{viewModel>/tableColumns/Customer}">
+													<Text text="{viewModel>CustomerName}" class="stitchCustomerName" />
+													<Text text="{viewModel>CarPlate}" class="stitchCarPlate" />
+												</VBox>
+											</HBox>
+											<VBox alignItems="End" visible="{viewModel>/tableColumns/Amount}" class="stitchAmountVBox">
+												<Text text="₹{= ${viewModel>Amount} !== undefined ? ${viewModel>Amount} : 200}" class="stitchAmount" />
+												<Text text="{= ${viewModel>Status} ? ${viewModel>Status} : 'Pending'}" class="stitchPaymentPill pillPending" />
+											</VBox>
+										</HBox>
+										<HBox visible="{viewModel>/tableColumns/Service}" class="stitchServicesSection">
+											<Text text="Service: " class="stitchLabelText" />
+											<Text text="{= ${viewModel>ServiceType} ? ${viewModel>ServiceType} : 'Basic Wash' }" class="stitchMetaText" />
+										</HBox>
+										<HBox justifyContent="SpaceBetween" alignItems="Center" visible="{viewModel>/tableColumns/Actions}" class="stitchButtonSection">
+											<Button text="Delete" icon="sap-icon://delete" press=".onDeleteButtonPress" class="stitchActionBtn stitchActionBtnRed" />
+											<Button text="Edit" icon="sap-icon://edit" press=".onEditButtonPress" class="stitchActionBtn stitchActionBtnBlue" />
+											<Button text="Complete" icon="sap-icon://accept" press=".onCompleteButtonPress" class="stitchActionBtn stitchActionBtnGreen" />
+										</HBox>
+									</VBox>
+								</CustomListItem>
+							</items>
+						</List>
+
+						<!-- Pagination -->
+						<HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTopBottom">
+							<Button text="&lt; Previous" type="Transparent" press=".onLtPreviousButtonPress" enabled="{viewModel>/hasPrevPage}" class="sapUiSmallMarginEnd" />
+							<Button text="{viewModel>/currentPage}" enabled="false" class="sapUiSmallMarginEnd" />
+							<Button text="Next &gt;" type="Transparent" press=".onNextGtButtonPress" enabled="{viewModel>/hasNextPage}" />
+						</HBox>
+					</Panel>
 				</IconTabFilter>
 			</items>
 		</IconTabBar>
