@@ -33,8 +33,8 @@ try {
 }
 
 const APP_URLS = Array.isArray(config.urls) ? config.urls : [config.url];
-const INTERVAL_HOURS = config.intervalHours || 1;
-const INTERVAL_MS = INTERVAL_HOURS * 60 * 60 * 1000;
+const INTERVAL_MINUTES = config.intervalMinutes || (config.intervalHours ? config.intervalHours * 60 : 10);
+const INTERVAL_MS = INTERVAL_MINUTES * 60 * 1000;
 const LOG_FILE = path.join(__dirname, "keep-alive.log");
 const MAX_LOG_LINES = config.maxLogLines || 500;
 
@@ -105,13 +105,13 @@ async function pingAll() {
   } else {
     log(`⚠️  ${failed.length} URL(s) did NOT respond.`);
   }
-  log(`⏳ Next ping in ${INTERVAL_HOURS} hour(s).`);
+  log(`⏳ Next ping in ${INTERVAL_MINUTES} minute(s).`);
 }
 
 // ─── Start ───────────────────────────────────────────────────
 log("═══════════════════════════════════════════════");
 log(` BTP Keep-Alive started`);
-log(` Interval : every ${INTERVAL_HOURS} hour(s)`);
+log(` Interval : every ${INTERVAL_MINUTES} minute(s)`);
 log(` URLs     : ${APP_URLS.join(", ")}`);
 log("═══════════════════════════════════════════════");
 
