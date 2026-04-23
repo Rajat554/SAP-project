@@ -9,6 +9,16 @@
     },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/destinations/WashWizard/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml"
+        }
+      }
+    },
     "crossNavigation": {
       "inbound": {
         "WashWizard-manage": {
@@ -65,9 +75,13 @@
           "bundleName": "sap.ui.demo.walkthrough.i18n.i18n"
         }
       },
-      "ServiceData": {
-        "type": "sap.ui.model.json.JSONModel",
-        "uri": "model/ServiceData.json"
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "useBatch": false,
+          "refreshAfterChange": true
+        }
       },
       "PricingData": {
         "type": "sap.ui.model.json.JSONModel",

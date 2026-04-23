@@ -9,6 +9,12 @@
 		<!-- Tabs -->
 		<IconTabBar id="idIconTabBar" class="responsivePadding customTabBar" stretchContentHeight="true">
 			<items>
+
+				<!-- ═══════════════════════════════════════════════
+				     TAB 1: Service Entry
+				     All input fields have IDs so the controller
+				     can read and validate them on Save.
+				     ═══════════════════════════════════════════════ -->
 				<IconTabFilter text="Service Entry" key="entry" class="tabFilterButton">
 
 					<l:Grid defaultSpan="XL4 L4 M12 S12" class="sapUiSmallMarginTop">
@@ -20,15 +26,17 @@
 								<Title text="Contact Details" level="H3" class="cardTitle"/>
 							</HBox>
 							<Label text="Customer Name" required="true" class="customLabel"/>
-							<Input id="idRajatPatelInput" value="Rajat Patel" class="customInput sapUiSmallMarginBottom"/>
+							<Input id="idCustomerNameInput" placeholder="e.g. Rajat Patel" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
+
 							<Label text="Phone Number" required="true" class="customLabel"/>
-							<Input value="2004550121" class="customInput sapUiSmallMarginBottom"/>
-							<Label text="Address" required="true" class="customLabel"/>
-							<Input value="0x372f5c9f040bdec4798b950dd7c02aee0812b362" class="customInput sapUiSmallMarginBottom"/>
+							<Input id="idPhoneInput" placeholder="10-digit mobile number" maxLength="10" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
+
 							<Label text="Car Model Name" required="true" class="customLabel"/>
-							<Input value="car1" class="customInput sapUiSmallMarginBottom"/>
-							<Label text="Vehicle Number" required="true" class="customLabel"/>
-							<Input id="idVehicleInput" value="" class="customInput sapUiSmallMarginBottom"/>
+							<Input id="idCarModelInput" placeholder="e.g. Honda City" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
+
+							<Label text="Vehicle Plate Number" required="true" class="customLabel"/>
+							<!-- Placeholder shows the accepted Indian format -->
+							<Input id="idVehiclePlateInput" placeholder="e.g. GJ 05 AR 4521" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
 						</VBox>
 
 						<!-- Column 2: Service Details -->
@@ -73,21 +81,32 @@
 									<core:Icon src="sap-icon://credit-card" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
 									<Title text="Payment Details" level="H3" class="cardTitle"/>
 								</HBox>
-								<Label text="Amount" required="true" class="customLabel"/>
-								<Input id="idAmountInput" value="0" class="customInput sapUiSmallMarginBottom amountField" editable="false"/>
+								<Label text="Amount (auto-calculated)" required="true" class="customLabel"/>
+								<!-- editable="true" lets user type amount manually if pricing panels are empty -->
+								<Input id="idAmountInput" placeholder="Auto-calculated or enter manually" class="customInput sapUiSmallMarginBottom amountField" editable="true" type="Number"/>
 								<Label text="Payment Method" required="true" class="customLabel"/>
-								<Select selectedKey="Online" width="100%" class="customInput">
+								<Select id="idPaymentMethodSelect" selectedKey="Online" width="100%" class="customInput">
 									<core:Item key="Online" text="Online"/>
 									<core:Item key="Cash" text="Cash"/>
+									<core:Item key="UPI" text="UPI"/>
+									<core:Item key="Card" text="Card"/>
 								</Select>
 							</VBox>
 							<ToolbarSpacer/>
-							<Button text="Save Service" width="100%" class="sapUiMediumMarginTop customSaveBtn" press=".onSaveServiceButtonPress" icon="sap-icon://save"/>
+							<!-- Save button triggers onSaveServiceButtonPress in the controller -->
+							<Button id="idSaveServiceButton" text="Save Service" width="100%" class="sapUiMediumMarginTop customSaveBtn" press=".onSaveServiceButtonPress" icon="sap-icon://save"/>
 						</VBox>
+
 					</l:Grid>
 				</IconTabFilter>
 
-				<IconTabFilter text="Current Services ({viewModel>/servicesCount})" key="current" class="tabFilterButton">
+				<!-- ═══════════════════════════════════════════════
+				     TAB 2: Current Services (Pending Queue)
+				     The List is bound directly to the OData entity
+				     set /ServiceTaskSet and filtered server-side
+				     to show only Status='Pending' records.
+				     ═══════════════════════════════════════════════ -->
+				<IconTabFilter text="Current Services" key="current" class="tabFilterButton">
 					<HBox class="sapUiSmallMarginBottom sapUiSmallMarginTop" alignItems="Center">
 						<SearchField id="idDashboardSearchField" width="30rem" placeholder="Search by customer name or vehicle..." search=".onSearchFieldSearch" liveChange=".onSearchFieldLiveChange" class="sapUiSmallMarginEnd" />
 					</HBox>
@@ -98,26 +117,28 @@
 								<Title text="Current Services Queue" level="H3" titleStyle="H3" />
 								<ToolbarSpacer />
 								<Button icon="sap-icon://action-settings" press=".onButtonTableSettingsPress" type="Transparent" tooltip="Config Columns" />
-								<Text text="{viewModel>/pageHeaderInfo}" class="sapUiSmallMarginBegin sapUiSmallMarginEnd" />
 							</Toolbar>
 						</headerToolbar>
 
-						<!-- Desktop Table -->
-						<Table id="idPagedServicesTable" items="{viewModel>/pagedServices}" alternateRowColors="true" class="sapUiSizeCompact customServiceList hideOnMobile" noDataText="No pending services">
+						<!-- Desktop Table — bound to JSON viewModel slice for pagination -->
+						<Table id="idPendingServicesPageTable" items="{viewModel>/pendingServicesPage}" alternateRowColors="true" class="sapUiSizeCompact customServiceList hideOnMobile" noDataText="No pending services — all done!">
 							<columns>
-								<Column width="5%" visible="{viewModel>/tableColumns/Icon}">
+								<Column width="5%">
 									<Text text="" />
 								</Column>
-								<Column width="25%" visible="{viewModel>/tableColumns/Customer}">
+								<Column width="22%">
 									<Text text="Customer" class="sapMTextBold" />
 								</Column>
-								<Column width="30%" demandPopin="true" minScreenWidth="Tablet" visible="{viewModel>/tableColumns/Service}">
+								<Column width="18%" demandPopin="true" minScreenWidth="Tablet">
+									<Text text="Vehicle" class="sapMTextBold" />
+								</Column>
+								<Column width="22%" demandPopin="true" minScreenWidth="Tablet">
 									<Text text="Service" class="sapMTextBold" />
 								</Column>
-								<Column width="15%" demandPopin="true" minScreenWidth="Tablet" hAlign="End" visible="{viewModel>/tableColumns/Amount}">
+								<Column width="10%" hAlign="End" demandPopin="true" minScreenWidth="Tablet">
 									<Text text="Amount" class="sapMTextBold" />
 								</Column>
-								<Column width="25%" hAlign="Center" visible="{viewModel>/tableColumns/Actions}">
+								<Column width="23%" hAlign="Center">
 									<Text text="Actions" class="sapMTextBold" />
 								</Column>
 							</columns>
@@ -127,13 +148,17 @@
 										<core:Icon src="sap-icon://car-rental" color="#0070F2" />
 										<VBox>
 											<Text text="{viewModel>CustomerName}" class="sapMTextBold" />
-											<Text text="{viewModel>CarPlate}" />
+											<Text text="{viewModel>Phone}" />
 										</VBox>
-										<Text text="{= ${viewModel>ServiceType} ? ${viewModel>ServiceType} : 'Basic Wash' }" />
-										<Text text="₹{= ${viewModel>Amount} !== undefined ? ${viewModel>Amount} : 200}" class="sapMTextBold" />
+										<VBox>
+											<Text text="{viewModel>VehiclePlate}" class="sapMTextBold" />
+											<Text text="{viewModel>CarModel}" />
+										</VBox>
+										<Text text="{viewModel>ServiceType}" />
+										<Text text="₹{viewModel>Amount}" class="sapMTextBold" />
 										<HBox justifyContent="Center" alignItems="Center">
-											<Button icon="sap-icon://edit" type="Transparent" press=".onButtonEditPress" tooltip="Edit" />
 											<Button icon="sap-icon://accept" type="Accept" text="Complete" press=".onCompleteButtonPress" class="sapUiTinyMarginBeginEnd" />
+											<Button icon="sap-icon://edit" type="Emphasized" text="Edit" press=".onEditButtonPress" class="sapUiTinyMarginBeginEnd" tooltip="Edit Entry" />
 											<Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" tooltip="Delete" />
 										</HBox>
 									</cells>
@@ -141,29 +166,37 @@
 							</items>
 						</Table>
 
+						<!-- Pagination Bar for Desktop Table -->
+						<Toolbar id="idPendingPaginationToolbar" class="sapUiSmallMarginTop">
+							<ToolbarSpacer />
+							<Button id="idPendingPrevPageButton" icon="sap-icon://navigation-left-arrow" press=".onButtonPendingPrevPagePress" type="Transparent" enabled="{= ${viewModel>/pendingCurrentPage} > 0}" tooltip="Previous Page" />
+							<Text id="idPendingPageText" text="Page {= ${viewModel>/pendingCurrentPage} + 1} of {viewModel>/pendingTotalPages}" class="sapUiSmallMarginBeginEnd" />
+							<Button id="idPendingNextPageButton" icon="sap-icon://navigation-right-arrow" press=".onButtonPendingNextPagePress" type="Transparent" enabled="{= (${viewModel>/pendingCurrentPage} + 1) &lt; ${viewModel>/pendingTotalPages}}" tooltip="Next Page" />
+						</Toolbar>
+
 						<!-- Mobile List -->
-						<List id="idPagedServicesMobileList" items="{viewModel>/pagedServices}" class="stitchCardList showOnMobile sapUiSmallMarginTop">
+						<List id="idPendingServicesPageList" items="{viewModel>/pendingServicesPage}" class="stitchCardList showOnMobile sapUiSmallMarginTop" noDataText="No pending services">
 							<items>
 								<CustomListItem class="stitchCard">
 									<VBox class="stitchFlex">
 										<HBox justifyContent="SpaceBetween" alignItems="Start" class="stitchCardTop">
 											<HBox>
 												<core:Icon src="sap-icon://car-rental" class="stitchCheckIconWait" />
-												<VBox class="stitchNameVBox" visible="{viewModel>/tableColumns/Customer}">
+												<VBox class="stitchNameVBox">
 													<Text text="{viewModel>CustomerName}" class="stitchCustomerName" />
-													<Text text="{viewModel>CarPlate}" class="stitchCarPlate" />
+													<Text text="{viewModel>VehiclePlate}" class="stitchCarPlate" />
 												</VBox>
 											</HBox>
-											<VBox alignItems="End" visible="{viewModel>/tableColumns/Amount}" class="stitchAmountVBox">
-												<Text text="₹{= ${viewModel>Amount} !== undefined ? ${viewModel>Amount} : 200}" class="stitchAmount" />
-												<Text text="{= ${viewModel>Status} ? ${viewModel>Status} : 'Pending'}" class="stitchPaymentPill pillPending" />
+											<VBox alignItems="End" class="stitchAmountVBox">
+												<Text text="₹{viewModel>Amount}" class="stitchAmount" />
+												<Text text="Pending" class="stitchPaymentPill pillPending" />
 											</VBox>
 										</HBox>
-										<HBox visible="{viewModel>/tableColumns/Service}" class="stitchServicesSection">
+										<HBox class="stitchServicesSection">
 											<Text text="Service: " class="stitchLabelText" />
-											<Text text="{= ${viewModel>ServiceType} ? ${viewModel>ServiceType} : 'Basic Wash' }" class="stitchMetaText" />
+											<Text text="{viewModel>ServiceType}" class="stitchMetaText" />
 										</HBox>
-										<HBox justifyContent="SpaceBetween" alignItems="Center" visible="{viewModel>/tableColumns/Actions}" class="stitchButtonSection">
+										<HBox justifyContent="SpaceBetween" alignItems="Center" class="stitchButtonSection">
 											<Button text="Delete" icon="sap-icon://delete" press=".onDeleteButtonPress" class="stitchActionBtn stitchActionBtnRed" />
 											<Button text="Edit" icon="sap-icon://edit" press=".onEditButtonPress" class="stitchActionBtn stitchActionBtnBlue" />
 											<Button text="Complete" icon="sap-icon://accept" press=".onCompleteButtonPress" class="stitchActionBtn stitchActionBtnGreen" />
@@ -173,14 +206,17 @@
 							</items>
 						</List>
 
-						<!-- Pagination -->
-						<HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTopBottom">
-							<Button text="&lt; Previous" type="Transparent" press=".onLtPreviousButtonPress" enabled="{viewModel>/hasPrevPage}" class="sapUiSmallMarginEnd" />
-							<Button text="{viewModel>/currentPage}" enabled="false" class="sapUiSmallMarginEnd" />
-							<Button text="Next &gt;" type="Transparent" press=".onNextGtButtonPress" enabled="{viewModel>/hasNextPage}" />
-						</HBox>
+						<!-- Mobile Pagination Bar -->
+						<Toolbar id="idPendingMobilePaginationToolbar" class="showOnMobile sapUiSmallMarginTop">
+							<ToolbarSpacer />
+							<Button icon="sap-icon://navigation-left-arrow" press=".onButtonPendingPrevPagePress" type="Transparent" enabled="{= ${viewModel>/pendingCurrentPage} > 0}" />
+							<Text text="Page {= ${viewModel>/pendingCurrentPage} + 1} of {viewModel>/pendingTotalPages}" class="sapUiSmallMarginBeginEnd" />
+							<Button icon="sap-icon://navigation-right-arrow" press=".onButtonPendingNextPagePress" type="Transparent" enabled="{= (${viewModel>/pendingCurrentPage} + 1) &lt; ${viewModel>/pendingTotalPages}}" />
+						</Toolbar>
+
 					</Panel>
 				</IconTabFilter>
+
 			</items>
 		</IconTabBar>
 	</Page>

@@ -1,0 +1,48 @@
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices m:DataServiceVersion="2.0" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+    <Schema Namespace="WashWizard" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+
+      <!-- ═══════════════════════════════════════════════════════════
+           EntityType: ServiceTask
+           One record = one car wash job going through the lifecycle:
+           Pending → Completed
+           ═══════════════════════════════════════════════════════════ -->
+      <EntityType Name="ServiceTask">
+        <Key>
+          <!-- Guid is the unique primary key for each service job -->
+          <PropertyRef Name="Guid" />
+        </Key>
+
+        <!-- Primary key — a UUID string assigned on creation -->
+        <Property Name="Guid"          Type="Edm.String" Nullable="false" MaxLength="36" />
+
+        <!-- Customer contact details -->
+        <Property Name="CustomerName"  Type="Edm.String" MaxLength="100" />
+        <Property Name="Phone"         Type="Edm.String" MaxLength="10"  />
+
+        <!-- Vehicle info -->
+        <Property Name="CarModel"      Type="Edm.String" MaxLength="100" />
+        <Property Name="VehiclePlate"  Type="Edm.String" MaxLength="20"  />
+
+        <!-- Service details -->
+        <Property Name="ServiceType"   Type="Edm.String" MaxLength="100" />
+        <Property Name="Amount"        Type="Edm.Decimal" Precision="10" Scale="2" />
+        <Property Name="PaymentMethod" Type="Edm.String" MaxLength="20"  />
+
+        <!-- Lifecycle fields -->
+        <!-- Status: 'Pending' on create, patched to 'Completed' on completion -->
+        <Property Name="Status"        Type="Edm.String" MaxLength="20"  />
+        <!-- Date the service was entered (ISO format: YYYY-MM-DD) -->
+        <Property Name="Date"          Type="Edm.String" MaxLength="10"  />
+        <!-- CompletedAt: set when manager clicks "Complete" -->
+        <Property Name="CompletedAt"   Type="Edm.String" MaxLength="10"  />
+      </EntityType>
+
+      <!-- EntityContainer exposes the entity set as a REST collection -->
+      <EntityContainer Name="WashWizard_Entities" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="ServiceTaskSet" EntityType="WashWizard.ServiceTask" />
+      </EntityContainer>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

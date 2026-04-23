@@ -1,211 +1,301 @@
+/**
+ * ServiceRecords.controller.js — WashWizard History View
+ * =====================================================================
+ *  This view shows all COMPLETED service jobs.
+ *
+ *  Data Flow:
+ *    - On route match, reads all Completed records from OData into
+ *      recordsModel>/allCompletedServices (full array).
+ *    - Pagination slices the array into pages of 8.
+ *    - Search/filter re-computes the filtered array and resets to page 0.
+ *    - Both desktop table and mobile list bind to recordsModel>/completedServicesPage.
+ *
+ *  Why JSONModel instead of direct OData binding?
+ *    Client-side slicing gives deterministic, exact page sizes without
+ *    relying on OData $skip/$top which the mock server may not support
+ *    fully in combination with $filter.
+ * =====================================================================
+ */
 sap.ui.define(
   [
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/ui/model/Sorter",
     "sap/m/MessageToast",
+    "sap/m/MessageBox",
     "sap/ui/core/UIComponent",
-    "sap/ui/core/Fragment",
   ],
-  function (Controller, JSONModel, MessageToast, UIComponent, Fragment) {
+  function (
+    Controller,
+    JSONModel,
+    Filter,
+    FilterOperator,
+    Sorter,
+    MessageToast,
+    MessageBox,
+    UIComponent,
+  ) {
     "use strict";
+
+    var PAGE_SIZE = 8; // rows per page
 
     return Controller.extend(
       "sap.ui.demo.walkthrough.controller.ServiceRecords",
       {
-        formatter: {
-          formatDateString: function (sDate) {
-            if (!sDate) return "";
-            var aParts = sDate.split("-");
-            if (aParts.length === 3) {
-              return (
-                parseInt(aParts[1], 10) +
-                "/" +
-                parseInt(aParts[2], 10) +
-                "/" +
-                aParts[0]
-              );
-            }
-            return sDate;
-          },
-        },
+        // ── Lifecycle ───────────────────────────────────────────
 
         onInit: function () {
-          this._iItemsPerPage = 10;
-          this._aAllFilteredData = [];
-
-          var oViewModel = new JSONModel({
-            totalServices: 0,
-            pageHeaderInfo: "Page 1 of 1",
-            pagedServices: [],
-            currentPage: 1,
-            totalPages: 1,
-            hasPrevPage: false,
-            hasNextPage: false,
-            tableColumns: {
-              Customer: true,
-              Vehicle: true,
-              Services: true,
-              Payment: true,
-              Amount: true,
-              Date: true,
-              Actions: true,
-            },
+          // recordsModel holds pagination state and the current page slice
+          var oRecordsModel = new JSONModel({
+            allCompletedServices: [], // full unsliced list
+            completedServicesPage: [], // current page (max 8 items)
+            completedCurrentPage: 0,
+            completedTotalPages: 1,
           });
-          this.getView().setModel(oViewModel, "viewModel");
+          this.getView().setModel(oRecordsModel, "recordsModel");
 
+          // Attach to router so we refresh data every time the view is shown
           var oRouter = UIComponent.getRouterFor(this);
           oRouter
             .getRoute("serviceRecords")
-            .attachPatternMatched(this._onObjectMatched, this);
+            .attachPatternMatched(this._onRouteMatched, this);
         },
 
-        // ── Private helpers ──────────────────────────────────
+        // ── Private ─────────────────────────────────────────────
 
-        _onObjectMatched: function () {
+        /**
+         * _onRouteMatched — called each time the user navigates to
+         * the Service Records page. Reloads all completed data.
+         */
+        _onRouteMatched: function () {
+          this._loadCompletedServices();
+        },
+
+        /**
+         * _loadCompletedServices — reads all Completed records from OData,
+         * applies active search/filter, stores result, and paginates.
+         */
+        _loadCompletedServices: function () {
+          var oModel = this.getView().getModel();
+          if (!oModel) return;
+
           var that = this;
-          setTimeout(function () {
-            that._initializeData();
-          }, 100);
-        },
-
-        _initializeData: function () {
-          var oModel = this.getView().getModel("ServiceData");
-          if (!oModel) return;
-          var aServices = oModel.getProperty("/Services") || [];
-          this.getView()
-            .getModel("viewModel")
-            .setProperty("/totalServices", aServices.length);
-          this._aAllFilteredData = aServices.slice();
-          this._updatePagination(1);
-        },
-
-        _applyFilters: function () {
-          var sQuery = this.byId("idRecordsSearchField").getValue() || "";
-          var sPayment =
-            this.byId("idPaymentComboBox").getSelectedKey() || "All";
-          var sService =
-            this.byId("idServiceComboBox").getSelectedKey() || "All";
-          var oModel = this.getView().getModel("ServiceData");
-          if (!oModel) return;
-          var aServices = oModel.getProperty("/Services") || [];
-
-          this._aAllFilteredData = aServices.filter(function (o) {
-            var bSearch = true;
-            if (sQuery && sQuery.trim() !== "") {
-              var q = sQuery.toLowerCase();
-              bSearch =
-                (o.CustomerName &&
-                  o.CustomerName.toLowerCase().indexOf(q) !== -1) ||
-                (o.CarPlate && o.CarPlate.toLowerCase().indexOf(q) !== -1) ||
-                (o.Phone && o.Phone.indexOf(q) !== -1);
-            }
-            var bPay = true;
-            if (sPayment !== "All" && sPayment !== "")
-              bPay = o.PaymentMethod === sPayment;
-            var bSvc = true;
-            if (sService !== "All" && sService !== "")
-              bSvc = o.ServiceType === sService;
-            return bSearch && bPay && bSvc;
-          });
-          this._updatePagination(1);
-        },
-
-        _updatePagination: function (iPage) {
-          var oVM = this.getView().getModel("viewModel");
-          var iTotal = this._aAllFilteredData.length;
-          var iPages = Math.ceil(iTotal / this._iItemsPerPage) || 1;
-          if (iPage < 1) iPage = 1;
-          if (iPage > iPages) iPage = iPages;
-          var iStart = (iPage - 1) * this._iItemsPerPage;
-          oVM.setProperty(
-            "/pagedServices",
-            this._aAllFilteredData.slice(iStart, iStart + this._iItemsPerPage),
+          var oCompletedFilter = new Filter(
+            "Status",
+            FilterOperator.EQ,
+            "Completed",
           );
-          oVM.setProperty("/currentPage", iPage);
-          oVM.setProperty("/totalPages", iPages);
-          oVM.setProperty("/hasPrevPage", iPage > 1);
-          oVM.setProperty("/hasNextPage", iPage < iPages);
-          oVM.setProperty("/pageHeaderInfo", "Page " + iPage + " of " + iPages);
+          oModel.read("/ServiceTaskSet", {
+            filters: [oCompletedFilter],
+            sorters: [new Sorter("CompletedAt", true)],
+            success: function (oData) {
+              var aAll = oData && oData.results ? oData.results : [];
+              // Apply in-memory filters
+              aAll = that._applyInMemoryFilters(aAll);
+              var oRM = that.getView().getModel("recordsModel");
+              oRM.setProperty("/allCompletedServices", aAll);
+              oRM.setProperty("/completedCurrentPage", 0);
+              that._applyCompletedPagination();
+            },
+            error: function () {
+              var oRM = that.getView().getModel("recordsModel");
+              oRM.setProperty("/allCompletedServices", []);
+              oRM.setProperty("/completedServicesPage", []);
+              oRM.setProperty("/completedTotalPages", 1);
+              MessageToast.show("Could not load service records.");
+            },
+          });
         },
 
-        // ══════════════════════════════════════════════════════
-        // EVENT HANDLERS — names must match ServiceRecords.view.xml
-        // ══════════════════════════════════════════════════════
+        /**
+         * _applyInMemoryFilters — applies search text, payment method,
+         * and service type filters to the full data array.
+         * @param {Array} aAll - full unfiltered array
+         * @returns {Array} filtered array
+         */
+        _applyInMemoryFilters: function (aAll) {
+          var sQuery = "";
+          var sPayment = "";
+          var sService = "";
 
-        // Search
-        onSearchFieldSearch: function () {
-          this._applyFilters();
-        },
-        onSearchFieldLiveChange: function () {
-          this._applyFilters();
+          var oSF = this.byId("idRecordsSearchField");
+          if (oSF) {
+            sQuery = oSF.getValue().trim().toLowerCase();
+          }
+
+          var oPayCB = this.byId("idPaymentComboBox");
+          if (oPayCB) {
+            sPayment = oPayCB.getSelectedKey();
+          }
+
+          var oSvcCB = this.byId("idServiceComboBox");
+          if (oSvcCB) {
+            sService = oSvcCB.getSelectedKey();
+          }
+
+          return aAll.filter(function (o) {
+            // Search text filter (OR across name, plate, phone)
+            if (sQuery) {
+              var bMatch =
+                (o.CustomerName &&
+                  o.CustomerName.toLowerCase().indexOf(sQuery) !== -1) ||
+                (o.VehiclePlate &&
+                  o.VehiclePlate.toLowerCase().indexOf(sQuery) !== -1) ||
+                (o.Phone && o.Phone.toLowerCase().indexOf(sQuery) !== -1);
+              if (!bMatch) return false;
+            }
+            // Payment filter
+            if (
+              sPayment &&
+              sPayment !== "All" &&
+              o.PaymentMethod !== sPayment
+            ) {
+              return false;
+            }
+            // Service type filter (contains match for multi-service strings)
+            if (sService && sService !== "All") {
+              if (!o.ServiceType || o.ServiceType.indexOf(sService) === -1) {
+                return false;
+              }
+            }
+            return true;
+          });
         },
 
-        // ComboBox filters
-        onComboBoxSelectionChange: function () {
-          this._applyFilters();
-        },
-        onComboBoxSelectionChange: function () {
-          this._applyFilters();
+        /**
+         * _applyCompletedPagination — slices allCompletedServices into
+         * the current page and updates completedTotalPages.
+         */
+        _applyCompletedPagination: function () {
+          var oRM = this.getView().getModel("recordsModel");
+          var aAll = oRM.getProperty("/allCompletedServices") || [];
+          var nPage = oRM.getProperty("/completedCurrentPage") || 0;
+          var nTotal = Math.max(1, Math.ceil(aAll.length / PAGE_SIZE));
+
+          // Clamp page index
+          if (nPage >= nTotal) {
+            nPage = nTotal - 1;
+          }
+          if (nPage < 0) {
+            nPage = 0;
+          }
+
+          var nStart = nPage * PAGE_SIZE;
+          var aPage = aAll.slice(nStart, nStart + PAGE_SIZE);
+
+          oRM.setProperty("/completedCurrentPage", nPage);
+          oRM.setProperty("/completedTotalPages", nTotal);
+          oRM.setProperty("/completedServicesPage", aPage);
         },
 
-        // Refresh
+        // ── Event Handlers ──────────────────────────────────────
+
+        /** Refresh button — re-fetches data from the mock server */
         onRefreshButtonPress: function () {
           this.byId("idRecordsSearchField").setValue("");
           this.byId("idPaymentComboBox").setSelectedKey("All");
           this.byId("idServiceComboBox").setSelectedKey("All");
-          this._applyFilters();
+          this._loadCompletedServices();
           MessageToast.show("Data refreshed");
         },
 
-        // Pagination
-        onLtPreviousButtonPress: function () {
-          var p = this.getView()
-            .getModel("viewModel")
-            .getProperty("/currentPage");
-          this._updatePagination(p - 1);
+        // Search handlers — reload with new filter
+        onSearchFieldSearch: function () {
+          this._loadCompletedServices();
         },
-        onNextGtButtonPress: function () {
-          var p = this.getView()
-            .getModel("viewModel")
-            .getProperty("/currentPage");
-          this._updatePagination(p + 1);
-        },
-        onButtonPageSelectPress: function (oEvent) {
-          this._updatePagination(parseInt(oEvent.getSource().getText(), 10));
+        onSearchFieldLiveChange: function () {
+          this._loadCompletedServices();
         },
 
-        // Print
+        // ComboBox filter handlers
+        onComboBoxPaymentChange: function () {
+          this._loadCompletedServices();
+        },
+        onComboBoxServiceChange: function () {
+          this._loadCompletedServices();
+        },
+        onComboBoxSelectionChange: function () {
+          this._loadCompletedServices();
+        },
+
+        // ── Pagination Handlers ──────────────────────────────────
+
+        onButtonCompletedPrevPagePress: function () {
+          var oRM = this.getView().getModel("recordsModel");
+          var nPage = oRM.getProperty("/completedCurrentPage") || 0;
+          if (nPage > 0) {
+            oRM.setProperty("/completedCurrentPage", nPage - 1);
+            this._applyCompletedPagination();
+          }
+        },
+
+        onButtonCompletedNextPagePress: function () {
+          var oRM = this.getView().getModel("recordsModel");
+          var nPage = oRM.getProperty("/completedCurrentPage") || 0;
+          var nTotal = oRM.getProperty("/completedTotalPages") || 1;
+          if (nPage < nTotal - 1) {
+            oRM.setProperty("/completedCurrentPage", nPage + 1);
+            this._applyCompletedPagination();
+          }
+        },
+
+        // ── Action Handlers ──────────────────────────────────────
+
+        /** Print Bill — placeholder for future print logic */
+        onButtonPrintBillPress: function () {
+          MessageToast.show("Printing bill...");
+        },
         onPrintBillButtonPress: function () {
-          MessageToast.show("Print Bill button clicked.");
+          MessageToast.show("Printing bill...");
         },
 
-        // Delete
-        onDeleteButtonPress: function () {
-          MessageToast.show("Delete button clicked.");
+        /** Delete a completed record from history */
+        onButtonDeletePress: function (oEvent) {
+          var oContext = oEvent.getSource().getBindingContext("recordsModel");
+          if (!oContext) return;
+          var oData = oContext.getObject();
+          if (!oData || !oData.Guid) return;
+          var sPath = "/ServiceTaskSet('" + oData.Guid + "')";
+          var oModel = this.getView().getModel();
+          var that = this;
+
+          MessageBox.confirm("Permanently delete this service record?", {
+            onClose: function (sAction) {
+              if (sAction === MessageBox.Action.OK) {
+                oModel.remove(sPath, {
+                  success: function () {
+                    MessageToast.show("Record deleted.");
+                    that._loadCompletedServices();
+                  },
+                  error: function () {
+                    MessageToast.show("Delete failed.");
+                  },
+                });
+              }
+            },
+          });
+        },
+
+        onDeleteButtonPress: function (oEvent) {
+          this.onButtonDeletePress(oEvent);
         },
 
         // Table settings (gear icon)
         onButtonTableSettingsPress: function () {
-          MessageToast.show("Table Settings button clicked.");
+          MessageToast.show("Table Settings");
         },
 
-        // Desktop table action buttons
-        onButtonPrintBillPress: function () {
-          MessageToast.show("Print Bill button clicked.");
-        },
-        onButtonDeletePress: function () {
-          MessageToast.show("Delete button clicked.");
-        },
-
-        // Fragment handlers (used by ConfigureTableColumns.fragment.xml)
+        // Fragment handlers
         onButtonResetPress: function () {
-          MessageToast.show("Reset button clicked.");
+          MessageToast.show("Reset");
         },
         onButtonOKPress: function () {
-          MessageToast.show("OK button clicked.");
+          MessageToast.show("OK");
         },
         onButtonCancelPress: function () {
-          MessageToast.show("Cancel button clicked.");
+          MessageToast.show("Cancel");
         },
       },
     );

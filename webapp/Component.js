@@ -1,26 +1,22 @@
 sap.ui.define([
-	"sap/ui/core/UIComponent",
-	"sap/ui/model/json/JSONModel"
-], function (UIComponent, JSONModel) {
-	"use strict";
+    "sap/ui/core/UIComponent",
+    "sap/ui/demo/walkthrough/localService/mockserver" // Added purely for IDE static analysis
+], function (UIComponent, mockserver) {
+    "use strict";
 
-	return UIComponent.extend("sap.ui.demo.walkthrough.Component", {
+    return UIComponent.extend("sap.ui.demo.walkthrough.Component", {
 
-		metadata: {
-			manifest: "json"
-		},
+        metadata: {
+            manifest: "json"
+        },
 
-		/**
-		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-		 * @public
-		 * @override
-		 */
-		init: function () {
-			// call the base component's init function
-			UIComponent.prototype.init.apply(this, arguments);
+        init: function () {
+            // Call base init — this creates all models from manifest.json
+            // and triggers the ODataModel's $metadata request.
+            UIComponent.prototype.init.apply(this, arguments);
 
-			// create the views based on the url/hash
-			this.getRouter().initialize();
-		}
-	});
+            // Initialize the router so views are loaded based on URL hash
+            this.getRouter().initialize();
+        }
+    });
 });

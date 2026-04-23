@@ -5,33 +5,39 @@
 
     <Page id="idServiceRecordsPage" title="Service Records" showHeader="false" class="sapUiResponsiveContentPadding">
         <VBox class="sapUiSmallMargin">
-            <!-- Header Section -->
+
+            <!-- Header -->
             <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
                 <Title text="Service Records" level="H2" titleStyle="H2" />
                 <HBox alignItems="Center">
-                    <ObjectStatus text="{viewModel>/totalServices} Completed Services" inverted="true" state="Success" class="sapUiSmallMarginEnd customTag" />
+                    <!-- Count text is driven by the OData binding length -->
+                    <ObjectStatus id="idCompletedServicesCountObjectStatus" text="Completed Services" inverted="true" state="Success" class="sapUiSmallMarginEnd customTag" />
                     <Button icon="sap-icon://synchronize" text="Refresh" press=".onRefreshButtonPress" />
                 </HBox>
             </HBox>
 
-            <!-- Search and Filter Section -->
+            <!-- Search and Filter -->
             <HBox class="sapUiSmallMarginBottom" alignItems="Center">
-                <SearchField id="idRecordsSearchField" width="30rem" placeholder="Search by customer name, vehicle number, or phone..." search=".onSearchFieldSearch" liveChange=".onSearchFieldLiveChange" class="sapUiSmallMarginEnd" />
+                <SearchField id="idRecordsSearchField" width="30rem" placeholder="Search by customer name, vehicle or phone..." search=".onSearchFieldSearch" liveChange=".onSearchFieldLiveChange" class="sapUiSmallMarginEnd" />
                 <ComboBox id="idPaymentComboBox" placeholder="Payment Method" selectionChange=".onComboBoxSelectionChange" class="sapUiSmallMarginEnd">
                     <core:Item key="All" text="All Payments" />
                     <core:Item key="UPI" text="UPI" />
                     <core:Item key="Card" text="Card" />
                     <core:Item key="Cash" text="Cash" />
+                    <core:Item key="Online" text="Online" />
                 </ComboBox>
                 <ComboBox id="idServiceComboBox" placeholder="Service Type" selectionChange=".onComboBoxSelectionChange">
                     <core:Item key="All" text="All Services" />
                     <core:Item key="Full Wash" text="Full Wash" />
                     <core:Item key="Interior Cleaning" text="Interior Cleaning" />
-                    <core:Item key="Premium Wash" text="Premium Wash" />
+                    <core:Item key="Premium Detailing" text="Premium Detailing" />
+                    <core:Item key="Ceramic Coating" text="Ceramic Coating" />
+                    <core:Item key="Foam Wash" text="Foam Wash" />
+                    <core:Item key="Quick Wash" text="Quick Wash" />
                 </ComboBox>
             </HBox>
 
-            <!-- List Section -->
+            <!-- History Table Panel -->
             <Panel class="customPanel" width="auto">
                 <headerToolbar>
                     <Toolbar design="Transparent">
@@ -39,31 +45,31 @@
                         <Title text="Completed Services" level="H3" titleStyle="H3" />
                         <ToolbarSpacer />
                         <Button icon="sap-icon://action-settings" press=".onButtonTableSettingsPress" type="Transparent" tooltip="Config Columns" />
-                        <Text text="{viewModel>/pageHeaderInfo}" class="sapUiSmallMarginBegin sapUiSmallMarginEnd" />
                     </Toolbar>
                 </headerToolbar>
 
-                <Table id="idPagedServicesTable" items="{viewModel>/pagedServices}" noDataText="No matching service records found." alternateRowColors="true" class="sapUiSizeCompact customServiceList hideOnMobile">
+                <!-- Desktop Table — bound to JSON viewModel slice for pagination -->
+                <Table id="idCompletedServicesPageTable" items="{recordsModel>/completedServicesPage}" noDataText="No completed service records found." alternateRowColors="true" class="sapUiSizeCompact customServiceList hideOnMobile">
                     <columns>
-                        <Column width="16%" visible="{viewModel>/tableColumns/Customer}">
+                        <Column width="20%">
                             <Text text="Customer" class="sapMTextBold" />
                         </Column>
-                        <Column width="16%" visible="{viewModel>/tableColumns/Vehicle}">
+                        <Column width="18%">
                             <Text text="Vehicle" class="sapMTextBold" />
                         </Column>
-                        <Column width="10%" demandPopin="true" minScreenWidth="Tablet" visible="{viewModel>/tableColumns/Services}">
+                        <Column width="18%" demandPopin="true" minScreenWidth="Tablet">
                             <Text text="Services" class="sapMTextBold" />
                         </Column>
-                        <Column width="11%" demandPopin="true" minScreenWidth="Tablet" hAlign="Center" visible="{viewModel>/tableColumns/Payment}">
+                        <Column width="10%" demandPopin="true" minScreenWidth="Tablet" hAlign="Center">
                             <Text text="Payment" class="sapMTextBold" />
                         </Column>
-                        <Column width="10%" demandPopin="true" minScreenWidth="Tablet" hAlign="Center" visible="{viewModel>/tableColumns/Amount}">
+                        <Column width="10%" demandPopin="true" minScreenWidth="Tablet" hAlign="End">
                             <Text text="Amount" class="sapMTextBold" />
                         </Column>
-                        <Column width="10%" demandPopin="true" minScreenWidth="Desktop" hAlign="Center" visible="{viewModel>/tableColumns/Date}">
-                            <Text text="Date" class="sapMTextBold" />
+                        <Column width="12%" demandPopin="true" minScreenWidth="Desktop" hAlign="Center">
+                            <Text text="Completed On" class="sapMTextBold" />
                         </Column>
-                        <Column width="10%" hAlign="Center" visible="{viewModel>/tableColumns/Actions}">
+                        <Column width="12%" hAlign="Center">
                             <Text text="Actions" class="sapMTextBold" />
                         </Column>
                     </columns>
@@ -71,20 +77,18 @@
                         <ColumnListItem vAlign="Middle" class="customListRow">
                             <cells>
                                 <VBox>
-                                    <Text text="{viewModel>CustomerName}" class="sapMTextBold" />
-                                    <HBox alignItems="Center">
-                                        <Text text="{viewModel>Phone}" class="sapUiSmallMarginEnd" />
-                                        <ObjectStatus text="{viewModel>CustomerId}" state="Information" inverted="true" />
-                                    </HBox>
+                                    <Text text="{recordsModel>CustomerName}" class="sapMTextBold" />
+                                    <Text text="{recordsModel>Phone}" />
                                 </VBox>
                                 <VBox>
-                                    <Text text="{viewModel>CarPlate}" class="sapMTextBold" />
-                                    <Text text="{viewModel>VehicleModel}" />
+                                    <Text text="{recordsModel>VehiclePlate}" class="sapMTextBold" />
+                                    <Text text="{recordsModel>CarModel}" />
                                 </VBox>
-                                <Text text="{viewModel>ServiceType}" />
-                                <ObjectStatus text="{viewModel>PaymentMethod}" inverted="true" state="{= ${viewModel>PaymentMethod} === 'UPI' ? 'Information' : 'Warning'}" />
-                                <Text text="₹{viewModel>Amount}" class="sapMTextBold" />
-                                <Text text="{path: 'viewModel>Date', formatter: '.formatter.formatDateString'}" />
+                                <Text text="{recordsModel>ServiceType}" />
+                                <ObjectStatus text="{recordsModel>PaymentMethod}" inverted="true" state="{= ${recordsModel>PaymentMethod} === 'UPI' ? 'Information' :
+                                              ${recordsModel>PaymentMethod} === 'Card' ? 'Warning' : 'None'}" />
+                                <Text text="₹{recordsModel>Amount}" class="sapMTextBold" />
+                                <Text text="{recordsModel>CompletedAt}" />
                                 <HBox alignItems="Center" justifyContent="Center">
                                     <Button icon="sap-icon://print" type="Transparent" press=".onButtonPrintBillPress" class="sapUiSmallMarginEnd" tooltip="Print" />
                                     <Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" tooltip="Delete" />
@@ -94,43 +98,47 @@
                     </items>
                 </Table>
 
+                <!-- Pagination Bar for Desktop Table -->
+                <Toolbar id="idCompletedPaginationToolbar" class="sapUiSmallMarginTop">
+                    <ToolbarSpacer />
+                    <Button id="idCompletedPrevPageButton" icon="sap-icon://navigation-left-arrow" press=".onButtonCompletedPrevPagePress" type="Transparent" enabled="{= ${recordsModel>/completedCurrentPage} > 0}" tooltip="Previous Page" />
+                    <Text id="idCompletedPageText" text="Page {= ${recordsModel>/completedCurrentPage} + 1} of {recordsModel>/completedTotalPages}" class="sapUiSmallMarginBeginEnd" />
+                    <Button id="idCompletedNextPageButton" icon="sap-icon://navigation-right-arrow" press=".onButtonCompletedNextPagePress" type="Transparent" enabled="{= (${recordsModel>/completedCurrentPage} + 1) &lt; ${recordsModel>/completedTotalPages}}" tooltip="Next Page" />
+                </Toolbar>
+
                 <!-- Mobile List -->
-                <List id="idPagedServicesMobileList" items="{viewModel>/pagedServices}" noDataText="No matching service records found." class="stitchCardList showOnMobile sapUiSizeCompact">
+                <List id="idCompletedServicesPageList" items="{recordsModel>/completedServicesPage}" noDataText="No completed service records found." class="stitchCardList showOnMobile sapUiSizeCompact">
                     <items>
                         <CustomListItem class="stitchCard">
                             <VBox class="stitchFlex">
                                 <HBox justifyContent="SpaceBetween" alignItems="Start" class="stitchCardTop">
                                     <HBox>
-                                        <core:Icon src="sap-icon://sys-enter-2" class="stitchCheckIcon" visible="{viewModel>/tableColumns/Customer}" />
+                                        <core:Icon src="sap-icon://sys-enter-2" class="stitchCheckIcon" />
                                         <VBox class="stitchNameVBox">
-                                            <Text text="{viewModel>CustomerName}" class="stitchCustomerName" visible="{viewModel>/tableColumns/Customer}" />
-                                            <HBox alignItems="Center" class="stitchCustHBox" visible="{viewModel>/tableColumns/Customer}">
-                                                <core:Icon src="sap-icon://customer" class="stitchCustIcon" />
-                                                <Text text="{viewModel>CustomerId}" class="stitchCustIdText" />
-                                            </HBox>
-                                            <Text text="{viewModel>CarPlate}" class="stitchCarPlate" visible="{viewModel>/tableColumns/Vehicle}" />
+                                            <Text text="{recordsModel>CustomerName}" class="stitchCustomerName" />
+                                            <Text text="{recordsModel>VehiclePlate}" class="stitchCarPlate" />
                                         </VBox>
                                     </HBox>
-                                    <VBox alignItems="End" visible="{viewModel>/tableColumns/Amount}" class="stitchAmountVBox">
-                                        <Text text="₹{viewModel>Amount}" class="stitchAmount" />
-                                        <Text text="{viewModel>PaymentMethod}" class="stitchPaymentPill {= 'pill' + ${viewModel>PaymentMethod} }" visible="{viewModel>/tableColumns/Payment}" />
+                                    <VBox alignItems="End" class="stitchAmountVBox">
+                                        <Text text="₹{recordsModel>Amount}" class="stitchAmount" />
+                                        <Text text="{recordsModel>PaymentMethod}" class="stitchPaymentPill" />
                                     </VBox>
                                 </HBox>
                                 <HBox justifyContent="SpaceBetween" alignItems="Center" class="stitchMiddleSection">
-                                    <HBox alignItems="Center" visible="{viewModel>/tableColumns/Customer}">
+                                    <HBox alignItems="Center">
                                         <core:Icon src="sap-icon://call" class="stitchGreyIcon" />
-                                        <Text text="{viewModel>Phone}" class="stitchMetaText" />
+                                        <Text text="{recordsModel>Phone}" class="stitchMetaText" />
                                     </HBox>
-                                    <HBox alignItems="Center" visible="{viewModel>/tableColumns/Date}">
+                                    <HBox alignItems="Center">
                                         <core:Icon src="sap-icon://calendar" class="stitchGreyIcon" />
-                                        <Text text="{path: 'viewModel>Date', formatter: '.formatter.formatDateString'}" class="stitchMetaText" />
+                                        <Text text="{recordsModel>CompletedAt}" class="stitchMetaText" />
                                     </HBox>
                                 </HBox>
-                                <HBox visible="{viewModel>/tableColumns/Services}" class="stitchServicesSection">
+                                <HBox class="stitchServicesSection">
                                     <Text text="Services: " class="stitchLabelText" />
-                                    <Text text="{viewModel>ServiceType}" class="stitchMetaText" />
+                                    <Text text="{recordsModel>ServiceType}" class="stitchMetaText" />
                                 </HBox>
-                                <HBox justifyContent="SpaceBetween" alignItems="Center" visible="{viewModel>/tableColumns/Actions}" class="stitchButtonSection">
+                                <HBox justifyContent="SpaceBetween" alignItems="Center" class="stitchButtonSection">
                                     <Button text="Print Bill" icon="sap-icon://print" press=".onPrintBillButtonPress" class="stitchActionBtn stitchActionBtnBlue" />
                                     <Button text="Delete" icon="sap-icon://delete" press=".onDeleteButtonPress" class="stitchActionBtn stitchActionBtnRed" />
                                 </HBox>
@@ -139,15 +147,14 @@
                     </items>
                 </List>
 
-                <!-- Pagination -->
-                <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTopBottom">
-                    <Button text="&lt; Previous" type="Transparent" press=".onLtPreviousButtonPress" enabled="{viewModel>/hasPrevPage}" class="sapUiSmallMarginEnd" />
-                    <HBox class="sapUiSmallMarginBeginEnd">
-                        <Button text="1" type="{= ${viewModel>/currentPage} === 1 ? 'Emphasized' : 'Transparent'}" press=".onButtonPageSelectPress" class="sapUiTinyMarginEnd" />
-                        <Button text="2" type="{= ${viewModel>/currentPage} === 2 ? 'Emphasized' : 'Transparent'}" press=".onButtonPageSelectPress" enabled="{= ${viewModel>/totalPages} >= 2}" class="sapUiTinyMarginEnd" />
-                    </HBox>
-                    <Button text="Next &gt;" type="Transparent" press=".onNextGtButtonPress" enabled="{viewModel>/hasNextPage}" class="sapUiSmallMarginBegin" />
-                </HBox>
+                <!-- Mobile Pagination Bar -->
+                <Toolbar id="idCompletedMobilePaginationToolbar" class="showOnMobile sapUiSmallMarginTop">
+                    <ToolbarSpacer />
+                    <Button icon="sap-icon://navigation-left-arrow" press=".onButtonCompletedPrevPagePress" type="Transparent" enabled="{= ${recordsModel>/completedCurrentPage} > 0}" />
+                    <Text text="Page {= ${recordsModel>/completedCurrentPage} + 1} of {recordsModel>/completedTotalPages}" class="sapUiSmallMarginBeginEnd" />
+                    <Button icon="sap-icon://navigation-right-arrow" press=".onButtonCompletedNextPagePress" type="Transparent" enabled="{= (${recordsModel>/completedCurrentPage} + 1) &lt; ${recordsModel>/completedTotalPages}}" />
+                </Toolbar>
+
             </Panel>
         </VBox>
     </Page>
