@@ -47,11 +47,11 @@ sap.ui.define("sap/ui/demo/walkthrough/localService/mockserver", [
                     // Start interception
                     _oMockServer.start();
 
-                    Log.info("[WashWizard] ✅ MockServer started on " + sServiceUrl);
+                    Log.info("MockServer started on " + sServiceUrl);
                     resolve();
 
                 } catch (oError) {
-                    Log.error("[WashWizard] ❌ MockServer failed to start", oError);
+                    Log.error("MockServer failed to start", oError);
                     reject(oError);
                 }
             });
