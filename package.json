@@ -5,14 +5,38 @@
   "license": "ISC",
   "author": "Rajat Patel",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "build": "ui5 build --clean-dest && cp Staticfile dist/",
-    "start": "ui5 serve --open index.html",
+    "start": "cds serve",
+    "build:ui": "npx ui5 build --clean-dest",
+    "build": "npx ui5 build --clean-dest && copy Staticfile dist\\",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@prettier/plugin-xml": "^3.4.2",
-    "@ui5/cli": "latest"
+    "@cap-js/sqlite": "^2.4.0",
+    "@sap/cds-dk": "^9.9.0",
+    "@ui5/cli": "^4.0.0",
+    "sqlite3": "^6.0.1"
+  },
+  "dependencies": {
+    "@cap-js-community/odata-v2-adapter": "^1.15.10",
+    "@sap/cds": "^9.9.1",
+    "express": "^5.2.1"
+  },
+  "cds": {
+    "folders": {
+      "app": "webapp"
+    },
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": "WashWizard.sqlite"
+        }
+      },
+      "auth": {
+        "kind": "dummy"
+      }
+    }
   }
 }

@@ -1,7 +1,6 @@
 sap.ui.define([
-    "sap/ui/core/UIComponent",
-    "sap/ui/demo/walkthrough/localService/mockserver" // Added purely for IDE static analysis
-], function (UIComponent, mockserver) {
+    "sap/ui/core/UIComponent"
+], function (UIComponent) {
     "use strict";
 
     return UIComponent.extend("sap.ui.demo.walkthrough.Component", {

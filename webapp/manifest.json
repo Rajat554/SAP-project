@@ -11,11 +11,10 @@
     "description": "{{appDescription}}",
     "dataSources": {
       "mainService": {
-        "uri": "/destinations/WashWizard/",
+        "uri": "/v2/odata/v4/wash-wizard/",
         "type": "OData",
         "settings": {
-          "odataVersion": "2.0",
-          "localUri": "localService/metadata.xml"
+          "odataVersion": "2.0"
         }
       }
     },

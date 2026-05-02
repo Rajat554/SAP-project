@@ -1,0 +1,4 @@
+Guid;CustomerName;Phone;CarModel;VehiclePlate;ServiceType;Amount;PaymentMethod;Status;Date;CompletedAt
+123e4567-e89b-12d3-a456-426614174000;Rajat Patel;9876543210;Honda City;GJ 01 AB 1234;Washing, Interior;500.00;Online;Completed;2024-05-01;2024-05-01
+123e4567-e89b-12d3-a456-426614174001;Jane Smith;9876543211;Hyundai Creta;GJ 05 XY 9876;Coating;1500.00;Cash;Pending;2024-05-02;
+123e4567-e89b-12d3-a456-426614174002;Bob Brown;9876543212;Maruti Swift;GJ 06 ZM 4567;Washing;300.00;UPI;Completed;2024-05-02;2024-05-02

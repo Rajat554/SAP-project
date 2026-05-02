@@ -18,27 +18,11 @@
       data-sap-ui-libs="sap.m,sap.f,sap.ui.layout,sap.ui.core"
       data-sap-ui-compatVersion="edge"
       data-sap-ui-async="true"
+      data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
       data-sap-ui-resourceroots='{
         "sap.ui.demo.walkthrough": "./"
       }'
     ></script>
-    
-    <script>
-      // Starts MockServer BEFORE ComponentSupport creates the UIComponent
-      sap.ui.getCore().attachInit(function () {
-        sap.ui.require([
-          "sap/ui/demo/walkthrough/localService/mockserver"
-        ], function (mockserver) {
-          // 1. Start mock server first — intercepts HTTP requests
-          mockserver.init().then(function () {
-            // 2. Now load ComponentSupport to boot the UIComponent
-            sap.ui.require(["sap/ui/core/ComponentSupport"]);
-          }).catch(function (error) {
-            console.error("MockServer initialization failed", error);
-          });
-        });
-      });
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body class="sapUiBody" id="content">
