@@ -9,7 +9,7 @@
   "scripts": {
     "start": "cds serve",
     "build:ui": "npx ui5 build --clean-dest",
-    "build": "npx ui5 build --clean-dest && copy Staticfile dist\\",
+    "build": "npx ui5 build --clean-dest && cp Staticfile dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
