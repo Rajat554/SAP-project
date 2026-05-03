@@ -18,6 +18,6 @@ entity ServiceTask {
     
     // Lifecycle Details
     Status : String(20) default 'Pending';
-    Date : String(10); // Storing date for the Analytics page (YYYY-MM-DD)
-    CompletedAt : String(10);
+    Date : Date; // Native CDS Date type — HANA maps to DATE column
+    CompletedAt : Date;
 }

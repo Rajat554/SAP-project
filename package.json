@@ -5,7 +5,6 @@
   "license": "ISC",
   "author": "Rajat Patel",
   "type": "commonjs",
-  "main": "server.js",
   "scripts": {
     "start": "cds serve",
     "build:ui": "npx ui5 build --clean-dest",
@@ -20,8 +19,11 @@
   },
   "dependencies": {
     "@cap-js-community/odata-v2-adapter": "^1.15.10",
+    "@cap-js/hana": ">=1",
     "@sap/cds": "^9.9.1",
-    "express": "^5.2.1"
+    "@sap/xssec": "^3",
+    "express": "^5.2.1",
+    "passport": "^0.7.0"
   },
   "cds": {
     "folders": {
@@ -36,6 +38,16 @@
       },
       "auth": {
         "kind": "dummy"
+      }
+    },
+    "[production]": {
+      "requires": {
+        "db": {
+          "kind": "hana"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
       }
     }
   }

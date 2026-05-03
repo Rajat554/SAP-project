@@ -7,7 +7,7 @@ parameters:
   enable-parallel-executions: true
 
 modules:
-  # 1. The UI Module
+  # 1. The UI Module (static Fiori app — served via HTML5 App Host)
   - name: sap-project-ui
     type: javascript.nodejs
     path: .
@@ -28,10 +28,43 @@ modules:
         properties:
           url: ${default-url}
 
-  # 2. The Standalone Router (For Public Link)
+  # 2. The CAP Backend / OData Service
+  - name: sap-project-srv
+    type: nodejs
+    path: .
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+      disk-quota: 512M
+    build-parameters:
+      builder: npm
+      ignore:
+        - .env
+        - node_modules/
+        - default-env.json
+    requires:
+      - name: sap-project-hdi-container
+      - name: sap-project-xsuaa
+    provides:
+      - name: srv_api
+        properties:
+          srv-url: ${default-url}
+
+  # 3. The DB Deployer (pushes CDS model + seed data to HANA HDI)
+  - name: sap-project-db-deployer
+    type: hdb
+    path: db
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+      disk-quota: 512M
+    requires:
+      - name: sap-project-hdi-container
+
+  # 4. The Standalone Approuter (enforces XSUAA auth)
   - name: sap-project-router
     type: approuter.nodejs
-    path: router 
+    path: router
     parameters:
       disk-quota: 256M
       memory: 256M
@@ -42,25 +75,44 @@ modules:
           forwardAuthToken: false
           name: ui_target
           url: ~{url}
-      - name: sap-project-dest-service # Required for Launchpad visibility
+      - name: srv_api
+        group: destinations
+        properties:
+          forwardAuthToken: true
+          name: srv_target
+          url: ~{srv-url}
+      - name: sap-project-xsuaa
+      - name: sap-project-dest-service
 
 resources:
+  # HANA HDI Container (production database)
+  - name: sap-project-hdi-container
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  # XSUAA (authentication & authorization)
+  - name: sap-project-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: sap-project
+        tenant-mode: dedicated
+
+  # HTML5 App Host (serves the static Fiori build artefacts)
   - name: sap-project-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
       service-plan: app-host
 
-  - name: sap-project-xsuaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      service-plan: application
-      config:
-        xsappname: sap-project
-        tenant-mode: dedicated
-
-  # ADDED: Destination service so the Launchpad can find the app
+  # Destination Service (for Launchpad visibility)
   - name: sap-project-dest-service
     type: org.cloudfoundry.managed-service
     parameters:

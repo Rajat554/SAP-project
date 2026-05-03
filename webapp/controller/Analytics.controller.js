@@ -111,12 +111,14 @@ sap.ui.define([
                 if (oFrame) {
                     oFrame.setVizProperties({
                         plotArea: {
-                            dataLabel   : { visible: false },
-                            colorPalette: [cfg.color]
+                            dataLabel   : { visible: true, showTotal: false },
+                            colorPalette: [cfg.color],
+                            marker: { visible: true, shape: "circle", size: 5 }
                         },
                         valueAxis   : { title: { visible: false } },
                         categoryAxis: { title: { visible: false } },
-                        title       : { visible: false }
+                        title       : { visible: false },
+                        legend      : { visible: false }
                     });
                 }
             }.bind(this));
@@ -125,7 +127,11 @@ sap.ui.define([
             if (oPie) {
                 oPie.setVizProperties({
                     title   : { visible: false },
-                    plotArea: { dataLabel: { visible: true, type: "value" } }
+                    plotArea: { 
+                        dataLabel: { visible: true, type: "value", formatString: "u" },
+                        colorPalette: ["#0070F2", "#10b981", "#F58B00", "#E9730C", "#B00"]
+                    },
+                    legend: { title: { visible: false } }
                 });
             }
 
@@ -133,9 +139,10 @@ sap.ui.define([
             if (oCol) {
                 oCol.setVizProperties({
                     title    : { visible: false },
-                    plotArea : { dataLabel: { visible: false }, colorPalette: ["#0070F2"] },
+                    plotArea : { dataLabel: { visible: true }, colorPalette: ["#0070F2"] },
                     valueAxis: { title: { visible: false } },
-                    categoryAxis: { title: { visible: false } }
+                    categoryAxis: { title: { visible: false } },
+                    legend   : { visible: false }
                 });
             }
         },
@@ -176,8 +183,18 @@ sap.ui.define([
 
             var aMonthServices = aAllCompleted.filter(function (oService) {
                 // Check both CompletedAt and Date fields
-                var sDate = oService.CompletedAt || oService.Date || "";
-                return sDate.indexOf(sMonthValue) === 0;
+                var dDate = oService.CompletedAt || oService.Date;
+                if (!dDate) return false;
+                
+                var sDateStr = "";
+                if (dDate instanceof Date) {
+                    var mm = (dDate.getMonth() + 1).toString().padStart(2, "0");
+                    sDateStr = dDate.getFullYear() + "-" + mm;
+                } else if (typeof dDate === "string") {
+                    sDateStr = dDate.substring(0, 7); // e.g. "2026-05" from "2026-05-03"
+                }
+                
+                return sDateStr === sMonthValue;
             });
 
             // ── Step 2: Aggregate revenue and service counts ───────
@@ -192,8 +209,13 @@ sap.ui.define([
                 totalRevenue += amt;
 
                 // Group by day (just the DD part of the date string)
-                var sDate = oService.CompletedAt || oService.Date || "";
-                var sDay  = sDate.split("-")[2] || "01";
+                var dDate = oService.CompletedAt || oService.Date;
+                var sDay = "01";
+                if (dDate instanceof Date) {
+                    sDay = dDate.getDate().toString().padStart(2, "0");
+                } else if (typeof dDate === "string" && dDate.length >= 10) {
+                    sDay = dDate.split("-")[2].substring(0, 2);
+                }
 
                 oDailyRevenue[sDay]   = (oDailyRevenue[sDay]   || 0) + amt;
                 oDailyServices[sDay]  = (oDailyServices[sDay]  || 0) + 1;

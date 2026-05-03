@@ -1,11 +1,18 @@
 {
-  "authenticationMethod": "none",
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
   "routes": [
+    {
+      "source": "^/index.html$",
+      "target": "/index.html",
+      "destination": "ui_target",
+      "authenticationType": "xsuaa"
+    },
     {
       "source": "^/(.*)",
       "target": "$1",
       "destination": "ui_target",
-      "authenticationType": "none"
+      "authenticationType": "xsuaa"
     }
   ]
 }

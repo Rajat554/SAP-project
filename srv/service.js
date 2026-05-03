@@ -1,11 +1,12 @@
 const cds = require('@sap/cds');
 
 module.exports = cds.service.impl(async function() {
+    const today = () => new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
     this.before('CREATE', 'ServiceTaskSet', (req) => {
         // Auto-set the creation date for the Analytics dashboard if not provided
         if (!req.data.Date) {
-            const today = new Date();
-            req.data.Date = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            req.data.Date = today();
         }
         
         // Ensure Status is Pending on create
@@ -21,9 +22,8 @@ module.exports = cds.service.impl(async function() {
     
     this.before('UPDATE', 'ServiceTaskSet', (req) => {
         // Auto-set CompletedAt date when marked as Completed
-        if (req.data.Status === 'Completed') {
-             const today = new Date();
-             req.data.CompletedAt = today.toISOString().split('T')[0];
+        if (req.data.Status === 'Completed' && !req.data.CompletedAt) {
+             req.data.CompletedAt = today();
         }
     });
 });

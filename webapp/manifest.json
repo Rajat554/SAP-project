@@ -11,7 +11,7 @@
     "description": "{{appDescription}}",
     "dataSources": {
       "mainService": {
-        "uri": "/v2/odata/v4/wash-wizard/",
+        "uri": "/odata/v2/wash-wizard/",
         "type": "OData",
         "settings": {
           "odataVersion": "2.0"

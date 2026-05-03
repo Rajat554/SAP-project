@@ -24,6 +24,7 @@ sap.ui.define(
     "sap/ui/core/format/DateFormat",
     "sap/ui/core/ValueState",
     "sap/ui/core/UIComponent",
+    "sap/ui/core/Fragment"
   ],
   function (
     Controller,
@@ -36,6 +37,7 @@ sap.ui.define(
     DateFormat,
     ValueState,
     UIComponent,
+    Fragment
   ) {
     "use strict";
 
@@ -467,7 +469,7 @@ sap.ui.define(
             this._selectedServices.length > 0
               ? this._selectedServices.join(", ")
               : "General Service",
-          Amount: nAmount.toFixed(2),
+          Amount: nAmount,
           PaymentMethod: this.byId("idPaymentMethodSelect").getSelectedKey(),
         };
 
@@ -499,7 +501,7 @@ sap.ui.define(
           oPayload.Guid = this._generateGuid();
           oPayload.Status = "Pending";
           oPayload.Date = this._getTodayIso();
-          oPayload.CompletedAt = "";
+          oPayload.CompletedAt = null;
 
           oModel.create("/ServiceTaskSet", oPayload, {
             success: function () {
@@ -733,21 +735,70 @@ sap.ui.define(
         this._loadPendingServices();
       },
 
-      // Misc
+      // ── Table Settings (Column Visibility) ────────────────────────
       onButtonTableSettingsPress: function () {
-        MessageToast.show("Table Settings");
+        var oView = this.getView();
+        var oTable = this.byId("idPendingServicesPageTable");
+        this._currentTableForSettings = oTable;
+
+        if (!this._pColumnSettingsDialog) {
+          this._pColumnSettingsDialog = Fragment.load({
+            id: oView.getId(),
+            name: "sap.ui.demo.walkthrough.view.fragments.ColumnSettings",
+            controller: this
+          }).then(function (oDialog) {
+            oView.addDependent(oDialog);
+            return oDialog;
+          });
+        }
+
+        this._pColumnSettingsDialog.then(function (oDialog) {
+          // Build column data model for the list
+          var aCols = oTable.getColumns().map(function (oCol, i) {
+            var sName = "Column " + (i + 1);
+            var oHeader = oCol.getHeader();
+            if (oHeader && oHeader.getText && oHeader.getText()) {
+              sName = oHeader.getText();
+            } else if (i === 0) {
+              sName = "Icon Indicator";
+            }
+            return {
+              id: oCol.getId(),
+              name: sName,
+              visible: oCol.getVisible(),
+              index: i
+            };
+          });
+          
+          var oModel = new JSONModel({ columns: aCols });
+          oDialog.setModel(oModel, "colsModel");
+          oDialog.open();
+        });
       },
-      onButtonResetPress: function () {
-        MessageToast.show("Reset");
+
+      onOKButtonPress: function (oEvent) {
+        var oDialog = oEvent.getSource().getParent();
+        var oList = sap.ui.core.Fragment.byId(this.getView().getId(), "idColumnsSettingsList");
+        var aItems = oList.getItems();
+        var oTable = this._currentTableForSettings;
+
+        aItems.forEach(function (oItem) {
+          var oContext = oItem.getBindingContext("colsModel");
+          if (oContext) {
+            var bSelected = oItem.getSelected();
+            var nIndex = oContext.getProperty("index");
+            var oColumn = oTable.getColumns()[nIndex];
+            if (oColumn) {
+              oColumn.setVisible(bSelected);
+            }
+          }
+        });
+        oDialog.close();
       },
-      onButtonOKPress: function () {
-        MessageToast.show("OK");
-      },
-      onButtonCancelPress: function () {
-        MessageToast.show("Cancel");
-      },
-      onLtPreviousButtonPress: function () {},
-      onNextGtButtonPress: function () {},
+
+      onCancelButtonPress: function (oEvent) {
+        oEvent.getSource().getParent().close();
+      }
     });
-  },
+  }
 );
