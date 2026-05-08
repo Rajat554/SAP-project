@@ -1,0 +1,30 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form">
+    <Dialog title="Add New User" id="addUserDialog" contentWidth="400px">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
+                    <f:content>
+                        <Label text="Username" required="true" />
+                        <Input id="newUsernameInput" placeholder="Enter username" />
+                        <Label text="Password" required="true" />
+                        <Input id="newPasswordInput" type="Password" placeholder="Enter password" />
+                        <Label text="Role" required="true" />
+                        <Select id="newRoleSelect" selectedKey="Staff">
+                            <core:Item key="Staff" text="Staff" />
+                            <core:Item key="Admin" text="Admin" />
+                        </Select>
+                    </f:content>
+                </f:SimpleForm>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button text="Save" type="Emphasized" press=".onSaveNewUserPress" />
+        </beginButton>
+        <endButton>
+            <Button text="Cancel" press=".onCancelNewUserPress" />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

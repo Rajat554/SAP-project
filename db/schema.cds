@@ -21,3 +21,9 @@ entity ServiceTask {
     Date : Date; // Native CDS Date type — HANA maps to DATE column
     CompletedAt : Date;
 }
+
+entity Users {
+    key Username : String(50);
+    Password : String(100);
+    Role : String(20) default 'Staff'; // 'Admin' or 'Staff'
+}

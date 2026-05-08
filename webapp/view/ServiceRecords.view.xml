@@ -91,7 +91,7 @@
                                 <Text text="{recordsModel>CompletedAt}" />
                                 <HBox alignItems="Center" justifyContent="Center">
                                     <Button icon="sap-icon://print" type="Transparent" press=".onButtonPrintBillPress" class="sapUiSmallMarginEnd" tooltip="Print" />
-                                    <Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" tooltip="Delete" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" tooltip="Delete" visible="{= ${userModel>/role} === 'Admin' }" />
                                 </HBox>
                             </cells>
                         </ColumnListItem>
@@ -140,7 +140,7 @@
                                 </HBox>
                                 <HBox justifyContent="SpaceBetween" alignItems="Center" class="stitchButtonSection">
                                     <Button text="Print Bill" icon="sap-icon://print" press=".onPrintBillButtonPress" class="stitchActionBtn stitchActionBtnBlue" />
-                                    <Button text="Delete" icon="sap-icon://delete" press=".onDeleteButtonPress" class="stitchActionBtn stitchActionBtnRed" />
+                                    <Button text="Delete" icon="sap-icon://delete" press=".onDeleteButtonPress" class="stitchActionBtn stitchActionBtnRed" visible="{= ${userModel>/role} === 'Admin' }" />
                                 </HBox>
                             </VBox>
                         </CustomListItem>

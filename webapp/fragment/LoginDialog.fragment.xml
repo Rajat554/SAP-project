@@ -1,0 +1,24 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form">
+    <Dialog title="WashWizard Login" id="loginDialog" escapeHandler=".onEscapeLogin" showHeader="true" contentWidth="400px">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Text text="Please login to continue" class="sapUiSmallMarginBottom" />
+                <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
+                    <f:content>
+                        <Label text="Username" />
+                        <Input id="usernameInput" placeholder="Enter username" />
+                        <Label text="Password" />
+                        <Input id="passwordInput" type="Password" placeholder="Enter password" />
+                    </f:content>
+                </f:SimpleForm>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button text="Login" type="Emphasized" press=".onLoginPress" />
+        </beginButton>
+    </Dialog>
+</core:FragmentDefinition>

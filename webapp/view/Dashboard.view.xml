@@ -159,7 +159,7 @@
 										<HBox justifyContent="Center" alignItems="Center">
 											<Button icon="sap-icon://accept" type="Accept" text="Complete" press=".onCompleteButtonPress" class="sapUiTinyMarginBeginEnd" />
 											<Button icon="sap-icon://edit" type="Emphasized" text="Edit" press=".onEditButtonPress" class="sapUiTinyMarginBeginEnd" tooltip="Edit Entry" />
-											<Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" tooltip="Delete" />
+											<Button icon="sap-icon://delete" type="Transparent" press=".onButtonDeletePress" tooltip="Delete" visible="{= ${userModel>/role} === 'Admin' }" />
 										</HBox>
 									</cells>
 								</ColumnListItem>
@@ -197,7 +197,7 @@
 											<Text text="{viewModel>ServiceType}" class="stitchMetaText" />
 										</HBox>
 										<HBox justifyContent="SpaceBetween" alignItems="Center" class="stitchButtonSection">
-											<Button text="Delete" icon="sap-icon://delete" press=".onDeleteButtonPress" class="stitchActionBtn stitchActionBtnRed" />
+											<Button text="Delete" icon="sap-icon://delete" press=".onDeleteButtonPress" class="stitchActionBtn stitchActionBtnRed" visible="{= ${userModel>/role} === 'Admin' }" />
 											<Button text="Edit" icon="sap-icon://edit" press=".onEditButtonPress" class="stitchActionBtn stitchActionBtnBlue" />
 											<Button text="Complete" icon="sap-icon://accept" press=".onCompleteButtonPress" class="stitchActionBtn stitchActionBtnGreen" />
 										</HBox>
