@@ -32,7 +32,7 @@
 							<Input id="idPhoneInput" placeholder="10-digit mobile number" maxLength="10" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
 
 							<Label text="Car Model Name" required="true" class="customLabel"/>
-							<Input id="idCarModelInput" placeholder="e.g. Honda City" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
+							<Input id="idCarModelInput" placeholder="e.g. Honda City" showValueHelp="true" valueHelpRequest=".onInputValueHelpRequest" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
 
 							<Label text="Vehicle Plate Number" required="true" class="customLabel"/>
 							<!-- Placeholder shows the accepted Indian format -->

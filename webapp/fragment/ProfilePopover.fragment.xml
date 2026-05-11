@@ -1,0 +1,18 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <ResponsivePopover id="idProfileResponsivePopover" placement="Bottom" showHeader="false" contentWidth="250px">
+        <VBox class="sapUiSmallMargin">
+            <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                <Avatar initials="{= ${userModel>/username} ? ${userModel>/username}.charAt(0).toUpperCase() : 'U'}" displaySize="M" class="sapUiSmallMarginEnd" />
+                <VBox>
+                    <Title text="{userModel>/username}" level="H4" class="sapUiNoMarginBottom"/>
+                    <Text text="{userModel>/role}" class="sapUiNoMarginTop" />
+                </VBox>
+            </HBox>
+        </VBox>
+        <List mode="None" itemPress=".onListProfileMenuItemPress" class="sapUiNoMarginTop sapUiNoMarginBottom">
+            <StandardListItem title="Profile" icon="sap-icon://person-placeholder" type="Active" visible="{= ${userModel>/role} !== 'Staff' }" />
+            <StandardListItem title="Logout" icon="sap-icon://log" type="Active" />
+        </List>
+    </ResponsivePopover>
+</core:FragmentDefinition>

@@ -34,11 +34,11 @@ sap.ui.define(
         });
       },
 
-      onCancelNewUserPress: function () {
+      onCancelButtonPress: function () {
         this.byId("addUserDialog").close();
       },
 
-      onSaveNewUserPress: function () {
+      onSaveButtonPress: function () {
         var sUsername = this.byId("newUsernameInput").getValue();
         var sPassword = this.byId("newPasswordInput").getValue();
         var sRole = this.byId("newRoleSelect").getSelectedKey();

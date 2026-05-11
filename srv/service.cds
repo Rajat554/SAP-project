@@ -7,4 +7,10 @@ service WashWizardService @(requires: 'authenticated-user') {
     ]) as projection on WashWizard.ServiceTask;
 
     entity UsersSet @(requires: 'Admin') as projection on WashWizard.Users;
+
+    @readonly
+    entity CarModelMasterSet as projection on WashWizard.CarModelMaster;
+
+    @readonly
+    entity ServiceCatalogSet as projection on WashWizard.ServiceCatalog;
 }

@@ -1,16 +1,13 @@
-<mvc:View
-  controllerName="sap.ui.demo.walkthrough.controller.App"
-  xmlns:mvc="sap.ui.core.mvc"
-  displayBlock="true"
+<mvc:View controllerName="sap.ui.demo.walkthrough.controller.App"
+  xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
   xmlns="sap.m"
   xmlns:tnt="sap.tnt"
   xmlns:core="sap.ui.core"
-  xmlns:f="sap.ui.layout.form"
->
-  <App id="rootApp">
-    
+  xmlns:f="sap.ui.layout.form">
+  <App id="idRootApp">
+
     <!-- LOGIN PAGE -->
-    <Page id="loginPage" title="WashWizard Login" showHeader="false" class="dashboardBackground">
+    <Page id="idLoginPage" title="WashWizard Login" showHeader="false" class="dashboardBackground">
       <VBox alignContent="Center" alignItems="Center" justifyContent="Center" height="100%">
         <Panel class="customPanel sapUiResponsiveMargin" width="400px">
           <VBox alignItems="Center" class="sapUiSmallMarginBottom">
@@ -21,27 +18,22 @@
           <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
             <f:content>
               <Label text="Username" />
-              <Input id="loginUsernameInput" placeholder="Enter your username" />
+              <Input id="idLoginUsernameInput" placeholder="Enter your username" />
               <Label text="Password" />
-              <Input id="loginPasswordInput" type="Password" placeholder="Enter your password" submit=".onLoginPress" />
+              <Input id="idLoginPasswordInput" type="Password" placeholder="Enter your password" submit=".onInputSubmit" />
             </f:content>
           </f:SimpleForm>
-          <Button text="Login" type="Emphasized" width="100%" press=".onLoginPress" class="sapUiMediumMarginTop customSaveBtn"/>
+          <Button text="Login" type="Emphasized" width="100%" press=".onLoginButtonPress" class="sapUiMediumMarginTop customSaveBtn"/>
         </Panel>
       </VBox>
     </Page>
 
     <!-- MAIN TOOL PAGE (Accessible only after login) -->
-    <Page id="mainPage" showHeader="false">
+    <Page id="idMainPage" showHeader="false">
       <tnt:ToolPage id="idAppToolPage">
         <tnt:header>
           <tnt:ToolHeader>
-            <Button
-              id="idSideNavigationToggleButton"
-              icon="sap-icon://menu2"
-              type="Transparent"
-              press=".onButtonSideNavPress"
-              tooltip="Toggle Menu">
+            <Button id="idSideNavigationToggleButton" icon="sap-icon://menu2" type="Transparent" press=".onButtonSideNavPress" tooltip="Toggle Menu">
               <layoutData>
                 <OverflowToolbarLayoutData priority="NeverOverflow" />
               </layoutData>
@@ -62,7 +54,7 @@
               <layoutData>
                 <OverflowToolbarLayoutData priority="NeverOverflow" />
               </layoutData>
-              <Avatar press=".onAvatarPress" initials="{= ${userModel>/username} ? ${userModel>/username}.charAt(0).toUpperCase() : 'U'}" displaySize="XS" class="sapUiTinyMarginEnd" activePress="true" />
+              <Avatar press=".onAvatarPress" initials="{= ${userModel>/username} ? ${userModel>/username}.charAt(0).toUpperCase() : 'U'}" displaySize="XS" class="sapUiTinyMarginEnd" />
               <VBox class="hiddenOnSmall">
                 <Text text="{userModel>/username} ({userModel>/role})" class="userNameText" />
               </VBox>
@@ -88,4 +80,4 @@
       </tnt:ToolPage>
     </Page>
   </App>
-</mvc:View>
+</mvc:View>

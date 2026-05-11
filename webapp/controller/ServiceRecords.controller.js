@@ -49,208 +49,121 @@ sap.ui.define(
         // ── Lifecycle ───────────────────────────────────────────
 
         onInit: function () {
-          // recordsModel holds pagination state and the current page slice
-          var oRecordsModel = new JSONModel({
-            allCompletedServices: [], // full unsliced list
-            completedServicesPage: [], // current page (max 8 items)
-            completedCurrentPage: 0,
-            completedTotalPages: 1,
-          });
-          this.getView().setModel(oRecordsModel, "recordsModel");
-
-          // Attach to router so we refresh data every time the view is shown
+          // Bind to route matched
           var oRouter = UIComponent.getRouterFor(this);
           oRouter
             .getRoute("serviceRecords")
             .attachPatternMatched(this._onRouteMatched, this);
         },
 
-        // ── Private ─────────────────────────────────────────────
-
-        /**
-         * _onRouteMatched — called each time the user navigates to
-         * the Service Records page. Reloads all completed data.
-         */
         _onRouteMatched: function () {
-          this._loadCompletedServices();
+          this._applyServerSideFilters();
         },
 
-        /**
-         * _loadCompletedServices — reads all Completed records from OData,
-         * applies active search/filter, stores result, and paginates.
-         */
-        _loadCompletedServices: function () {
-          var oModel = this.getView().getModel();
-          if (!oModel) return;
-
-          var that = this;
-          var oCompletedFilter = new Filter(
-            "Status",
-            FilterOperator.EQ,
-            "Completed",
-          );
-          oModel.read("/ServiceTaskSet", {
-            filters: [oCompletedFilter],
-            sorters: [new Sorter("CompletedAt", true)],
-            success: function (oData) {
-              var aAll = oData && oData.results ? oData.results : [];
-              // Apply in-memory filters
-              aAll = that._applyInMemoryFilters(aAll);
-              var oRM = that.getView().getModel("recordsModel");
-              oRM.setProperty("/allCompletedServices", aAll);
-              oRM.setProperty("/completedCurrentPage", 0);
-              that._applyCompletedPagination();
-            },
-            error: function () {
-              var oRM = that.getView().getModel("recordsModel");
-              oRM.setProperty("/allCompletedServices", []);
-              oRM.setProperty("/completedServicesPage", []);
-              oRM.setProperty("/completedTotalPages", 1);
-              MessageToast.show("Could not load service records.");
-            },
-          });
-        },
-
-        /**
-         * _applyInMemoryFilters — applies search text, payment method,
-         * and service type filters to the full data array.
-         * @param {Array} aAll - full unfiltered array
-         * @returns {Array} filtered array
-         */
-        _applyInMemoryFilters: function (aAll) {
-          var sQuery = "";
-          var sPayment = "";
-          var sService = "";
-
+        _applyServerSideFilters: function () {
+          var aFilters = [new Filter("Status", FilterOperator.EQ, "Completed")];
+          
           var oSF = this.byId("idRecordsSearchField");
-          if (oSF) {
-            sQuery = oSF.getValue().trim().toLowerCase();
+          var sQuery = oSF ? oSF.getValue().trim() : "";
+
+          if (sQuery) {
+             var oSearchFilter = new Filter({
+                 filters: [
+                     new Filter("CustomerName", FilterOperator.Contains, sQuery),
+                     new Filter("VehiclePlate", FilterOperator.Contains, sQuery),
+                     new Filter("Phone", FilterOperator.Contains, sQuery)
+                 ],
+                 and: false
+             });
+             aFilters.push(oSearchFilter);
           }
 
           var oPayCB = this.byId("idPaymentComboBox");
-          if (oPayCB) {
-            sPayment = oPayCB.getSelectedKey();
+          if (oPayCB && oPayCB.getSelectedKey() && oPayCB.getSelectedKey() !== "All") {
+              aFilters.push(new Filter("PaymentMethod", FilterOperator.EQ, oPayCB.getSelectedKey()));
           }
 
           var oSvcCB = this.byId("idServiceComboBox");
-          if (oSvcCB) {
-            sService = oSvcCB.getSelectedKey();
+          if (oSvcCB && oSvcCB.getSelectedKey() && oSvcCB.getSelectedKey() !== "All") {
+              aFilters.push(new Filter("ServiceType", FilterOperator.Contains, oSvcCB.getSelectedKey()));
           }
 
-          return aAll.filter(function (o) {
-            // Search text filter (OR across name, plate, phone)
-            if (sQuery) {
-              var bMatch =
-                (o.CustomerName &&
-                  o.CustomerName.toLowerCase().indexOf(sQuery) !== -1) ||
-                (o.VehiclePlate &&
-                  o.VehiclePlate.toLowerCase().indexOf(sQuery) !== -1) ||
-                (o.Phone && o.Phone.toLowerCase().indexOf(sQuery) !== -1);
-              if (!bMatch) return false;
-            }
-            // Payment filter
-            if (
-              sPayment &&
-              sPayment !== "All" &&
-              o.PaymentMethod !== sPayment
-            ) {
-              return false;
-            }
-            // Service type filter (contains match for multi-service strings)
-            if (sService && sService !== "All") {
-              if (!o.ServiceType || o.ServiceType.indexOf(sService) === -1) {
-                return false;
-              }
-            }
-            return true;
-          });
+          var oTable = this.byId("idServiceTaskSetCompletedTable");
+          if (oTable && oTable.getBinding("items")) {
+              oTable.getBinding("items").filter(aFilters);
+          }
+
+          var oList = this.byId("idServiceTaskSetCompletedList");
+          if (oList && oList.getBinding("items")) {
+              oList.getBinding("items").filter(aFilters);
+          }
         },
 
-        /**
-         * _applyCompletedPagination — slices allCompletedServices into
-         * the current page and updates completedTotalPages.
-         */
-        _applyCompletedPagination: function () {
-          var oRM = this.getView().getModel("recordsModel");
-          var aAll = oRM.getProperty("/allCompletedServices") || [];
-          var nPage = oRM.getProperty("/completedCurrentPage") || 0;
-          var nTotal = Math.max(1, Math.ceil(aAll.length / PAGE_SIZE));
-
-          // Clamp page index
-          if (nPage >= nTotal) {
-            nPage = nTotal - 1;
-          }
-          if (nPage < 0) {
-            nPage = 0;
-          }
-
-          var nStart = nPage * PAGE_SIZE;
-          var aPage = aAll.slice(nStart, nStart + PAGE_SIZE);
-
-          oRM.setProperty("/completedCurrentPage", nPage);
-          oRM.setProperty("/completedTotalPages", nTotal);
-          oRM.setProperty("/completedServicesPage", aPage);
-        },
-
-        // ── Event Handlers ──────────────────────────────────────
-
-        /** Refresh button — re-fetches data from the mock server */
         onRefreshButtonPress: function () {
           this.byId("idRecordsSearchField").setValue("");
           this.byId("idPaymentComboBox").setSelectedKey("All");
           this.byId("idServiceComboBox").setSelectedKey("All");
-          this._loadCompletedServices();
+          this._applyServerSideFilters();
           MessageToast.show("Data refreshed");
         },
 
-        // Search handlers — reload with new filter
         onSearchFieldSearch: function () {
-          this._loadCompletedServices();
+          this._applyServerSideFilters();
         },
         onSearchFieldLiveChange: function () {
-          this._loadCompletedServices();
+          this._applyServerSideFilters();
         },
 
-        // ComboBox filter handlers
         onComboBoxPaymentChange: function () {
-          this._loadCompletedServices();
+          this._applyServerSideFilters();
         },
         onComboBoxServiceChange: function () {
-          this._loadCompletedServices();
+          this._applyServerSideFilters();
         },
         onComboBoxSelectionChange: function () {
-          this._loadCompletedServices();
-        },
-
-        // ── Pagination Handlers ──────────────────────────────────
-
-        onButtonCompletedPrevPagePress: function () {
-          var oRM = this.getView().getModel("recordsModel");
-          var nPage = oRM.getProperty("/completedCurrentPage") || 0;
-          if (nPage > 0) {
-            oRM.setProperty("/completedCurrentPage", nPage - 1);
-            this._applyCompletedPagination();
-          }
-        },
-
-        onButtonCompletedNextPagePress: function () {
-          var oRM = this.getView().getModel("recordsModel");
-          var nPage = oRM.getProperty("/completedCurrentPage") || 0;
-          var nTotal = oRM.getProperty("/completedTotalPages") || 1;
-          if (nPage < nTotal - 1) {
-            oRM.setProperty("/completedCurrentPage", nPage + 1);
-            this._applyCompletedPagination();
-          }
+          this._applyServerSideFilters();
         },
 
         // ── Action Handlers ──────────────────────────────────────
 
-        /** Print Bill — placeholder for future print logic */
-        onButtonPrintBillPress: function () {
-          MessageToast.show("Printing bill...");
+        /** Print Bill — 1-click trigger for Bluetooth Thermal Printers */
+        onButtonPrintBillPress: function (oEvent) {
+          this._printReceipt(oEvent);
         },
-        onPrintBillButtonPress: function () {
-          MessageToast.show("Printing bill...");
+        onPrintBillButtonPress: function (oEvent) {
+          this._printReceipt(oEvent);
+        },
+
+        _printReceipt: function(oEvent) {
+            var oContext = oEvent.getSource().getBindingContext();
+            var oData = oContext ? oContext.getObject() : oEvent.getSource().getBindingContext("recordsModel").getObject();
+            if (!oData) return;
+
+            // Generate a simple HTML string for the receipt
+            var sReceiptHtml = 
+                "<div style='width: 300px; font-family: monospace; padding: 10px; margin: 0 auto;'>" +
+                "<h2 style='text-align: center; margin-bottom: 5px;'>WASH WIZARD</h2>" +
+                "<p style='text-align: center; margin-top: 0; font-size: 12px;'>Automotive Care Studio</p>" +
+                "<hr style='border-top: 1px dashed black;'/>" +
+                "<p><strong>Date:</strong> " + (oData.CompletedAt || new Date().toISOString().split('T')[0]) + "</p>" +
+                "<p><strong>Customer:</strong> " + oData.CustomerName + "</p>" +
+                "<p><strong>Vehicle:</strong> " + oData.VehiclePlate + " (" + oData.CarModel + ")</p>" +
+                "<p><strong>Phone:</strong> " + oData.Phone + "</p>" +
+                "<hr style='border-top: 1px dashed black;'/>" +
+                "<p><strong>Services:</strong><br/>" + oData.ServiceType + "</p>" +
+                "<hr style='border-top: 1px dashed black;'/>" +
+                "<h3 style='text-align: right;'>TOTAL: Rs. " + oData.Amount + "</h3>" +
+                "<p style='text-align: right; font-size: 12px;'>Paid via: " + oData.PaymentMethod + "</p>" +
+                "<hr style='border-top: 1px dashed black;'/>" +
+                "<p style='text-align: center; font-size: 12px;'>Thank you for your business!</p>" +
+                "</div>";
+
+            // Open a new invisible print window and trigger the OS print dialog (1-click to Bluetooth printer)
+            var oPrintWindow = window.open("", "_blank", "width=400,height=600");
+            oPrintWindow.document.write("<html><head><title>Print Receipt</title></head><body onload='window.print();window.close();'>" + sReceiptHtml + "</body></html>");
+            oPrintWindow.document.close();
+            
+            MessageToast.show("Sending to printer...");
         },
 
         /** Delete a completed record from history */
@@ -287,7 +200,7 @@ sap.ui.define(
         // ── Table Settings (Column Visibility) ────────────────────────
         onButtonTableSettingsPress: function () {
           var oView = this.getView();
-          var oTable = this.byId("idCompletedServicesPageTable");
+          var oTable = this.byId("idServiceTaskSetCompletedTable");
           this._currentTableForSettings = oTable;
 
           if (!this._pColumnSettingsDialog) {

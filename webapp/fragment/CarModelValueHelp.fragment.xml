@@ -1,0 +1,6 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <SelectDialog id="idCarModelMasterSetSelectDialog" title="Select Car Model" items="{/CarModelMasterSet}" search=".onCarModelMasterSetSelectDialogSearch" confirm=".onCarModelMasterSetSelectDialogConfirm" cancel=".onCarModelMasterSetSelectDialogCancel">
+        <StandardListItem title="{ModelName}" description="{Brand}" />
+    </SelectDialog>
+</core:FragmentDefinition>

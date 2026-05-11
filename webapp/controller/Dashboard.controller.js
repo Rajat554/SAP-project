@@ -24,7 +24,7 @@ sap.ui.define(
     "sap/ui/core/format/DateFormat",
     "sap/ui/core/ValueState",
     "sap/ui/core/UIComponent",
-    "sap/ui/core/Fragment"
+    "sap/ui/core/Fragment",
   ],
   function (
     Controller,
@@ -37,7 +37,7 @@ sap.ui.define(
     DateFormat,
     ValueState,
     UIComponent,
-    Fragment
+    Fragment,
   ) {
     "use strict";
 
@@ -83,6 +83,27 @@ sap.ui.define(
       _onRouteMatched: function () {
         this._tryLoadPricing();
         this._loadPendingServices();
+        this._startAutoRefresh();
+      },
+
+      /** Start polling for real-time tracking (Task 13) */
+      _startAutoRefresh: function () {
+        if (!this._iRefreshInterval) {
+          this._iRefreshInterval = setInterval(
+            function () {
+              // Only refresh if we are currently looking at the dashboard
+              var oRouter = UIComponent.getRouterFor(this);
+              if (oRouter.getHashChanger().getHash() === "") {
+                var oModel = this.getView().getModel();
+                // Refresh the specific binding for performance, or just call _loadPendingServices
+                if (oModel) {
+                  this._loadPendingServices();
+                }
+              }
+            }.bind(this),
+            10000,
+          ); // 10 second polling
+        }
       },
 
       /**
@@ -419,6 +440,44 @@ sap.ui.define(
 
       // ── Event Handlers: Tab 1 (Service Entry) ─────────────────────
 
+      onInputValueHelpRequest: function (oEvent) {
+        var oView = this.getView();
+        if (!this._pCarModelValueHelpDialog) {
+          this._pCarModelValueHelpDialog = Fragment.load({
+            id: oView.getId(),
+            name: "sap.ui.demo.walkthrough.fragment.CarModelValueHelp",
+            controller: this,
+          }).then(function (oDialog) {
+            oView.addDependent(oDialog);
+            return oDialog;
+          });
+        }
+        this._pCarModelValueHelpDialog.then(function (oDialog) {
+          oDialog.getBinding("items").filter([]);
+          oDialog.open();
+        });
+      },
+
+      onCarModelMasterSetSelectDialogSearch: function (oEvent) {
+        var sValue = oEvent.getParameter("value");
+        var oFilter = new Filter("ModelName", FilterOperator.Contains, sValue);
+        var oBinding = oEvent.getSource().getBinding("items");
+        oBinding.filter([oFilter]);
+      },
+
+      onCarModelMasterSetSelectDialogConfirm: function (oEvent) {
+        var oSelectedItem = oEvent.getParameter("selectedItem");
+        if (oSelectedItem) {
+          var oCarModelInput = this.byId("idCarModelInput");
+          oCarModelInput.setValue(oSelectedItem.getTitle());
+          this._setFieldState(oCarModelInput, true, "");
+        }
+      },
+
+      onCarModelMasterSetSelectDialogCancel: function () {
+        // Dialog closes automatically
+      },
+
       onSelectChange: function (oEvent) {
         var sKey = oEvent.getParameter("selectedItem").getKey();
         this._updateServiceLists(sKey);
@@ -745,7 +804,7 @@ sap.ui.define(
           this._pColumnSettingsDialog = Fragment.load({
             id: oView.getId(),
             name: "sap.ui.demo.walkthrough.view.fragments.ColumnSettings",
-            controller: this
+            controller: this,
           }).then(function (oDialog) {
             oView.addDependent(oDialog);
             return oDialog;
@@ -766,10 +825,10 @@ sap.ui.define(
               id: oCol.getId(),
               name: sName,
               visible: oCol.getVisible(),
-              index: i
+              index: i,
             };
           });
-          
+
           var oModel = new JSONModel({ columns: aCols });
           oDialog.setModel(oModel, "colsModel");
           oDialog.open();
@@ -778,7 +837,10 @@ sap.ui.define(
 
       onOKButtonPress: function (oEvent) {
         var oDialog = oEvent.getSource().getParent();
-        var oList = sap.ui.core.Fragment.byId(this.getView().getId(), "idColumnsSettingsList");
+        var oList = sap.ui.core.Fragment.byId(
+          this.getView().getId(),
+          "idColumnsSettingsList",
+        );
         var aItems = oList.getItems();
         var oTable = this._currentTableForSettings;
 
@@ -798,7 +860,7 @@ sap.ui.define(
 
       onCancelButtonPress: function (oEvent) {
         oEvent.getSource().getParent().close();
-      }
+      },
     });
-  }
+  },
 );

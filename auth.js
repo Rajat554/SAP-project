@@ -8,7 +8,6 @@ module.exports = (req, res, next) => {
         const [username, password] = Buffer.from(b64auth, 'base64').toString().split(':');
 
         if (cds.db) {
-            // Query user from local SQLite table
             cds.db.read('WashWizard.Users').where({ Username: username, Password: password })
                 .then(userResult => {
                     if (userResult && userResult.length > 0) {
@@ -18,20 +17,21 @@ module.exports = (req, res, next) => {
                             roles: [role, 'authenticated-user']
                         });
                     } else {
-                        // Invalid user
+                        // Invalid credentials — let CAP handle the 401/403 naturally
                         req.user = new cds.User({ id: 'anonymous', roles: [] });
                     }
                     next();
                 })
                 .catch(err => {
                     console.error("Auth DB Error", err);
+                    req.user = new cds.User({ id: 'anonymous', roles: [] });
                     next();
                 });
-            return; // Wait for DB query to resolve
+            return;
         }
     }
     
-    // Default to anonymous if no auth provided or DB not ready
+    // No auth header or DB not ready
     req.user = new cds.User({ id: 'anonymous', roles: [] });
     next();
 };

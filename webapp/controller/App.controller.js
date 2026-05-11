@@ -1,156 +1,177 @@
-sap.ui.define([
-	"sap/ui/core/mvc/Controller",
+sap.ui.define(
+  [
+    "sap/ui/core/mvc/Controller",
     "sap/ui/core/Fragment",
     "sap/m/MessageToast",
-    "sap/ui/model/json/JSONModel"
-], function (Controller, Fragment, MessageToast, JSONModel) {
-	"use strict";
+    "sap/ui/model/json/JSONModel",
+  ],
+  function (Controller, Fragment, MessageToast, JSONModel) {
+    "use strict";
 
-	return Controller.extend("sap.ui.demo.walkthrough.controller.App", {
-		onInit: function () {
-			this.getView().addStyleClass("sapUiSizeCompact");
-            
-            // Set up User Model
-            var oUserModel = new JSONModel({
-                isLoggedIn: false,
-                username: "",
-                role: ""
-            });
-            this.getOwnerComponent().setModel(oUserModel, "userModel");
+    return Controller.extend("sap.ui.demo.walkthrough.controller.App", {
+      onInit: function () {
+        this.getView().addStyleClass("sapUiSizeCompact");
 
-            // We do not need to open a dialog anymore.
-            // The App container will show the loginPage by default.
-		},
+        // Set up User Model
+        var oUserModel = new JSONModel({
+          isLoggedIn: false,
+          username: "",
+          role: "",
+        });
+        this.getOwnerComponent().setModel(oUserModel, "userModel");
 
-        onLoginPress: function () {
-            var sUsername = this.byId("loginUsernameInput").getValue();
-            var sPassword = this.byId("loginPasswordInput").getValue();
+        // We do not need to open a dialog anymore.
+        // The App container will show the loginPage by default.
+      },
 
-            if (!sUsername || !sPassword) {
-                MessageToast.show("Please enter both username and password");
-                return;
+      onInputSubmit: function () {
+        this.onLoginButtonPress();
+      },
+
+      onLoginButtonPress: function () {
+        var sUsername = this.byId("idLoginUsernameInput").getValue();
+        var sPassword = this.byId("idLoginPasswordInput").getValue();
+
+        if (!sUsername || !sPassword) {
+          MessageToast.show("Please enter both username and password");
+          return;
+        }
+
+        var sAuth = btoa(sUsername + ":" + sPassword);
+        var oModel = this.getOwnerComponent().getModel(); // Main OData Model
+
+        // Set headers for all future requests
+        oModel.setHeaders({
+          Authorization: "Basic " + sAuth,
+        });
+
+        var that = this;
+        oModel.read("/UsersSet('" + sUsername + "')", {
+          success: function (oData) {
+            that._completeLogin(sUsername, oData.Role || "Admin", oData);
+          },
+          error: function (oError) {
+            var iStatusCode =
+              oError.statusCode ||
+              (oError.response && oError.response.statusCode);
+            // 403 means authenticated but not Admin. So it's a Staff.
+            if (iStatusCode === 403 || iStatusCode === "403") {
+              that._completeLogin(sUsername, "Staff", null);
+            } else {
+              MessageToast.show("Login failed. Check your credentials.");
+              oModel.setHeaders({}); // Clear headers on fail
             }
+          },
+        });
+      },
 
-            var sAuth = btoa(sUsername + ":" + sPassword);
-            var oModel = this.getOwnerComponent().getModel(); // Main OData Model
+      _completeLogin: function (sUsername, sRole, oData) {
+        MessageToast.show("Welcome, " + sUsername + " (" + sRole + ")");
 
-            // Set headers for all future requests
-            oModel.setHeaders({
-                "Authorization": "Basic " + sAuth
-            });
+        var oUserModel = this.getOwnerComponent().getModel("userModel");
+        oUserModel.setProperty("/isLoggedIn", true);
+        oUserModel.setProperty("/username", sUsername);
+        oUserModel.setProperty("/role", sRole);
 
-            var that = this;
-            oModel.read("/UsersSet('" + sUsername + "')", {
-                success: function (oData) {
-                    that._completeLogin(sUsername, oData.Role || "Admin", oData);
-                },
-                error: function (oError) {
-                    var iStatusCode = oError.statusCode || (oError.response && oError.response.statusCode);
-                    // 403 means authenticated but not Admin. So it's a Staff.
-                    if (iStatusCode === 403 || iStatusCode === "403") {
-                        that._completeLogin(sUsername, "Staff", null);
-                    } else {
-                        MessageToast.show("Login failed. Check your credentials.");
-                        oModel.setHeaders({}); // Clear headers on fail
-                    }
-                }
-            });
-        },
+        // Clear inputs for next time
+        this.byId("idLoginUsernameInput").setValue("");
+        this.byId("idLoginPasswordInput").setValue("");
 
-        _completeLogin: function(sUsername, sRole, oData) {
-            MessageToast.show("Welcome, " + sUsername + " (" + sRole + ")");
-            
-            var oUserModel = this.getOwnerComponent().getModel("userModel");
-            oUserModel.setProperty("/isLoggedIn", true);
-            oUserModel.setProperty("/username", sUsername);
-            oUserModel.setProperty("/role", sRole);
+        // Navigate from Login Page to Main Page
+        this.byId("idRootApp").to(this.byId("idMainPage"));
 
-            // Clear inputs for next time
-            this.byId("loginUsernameInput").setValue("");
-            this.byId("loginPasswordInput").setValue("");
+        // Refresh main model to load data with new auth
+        this.getOwnerComponent().getModel().refresh();
+      },
 
-            // Navigate from Login Page to Main Page
-            this.byId("rootApp").to(this.byId("mainPage"));
+      onAvatarPress: function (oEvent) {
+        var oButton = oEvent.getSource();
+        var oView = this.getView();
 
-            // Refresh main model to load data with new auth
-            this.getOwnerComponent().getModel().refresh();
-        },
+        if (!this._pProfilePopover) {
+          this._pProfilePopover = Fragment.load({
+            id: oView.getId(),
+            name: "sap.ui.demo.walkthrough.fragment.ProfilePopover",
+            controller: this,
+          }).then(function (oPopover) {
+            oView.addDependent(oPopover);
+            return oPopover;
+          });
+        }
 
-        onAvatarPress: function (oEvent) {
-            var oButton = oEvent.getSource();
-            
-            if (!this._oActionSheet) {
-                var sapMActionSheet = sap.ui.require("sap/m/ActionSheet");
-                var sapMButton = sap.ui.require("sap/m/Button");
-                
-                this._oActionSheet = new sapMActionSheet({
-                    buttons: [
-                        new sapMButton({
-                            text: "Logout",
-                            icon: "sap-icon://log",
-                            press: this.onLogoutPress.bind(this)
-                        })
-                    ]
-                });
-                this.getView().addDependent(this._oActionSheet);
-            }
-            this._oActionSheet.openBy(oButton);
-        },
+        this._pProfilePopover.then(function (oPopover) {
+          oPopover.openBy(oButton);
+        });
+      },
 
-        onLogoutPress: function () {
-            // Clear Authentication Headers
-            var oModel = this.getOwnerComponent().getModel();
-            oModel.setHeaders({});
+      onListProfileMenuItemPress: function (oEvent) {
+        var sTitle = oEvent.getParameter("listItem").getTitle();
+        if (sTitle === "Logout") {
+          this.onLogoutPress();
+        } else if (sTitle === "Profile") {
+          MessageToast.show("Profile feature coming soon!");
+          // sap.ui.core.UIComponent.getRouterFor(this).navTo("profile");
+        }
 
-            // Clear User Model
-            var oUserModel = this.getOwnerComponent().getModel("userModel");
-            oUserModel.setProperty("/isLoggedIn", false);
-            oUserModel.setProperty("/username", "");
-            oUserModel.setProperty("/role", "");
+        this._pProfilePopover.then(function (oPopover) {
+          oPopover.close();
+        });
+      },
 
-            // Clear UI inputs
-            this.byId("loginUsernameInput").setValue("");
-            this.byId("loginPasswordInput").setValue("");
+      onLogoutPress: function () {
+        // Clear Authentication Headers
+        var oModel = this.getOwnerComponent().getModel();
+        oModel.setHeaders({});
 
-            // Navigate to Dashboard just in case they were in Settings
-            sap.ui.core.UIComponent.getRouterFor(this).navTo("dashboard");
+        // Clear User Model
+        var oUserModel = this.getOwnerComponent().getModel("userModel");
+        oUserModel.setProperty("/isLoggedIn", false);
+        oUserModel.setProperty("/username", "");
+        oUserModel.setProperty("/role", "");
 
-            MessageToast.show("Logged out successfully.");
+        // Clear UI inputs
+        this.byId("idLoginUsernameInput").setValue("");
+        this.byId("idLoginPasswordInput").setValue("");
 
-            // Navigate from Main Page back to Login Page
-            this.byId("rootApp").to(this.byId("loginPage"));
-        },
+        // Navigate to Dashboard just in case they were in Settings
+        sap.ui.core.UIComponent.getRouterFor(this).navTo("dashboard");
 
-		onButtonSideNavPress: function () {
-			var oToolPage = this.byId("idAppToolPage");
-			var bSideExpanded = oToolPage.getSideExpanded();
-			this._setToggleButtonTooltip(bSideExpanded);
-			oToolPage.setSideExpanded(!bSideExpanded);
-		},
+        MessageToast.show("Logged out successfully.");
 
-		onSideNavigationItemSelect: function (oEvent) {
-			var sKey = oEvent.getParameter("item").getKey();
-			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-			
-			if (sKey === "dashboard") {
-				oRouter.navTo("dashboard");
-			} else if (sKey === "records") {
-				oRouter.navTo("serviceRecords");
-			} else if (sKey === "analytics") {
-                oRouter.navTo("analytics");
-            } else if (sKey === "settings") {
-                oRouter.navTo("settings");
-            }
-		},
+        // Navigate from Main Page back to Login Page
+        this.byId("idRootApp").to(this.byId("idLoginPage"));
+      },
 
-		_setToggleButtonTooltip: function (bLarge) {
-			var oToggleButton = this.byId("idSideNavigationToggleButton");
-			if (bLarge) {
-				oToggleButton.setTooltip("Expand Menu");
-			} else {
-				oToggleButton.setTooltip("Collapse Menu");
-			}
-		}
-	});
-});
+      onButtonSideNavPress: function () {
+        var oToolPage = this.byId("idAppToolPage");
+        var bSideExpanded = oToolPage.getSideExpanded();
+        this._setToggleButtonTooltip(bSideExpanded);
+        oToolPage.setSideExpanded(!bSideExpanded);
+      },
 
+      onSideNavigationItemSelect: function (oEvent) {
+        var sKey = oEvent.getParameter("item").getKey();
+        var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+
+        if (sKey === "dashboard") {
+          oRouter.navTo("dashboard");
+        } else if (sKey === "records") {
+          oRouter.navTo("serviceRecords");
+        } else if (sKey === "analytics") {
+          oRouter.navTo("analytics");
+        } else if (sKey === "settings") {
+          oRouter.navTo("settings");
+        }
+      },
+
+      _setToggleButtonTooltip: function (bLarge) {
+        var oToggleButton = this.byId("idSideNavigationToggleButton");
+        if (bLarge) {
+          oToggleButton.setTooltip("Expand Menu");
+        } else {
+          oToggleButton.setTooltip("Collapse Menu");
+        }
+      },
+    });
+  },
+);

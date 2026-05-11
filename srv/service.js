@@ -20,9 +20,15 @@ module.exports = cds.service.impl(async function() {
         }
     });
     
-    this.before('UPDATE', 'ServiceTaskSet', (req) => {
+    this.before('UPDATE', 'ServiceTaskSet', async (req) => {
+        // Prevent changing status backwards from Completed
+        const currentRecord = await cds.tx(req).run(SELECT.one.from('WashWizard.ServiceTask').where({ Guid: req.data.Guid }));
+        if (currentRecord && currentRecord.Status === 'Completed' && req.data.Status && req.data.Status !== 'Completed') {
+            return req.reject(400, 'Cannot change status of a completed service.');
+        }
+
         // Auto-set CompletedAt date when marked as Completed
-        if (req.data.Status === 'Completed' && !req.data.CompletedAt) {
+        if (req.data.Status === 'Completed' && (!currentRecord || currentRecord.Status !== 'Completed')) {
              req.data.CompletedAt = today();
         }
     });

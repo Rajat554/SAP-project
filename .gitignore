@@ -137,3 +137,9 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# SAP CAP / BTP
+*.sqlite
+*.mtar
+mta_archives/
+dist.zip
