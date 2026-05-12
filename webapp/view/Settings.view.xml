@@ -9,7 +9,7 @@
 				<Title text="Settings" class="dashboardTitle sapUiTinyMarginBottom" />
 				<Text text="Manage your account settings and preferences" class="userEmailText sapUiMediumMarginBottom" />
 
-				<IconTabBar id="idIconTabBar" selectedKey="profile" class="customTabBar" expandable="false" applyContentPadding="false">
+				<IconTabBar id="idIconTabBar" selectedKey="profile" class="customTabBar" expandable="false" applyContentPadding="false" select=".onIconTabBarSelect">
 					<items>
 						<IconTabFilter key="profile" text="Profile" icon="sap-icon://person-placeholder" class="tabFilterButton">
 
@@ -81,7 +81,7 @@
 									<Title text="Manage Users" level="H3" titleStyle="H3" class="cardTitle" />
 									<Button text="Add User" icon="sap-icon://add" press=".onAddUserButtonPress" type="Emphasized" />
 								</HBox>
-								<Table id="idUsersSetTable" items="{/UsersSet}" alternateRowColors="true" class="sapUiSizeCompact">
+								<Table id="idUsersSetTable" items="{path: '/UsersSet', suspended: true}" alternateRowColors="true" class="sapUiSizeCompact">
 									<columns>
 										<Column>
 											<Text text="Username" class="sapMTextBold" />

@@ -81,9 +81,31 @@ sap.ui.define(
 
       /** Called every time the Dashboard route is activated */
       _onRouteMatched: function () {
+        var oUserModel = this.getView().getModel("userModel");
+        if (!oUserModel || !oUserModel.getProperty("/isLoggedIn")) {
+          return; // Security: Do not fetch data if the user is not logged in
+        }
+
         this._tryLoadPricing();
-        this._loadPendingServices();
-        this._startAutoRefresh();
+
+        var oTabBar = this.byId("idIconTabBar");
+        if (oTabBar && oTabBar.getSelectedKey() === "current") {
+          this._loadPendingServices();
+          this._startAutoRefresh();
+        } else {
+          this._stopAutoRefresh();
+        }
+      },
+
+      /** Handles tab switching to implement lazy loading */
+      onIconTabBarSelect: function (oEvent) {
+        var sKey = oEvent.getParameter("key");
+        if (sKey === "current") {
+          this._loadPendingServices();
+          this._startAutoRefresh();
+        } else {
+          this._stopAutoRefresh();
+        }
       },
 
       /** Start polling for real-time tracking (Task 13) */
@@ -103,6 +125,14 @@ sap.ui.define(
             }.bind(this),
             10000,
           ); // 10 second polling
+        }
+      },
+
+      /** Stop polling to save network bandwidth when not needed */
+      _stopAutoRefresh: function () {
+        if (this._iRefreshInterval) {
+          clearInterval(this._iRefreshInterval);
+          this._iRefreshInterval = null;
         }
       },
 

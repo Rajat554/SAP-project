@@ -2,6 +2,13 @@ const cds = require('@sap/cds');
 
 module.exports = cds.service.impl(async function() {
     const today = () => new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const bcrypt = require('bcrypt');
+
+    this.before('CREATE', 'UsersSet', async (req) => {
+        if (req.data.Password) {
+            req.data.Password = await bcrypt.hash(req.data.Password, 12);
+        }
+    });
 
     this.before('CREATE', 'ServiceTaskSet', (req) => {
         // Auto-set the creation date for the Analytics dashboard if not provided

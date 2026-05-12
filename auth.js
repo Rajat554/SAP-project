@@ -1,37 +1,28 @@
 const cds = require('@sap/cds');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
     
-    if (authHeader && authHeader.startsWith('Basic ')) {
-        const b64auth = authHeader.split(' ')[1];
-        const [username, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1];
 
-        if (cds.db) {
-            cds.db.read('WashWizard.Users').where({ Username: username, Password: password })
-                .then(userResult => {
-                    if (userResult && userResult.length > 0) {
-                        const role = userResult[0].Role;
-                        req.user = new cds.User({
-                            id: username,
-                            roles: [role, 'authenticated-user']
-                        });
-                    } else {
-                        // Invalid credentials — let CAP handle the 401/403 naturally
-                        req.user = new cds.User({ id: 'anonymous', roles: [] });
-                    }
-                    next();
-                })
-                .catch(err => {
-                    console.error("Auth DB Error", err);
-                    req.user = new cds.User({ id: 'anonymous', roles: [] });
-                    next();
-                });
-            return;
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            req.user = new cds.User({
+                id: decoded.username,
+                roles: [decoded.role, 'authenticated-user']
+            });
+            return next();
+        } catch (err) {
+            console.error("JWT Verification Error:", err.message);
+            // Fall through to anonymous
         }
     }
     
-    // No auth header or DB not ready
+    // No auth header or invalid token
     req.user = new cds.User({ id: 'anonymous', roles: [] });
     next();
 };

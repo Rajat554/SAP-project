@@ -7,7 +7,7 @@
 	<Page id="idDashboardPage" showHeader="false" class="dashboardBackground">
 
 		<!-- Tabs -->
-		<IconTabBar id="idIconTabBar" class="responsivePadding customTabBar" stretchContentHeight="true">
+		<IconTabBar id="idIconTabBar" class="responsivePadding customTabBar" stretchContentHeight="true" select=".onIconTabBarSelect">
 			<items>
 
 				<!-- ═══════════════════════════════════════════════
