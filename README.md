@@ -2,7 +2,7 @@
 
 Welcome to the **WashWizard** project! This is an enterprise-grade web application designed to efficiently manage services, records, analytics, and user access. The app provides a robust administrative experience tailored for real-time service tracking and history management.
 
-## 📱 Pages and Application Flow
+## Pages and Application Flow
 
 The application is structured into four main sections, each serving a distinct purpose in the business workflow:
 
@@ -11,24 +11,38 @@ The heart of active operations.
 - **Functionality**: Users can add new services and manage currently ongoing services.
 - **Use Case**: This is where day-to-day active tasks are monitored, ensuring nothing falls behind schedule.
 
+#### Service Entry
+![Dashboard - Service Entry](screenshots/dashboard-service-entry.png)
+
+#### Current Services
+![Dashboard - Current Services](screenshots/dashboard-current-services.png)
+
 ### 2. Service Record Page
 The historical archive and billing center.
 - **Functionality**: Acts as a comprehensive history of all past completed services.
 - **Features**: Includes a **Print Bill** option. This feature dynamically generates a bill for a completed service and allows you to print it directly via a **Bluetooth printer**, enabling seamless physical receipt generation on the go.
+
+![Service Records](screenshots/service-records.png)
 
 ### 3. Analysis Page
 The insights and metrics hub.
 - **Functionality**: Displays rich analytics regarding the services provided.
 - **Metrics**: Shows which services are most frequently used, overall performance metrics, and other critical business data at a glance, allowing management to make data-driven decisions.
 
+![Income Analytics](screenshots/income-analytics.png)
+![Service Distribution](screenshots/analytics-service-distribution.png)
+![Performance Metrics](screenshots/analytics-performance.png)
+
 ### 4. Settings Page
 The administrative control panel.
 - **Functionality**: Administrators can manage app configurations and add new users to the system.
 - **Security & Role-Based Auth**: The application utilizes strict Role-Based Access Control (RBAC). When adding users, admins assign specific roles (e.g., Admin, User). The backend enforces these roles, ensuring that sensitive areas (like Settings or Analytics) are only accessible to authorized personnel, while standard users can only access operational pages like the Dashboard.
 
+![Settings - Profile](screenshots/settings-profile.png)
+
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 The application is built using a modern, scalable enterprise stack:
 
@@ -41,9 +55,11 @@ The application is built using a modern, scalable enterprise stack:
 - **Security**: **SAP XSUAA & JWT (JSON Web Tokens)**
   - Manages secure authentication and role-based authorization flows.
 
+![Tech Stack Architecture](screenshots/diagram-1.png)
+
 ---
 
-## ☁️ Deployment and Management on SAP BTP
+## Deployment and Management on SAP BTP
 
 WashWizard is designed to be hosted and managed on the **SAP Business Technology Platform (BTP)**:
 
@@ -54,7 +70,7 @@ WashWizard is designed to be hosted and managed on the **SAP Business Technology
 
 ---
 
-## 🌿 Repository Structure (Branches)
+## Repository Structure (Branches)
 
 This GitHub repository is organized into two primary branches to separate frontend-only deployment from the complete full-stack environment:
 
