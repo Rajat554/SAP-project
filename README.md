@@ -78,6 +78,6 @@ This GitHub repository is organized into two primary branches to separate fronte
   - **Contents**: Contains **ONLY the frontend code** (SAP UI5).
   - **Purpose**: Used for deploying the frontend as a standalone application or for static hosting scenarios where the backend is hosted entirely separately.
 
-- **`devbranch` Branch**
+- **`dev-branch` Branch**
   - **Contents**: Contains the **FULL STACK code** (Frontend + Backend + Database Logic).
   - **Purpose**: This is the comprehensive development branch containing the SAP UI5 web app, the CAP Node.js backend services (`srv/`), the database schema (`db/`), and all deployment configurations (`mta.yaml`). Use this branch for full local development and end-to-end testing.
