@@ -11,7 +11,7 @@
 
 	<Page id="idAnalyticsPage" title="Income Analytics" showHeader="false" class="sapUiResponsiveContentPadding">
 		<VBox class="sapUiSmallMargin">
-            <!-- Header Section -->
+            
             <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom customHeader">
                 <VBox>
                     <Title text="Income Analytics" level="H2" titleStyle="H2" class="pageTitle" />
@@ -22,9 +22,9 @@
                 </HBox>
             </HBox>
 
-            <!-- KPI Cards Section -->
+            
             <l:Grid class="sapUiSmallMarginBottom">
-                <!-- Total Revenue -->
+                
                 <VBox class="sapUiSmallMargin customWhiteCard">
                     <HBox justifyContent="SpaceBetween">
                         <Text text="Total Revenue" class="sapMTextBold" />
@@ -36,7 +36,7 @@
                     <Text text="This month's total" class="sapUiTinyMarginTop greyText smallText" />
                 </VBox>
 
-                <!-- Total Services -->
+                
                 <VBox class="sapUiSmallMargin customWhiteCard">
                     <HBox justifyContent="SpaceBetween">
                         <Text text="Total Services" class="sapMTextBold" />
@@ -48,7 +48,7 @@
                     <Text text="Services completed" class="sapUiTinyMarginTop greyText smallText" />
                 </VBox>
 
-                <!-- Avg Daily Revenue -->
+                
                 <VBox class="sapUiSmallMargin customWhiteCard">
                     <HBox justifyContent="SpaceBetween">
                         <Text text="Avg Daily Revenue" class="sapMTextBold" />
@@ -60,7 +60,7 @@
                     <Text text="Per working day" class="sapUiTinyMarginTop greyText smallText" />
                 </VBox>
 
-                <!-- Avg Service Value -->
+                
                 <VBox class="sapUiSmallMargin customWhiteCard">
                     <HBox justifyContent="SpaceBetween">
                         <Text text="Avg Service Value" class="sapMTextBold" />
@@ -73,7 +73,7 @@
                 </VBox>
             </l:Grid>
 
-            <!-- Tabs Section -->
+            
             <IconTabBar id="idAnalyticsIconTabBar" class="sapUiResponsiveContentPadding customPanel">
                 <items>
                     <IconTabFilter text="Revenue Trends" key="trends">
@@ -132,7 +132,7 @@
 
                     <IconTabFilter text="Service Distribution" key="distribution">
                         <l:Grid defaultSpan="XL6 L6 M12 S12">
-                            <!-- Pie Chart -->
+                            
                             <VBox class="sapUiSmallMargin customCardContainer">
                                 <VBox class="sapUiSmallMarginBottom">
                                     <HBox alignItems="Center">
@@ -159,7 +159,7 @@
                                 </viz:VizFrame>
                             </VBox>
 
-                            <!-- Column Chart -->
+                            
                             <VBox class="sapUiSmallMargin customCardContainer">
                                 <VBox class="sapUiSmallMarginBottom">
                                     <HBox alignItems="Center">
@@ -190,7 +190,7 @@
 
                     <IconTabFilter text="Performance" key="performance">
                         <l:Grid defaultSpan="XL6 L6 M12 S12">
-                            <!-- Top Services List -->
+                            
                             <VBox class="sapUiSmallMargin customCardContainer">
                                 <VBox class="sapUiSmallMarginBottom">
                                     <Title text="Top Performing Services" level="H3" titleStyle="H3" />
@@ -212,34 +212,34 @@
                                 </List>
                             </VBox>
 
-                            <!-- Performance Metrics -->
+                            
                             <VBox class="sapUiSmallMargin customCardContainer">
                                 <VBox class="sapUiSmallMarginBottom">
                                     <Title text="Performance Metrics" level="H3" titleStyle="H3" />
                                     <Text text="Key business indicators" class="greyText smallText sapUiTinyMarginTop" />
                                 </VBox>
                                 <VBox>
-                                    <!-- Best Performing Day -->
+                                    
                                     <HBox justifyContent="SpaceBetween" alignItems="Center" class="metricRow sapUiTinyMarginTopBottom sapUiSmallMarginBeginEnd customListRow">
                                         <Text text="Best Performing Day" />
                                         <Text text="{analyticsModel>/performanceMetrics/bestDayDate}" class="sapMTextBold" />
                                     </HBox>
-                                    <!-- Peak Revenue Day -->
+                                    
                                     <HBox justifyContent="SpaceBetween" alignItems="Center" class="metricRow sapUiTinyMarginTopBottom sapUiSmallMarginBeginEnd customListRow">
                                         <Text text="Peak Revenue Day" />
                                         <Text text="₹{analyticsModel>/performanceMetrics/peakRevenue}" class="sapMTextBold" />
                                     </HBox>
-                                    <!-- Busiest Day -->
+                                    
                                     <HBox justifyContent="SpaceBetween" alignItems="Center" class="metricRow sapUiTinyMarginTopBottom sapUiSmallMarginBeginEnd customListRow">
                                         <Text text="Busiest Day" />
                                         <Text text="{analyticsModel>/performanceMetrics/busiestDayServices} services" class="sapMTextBold" />
                                     </HBox>
-                                    <!-- Working Days -->
+                                    
                                     <HBox justifyContent="SpaceBetween" alignItems="Center" class="metricRow sapUiTinyMarginTopBottom sapUiSmallMarginBeginEnd customListRow">
                                         <Text text="Working Days" />
                                         <Text text="{analyticsModel>/performanceMetrics/workingDays} days" class="sapMTextBold" />
                                     </HBox>
-                                    <!-- Most Popular Service -->
+                                    
                                     <HBox justifyContent="SpaceBetween" alignItems="Center" class="metricRow sapUiTinyMarginTopBottom sapUiSmallMarginBeginEnd customListRow">
                                         <Text text="Most Popular Service" />
                                         <Text text="{analyticsModel>/performanceMetrics/topServiceType}" class="sapMTextBold" />

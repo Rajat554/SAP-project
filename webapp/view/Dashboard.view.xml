@@ -6,20 +6,16 @@
 
 	<Page id="idDashboardPage" showHeader="false" class="dashboardBackground">
 
-		<!-- Tabs -->
+		
 		<IconTabBar id="idIconTabBar" class="responsivePadding customTabBar" stretchContentHeight="true">
 			<items>
 
-				<!-- ═══════════════════════════════════════════════
-				     TAB 1: Service Entry
-				     All input fields have IDs so the controller
-				     can read and validate them on Save.
-				     ═══════════════════════════════════════════════ -->
+				
 				<IconTabFilter text="Service Entry" key="entry" class="tabFilterButton">
 
 					<l:Grid defaultSpan="XL4 L4 M12 S12" class="sapUiSmallMarginTop">
 
-						<!-- Column 1: Contact Details -->
+						
 						<VBox class="cardBox flexColumn w-100">
 							<HBox alignItems="Center" class="sapUiMediumMarginBottom">
 								<core:Icon src="sap-icon://customer" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
@@ -35,11 +31,11 @@
 							<Input id="idCarModelInput" placeholder="e.g. Honda City" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
 
 							<Label text="Vehicle Plate Number" required="true" class="customLabel"/>
-							<!-- Placeholder shows the accepted Indian format -->
+							
 							<Input id="idVehiclePlateInput" placeholder="e.g. GJ 05 AR 4521" class="customInput sapUiSmallMarginBottom" liveChange=".onInputLiveChange"/>
 						</VBox>
 
-						<!-- Column 2: Service Details -->
+						
 						<VBox class="cardBox flexColumn w-100">
 							<HBox alignItems="Center" class="sapUiMediumMarginBottom">
 								<core:Icon src="sap-icon://car-rental" class="sapUiSmallMarginEnd iconTitle" color="#2B7CFF"/>
@@ -74,7 +70,7 @@
 							</Panel>
 						</VBox>
 
-						<!-- Column 3: Payment Details -->
+						
 						<VBox class="cardBox flexColumn w-100" justifyContent="SpaceBetween">
 							<VBox>
 								<HBox alignItems="Center" class="sapUiMediumMarginBottom">
@@ -82,7 +78,7 @@
 									<Title text="Payment Details" level="H3" class="cardTitle"/>
 								</HBox>
 								<Label text="Amount (auto-calculated)" required="true" class="customLabel"/>
-								<!-- editable="true" lets user type amount manually if pricing panels are empty -->
+								
 								<Input id="idAmountInput" placeholder="Auto-calculated or enter manually" class="customInput sapUiSmallMarginBottom amountField" editable="true" type="Number"/>
 								<Label text="Payment Method" required="true" class="customLabel"/>
 								<Select id="idPaymentMethodSelect" selectedKey="Online" width="100%" class="customInput">
@@ -93,19 +89,14 @@
 								</Select>
 							</VBox>
 							<ToolbarSpacer/>
-							<!-- Save button triggers onSaveServiceButtonPress in the controller -->
+							
 							<Button id="idSaveServiceButton" text="Save Service" width="100%" class="sapUiMediumMarginTop customSaveBtn" press=".onSaveServiceButtonPress" icon="sap-icon://save"/>
 						</VBox>
 
 					</l:Grid>
 				</IconTabFilter>
 
-				<!-- ═══════════════════════════════════════════════
-				     TAB 2: Current Services (Pending Queue)
-				     The List is bound directly to the OData entity
-				     set /ServiceTaskSet and filtered server-side
-				     to show only Status='Pending' records.
-				     ═══════════════════════════════════════════════ -->
+				
 				<IconTabFilter text="Current Services" key="current" class="tabFilterButton">
 					<HBox class="sapUiSmallMarginBottom sapUiSmallMarginTop" alignItems="Center">
 						<SearchField id="idDashboardSearchField" width="30rem" placeholder="Search by customer name or vehicle..." search=".onSearchFieldSearch" liveChange=".onSearchFieldLiveChange" class="sapUiSmallMarginEnd" />
@@ -120,7 +111,7 @@
 							</Toolbar>
 						</headerToolbar>
 
-						<!-- Desktop Table — bound to JSON viewModel slice for pagination -->
+						
 						<Table id="idPendingServicesPageTable" items="{viewModel>/pendingServicesPage}" alternateRowColors="true" class="sapUiSizeCompact customServiceList hideOnMobile" noDataText="No pending services — all done!">
 							<columns>
 								<Column width="5%">
@@ -166,7 +157,7 @@
 							</items>
 						</Table>
 
-						<!-- Pagination Bar for Desktop Table -->
+						
 						<Toolbar id="idPendingPaginationToolbar" class="sapUiSmallMarginTop">
 							<ToolbarSpacer />
 							<Button id="idPendingPrevPageButton" icon="sap-icon://navigation-left-arrow" press=".onButtonPendingPrevPagePress" type="Transparent" enabled="{= ${viewModel>/pendingCurrentPage} > 0}" tooltip="Previous Page" />
@@ -174,7 +165,7 @@
 							<Button id="idPendingNextPageButton" icon="sap-icon://navigation-right-arrow" press=".onButtonPendingNextPagePress" type="Transparent" enabled="{= (${viewModel>/pendingCurrentPage} + 1) &lt; ${viewModel>/pendingTotalPages}}" tooltip="Next Page" />
 						</Toolbar>
 
-						<!-- Mobile List -->
+						
 						<List id="idPendingServicesPageList" items="{viewModel>/pendingServicesPage}" class="stitchCardList showOnMobile sapUiSmallMarginTop" noDataText="No pending services">
 							<items>
 								<CustomListItem class="stitchCard">
@@ -206,7 +197,7 @@
 							</items>
 						</List>
 
-						<!-- Mobile Pagination Bar -->
+						
 						<Toolbar id="idPendingMobilePaginationToolbar" class="showOnMobile sapUiSmallMarginTop">
 							<ToolbarSpacer />
 							<Button icon="sap-icon://navigation-left-arrow" press=".onButtonPendingPrevPagePress" type="Transparent" enabled="{= ${viewModel>/pendingCurrentPage} > 0}" />

@@ -1,17 +1,4 @@
-/**
- * Dashboard.controller.js — WashWizard
- * =====================================================================
- *  Handles:
- *    1. SERVICE ENTRY (Tab 1) — validate inputs, POST or UPDATE OData
- *    2. CURRENT SERVICES (Tab 2) — complete (PATCH), edit, delete a job
- *    3. PAGINATION — 8 rows per page for the pending services table
- *
- *  Edit Flow:
- *    - onButtonEditPress reads the row data from viewModel (JSON slice)
- *    - Prefills Service Entry form and sets _isEditMode = true
- *    - onSaveServiceButtonPress checks _isEditMode → calls update() instead of create()
- * =====================================================================
- */
+
 sap.ui.define(
   [
     "sap/ui/core/mvc/Controller",
@@ -39,55 +26,51 @@ sap.ui.define(
   ) {
     "use strict";
 
-    var PAGE_SIZE = 8; // rows per page for the pending table
+    var PAGE_SIZE = 8; 
 
     return Controller.extend("sap.ui.demo.walkthrough.controller.Dashboard", {
-      // ── Lifecycle ─────────────────────────────────────────────────
+      
 
       onInit: function () {
         this._totalAmount = 0;
         this._selectedServices = [];
         this._isEditMode = false;
-        this._editPath = null; // OData path for the record being edited
+        this._editPath = null; 
 
-        // ViewModel drives Service Details panels (pricing lists) + pagination
+        
         var oViewModel = new JSONModel({
           currentDate: this._getFormattedDate(),
-          selectedWheels: "4 Wheeler", // default to most common
+          selectedWheels: "4 Wheeler", 
           washingServices: [],
           interiorServices: [],
           coatingServices: [],
-          // Pagination state for Pending table
+          
           pendingCurrentPage: 0,
           pendingTotalPages: 1,
-          pendingServicesPage: [], // current page slice (8 items max)
-          allPendingServices: [], // full filtered/sorted list
+          pendingServicesPage: [], 
+          allPendingServices: [], 
         });
         this.getView().setModel(oViewModel, "viewModel");
 
-        // Attach to router so we can refresh when the user returns to Dashboard
+        
         var oRouter = UIComponent.getRouterFor(this);
         oRouter
           .getRoute("dashboard")
           .attachPatternMatched(this._onRouteMatched, this);
 
-        // Try to load pricing data now (works if PricingData already loaded)
+        
         this._tryLoadPricing();
       },
 
-      // ── Private ───────────────────────────────────────────────────
+      
 
-      /** Called every time the Dashboard route is activated */
+      
       _onRouteMatched: function () {
         this._tryLoadPricing();
         this._loadPendingServices();
       },
 
-      /**
-       * _tryLoadPricing — loads the service selection lists.
-       * Tries the component model first; if not ready, attaches a
-       * one-time listener so it loads the moment data arrives.
-       */
+      
       _tryLoadPricing: function () {
         var oPricingModel =
           this.getView().getModel("PricingData") ||
@@ -101,11 +84,11 @@ sap.ui.define(
           .getModel("viewModel")
           .getProperty("/selectedWheels");
 
-        // If data is already loaded (non-empty object), populate immediately
+        
         if (oData && oData[sWheel]) {
           this._updateServiceLists(sWheel);
         } else {
-          // Data not ready yet — wait for the JSON model's request to complete
+          
           oPricingModel.attachEventOnce(
             "requestCompleted",
             function () {
@@ -119,10 +102,7 @@ sap.ui.define(
         }
       },
 
-      /**
-       * _loadPendingServices — reads all Pending records from OData,
-       * stores them in viewModel, then applies pagination.
-       */
+      
       _loadPendingServices: function () {
         var oModel = this.getView().getModel();
         if (!oModel) return;
@@ -135,7 +115,7 @@ sap.ui.define(
           success: function (oData) {
             var aAll = oData && oData.results ? oData.results : [];
 
-            // Apply current search filter to the data
+            
             var sQuery = that._getCurrentSearchQuery();
             if (sQuery) {
               var sLower = sQuery.toLowerCase();
@@ -157,7 +137,7 @@ sap.ui.define(
             that._applyPendingPagination();
           },
           error: function () {
-            // If read fails, show empty state
+            
             var oVM = that.getView().getModel("viewModel");
             oVM.setProperty("/allPendingServices", []);
             oVM.setProperty("/pendingServicesPage", []);
@@ -166,17 +146,14 @@ sap.ui.define(
         });
       },
 
-      /**
-       * _applyPendingPagination — slices allPendingServices into the current
-       * page and updates totalPages in the viewModel.
-       */
+      
       _applyPendingPagination: function () {
         var oVM = this.getView().getModel("viewModel");
         var aAll = oVM.getProperty("/allPendingServices") || [];
         var nPage = oVM.getProperty("/pendingCurrentPage") || 0;
         var nTotal = Math.max(1, Math.ceil(aAll.length / PAGE_SIZE));
 
-        // Clamp page index
+        
         if (nPage >= nTotal) {
           nPage = nTotal - 1;
         }
@@ -192,7 +169,7 @@ sap.ui.define(
         oVM.setProperty("/pendingServicesPage", aPage);
       },
 
-      /** Returns current search field value (empty string if not yet rendered) */
+      
       _getCurrentSearchQuery: function () {
         var oSF = this.byId("idDashboardSearchField");
         return oSF ? oSF.getValue().trim() : "";
@@ -206,7 +183,7 @@ sap.ui.define(
         return oFmt.format(new Date());
       },
 
-      /** Returns today as "YYYY-MM-DD" */
+      
       _getTodayIso: function () {
         var d = new Date();
         var mm = (d.getMonth() + 1).toString().padStart(2, "0");
@@ -214,7 +191,7 @@ sap.ui.define(
         return d.getFullYear() + "-" + mm + "-" + dd;
       },
 
-      /** Simple UUID generator for the Guid primary key */
+      
       _generateGuid: function () {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
           /[xy]/g,
@@ -225,7 +202,7 @@ sap.ui.define(
         );
       },
 
-      /** Populates Washing / Interior / Coating lists from PricingData */
+      
       _updateServiceLists: function (sWheelType) {
         var oPricingModel =
           this.getView().getModel("PricingData") ||
@@ -242,7 +219,7 @@ sap.ui.define(
         }
       },
 
-      /** Recalculates total amount from selected service items */
+      
       _recalculateTotals: function () {
         this._totalAmount = 0;
         this._selectedServices = [];
@@ -265,7 +242,7 @@ sap.ui.define(
             );
           }.bind(this),
         );
-        // Update the amount display field
+        
         var oAmountInput = this.byId("idAmountInput");
         if (oAmountInput) {
           oAmountInput.setValue(
@@ -354,11 +331,7 @@ sap.ui.define(
         }
       },
 
-      /**
-       * _validateInputs — runs all field validations at once on Save press.
-       * Reuses _setFieldState so the same red/green rules apply.
-       * Returns true only if every field passes.
-       */
+      
       _validateInputs: function () {
         var bValid = true;
         var that = this;
@@ -403,7 +376,7 @@ sap.ui.define(
           "Format: GJ 05 AR 4521  (State · District · Letters · Number)",
         );
 
-        // Amount check
+        
         var oAmountInput = this.byId("idAmountInput");
         var nAmount =
           parseFloat(oAmountInput ? oAmountInput.getValue() : "0") || 0;
@@ -415,7 +388,7 @@ sap.ui.define(
         return bValid;
       },
 
-      // ── Event Handlers: Tab 1 (Service Entry) ─────────────────────
+      
 
       onSelectChange: function (oEvent) {
         var sKey = oEvent.getParameter("selectedItem").getKey();
@@ -443,11 +416,7 @@ sap.ui.define(
         this._recalculateTotals();
       },
 
-      /**
-       * onSaveServiceButtonPress — validates then either:
-       *   - POSTs a new record (normal mode), or
-       *   - PATCHes the existing record (edit mode)
-       */
+      
       onSaveServiceButtonPress: function () {
         if (!this._validateInputs()) return;
 
@@ -471,11 +440,11 @@ sap.ui.define(
           PaymentMethod: this.byId("idPaymentMethodSelect").getSelectedKey(),
         };
 
-        var oModel = this.getView().getModel(); // default ODataModel
+        var oModel = this.getView().getModel(); 
         var that = this;
 
         if (this._isEditMode && this._editPath) {
-          // ── EDIT MODE: update existing record ───────────────────
+          
           oModel.update(this._editPath, oPayload, {
             success: function () {
               MessageToast.show("Service entry updated successfully!");
@@ -495,7 +464,7 @@ sap.ui.define(
             },
           });
         } else {
-          // ── CREATE MODE: post new record ─────────────────────────
+          
           oPayload.Guid = this._generateGuid();
           oPayload.Status = "Pending";
           oPayload.Date = this._getTodayIso();
@@ -522,7 +491,7 @@ sap.ui.define(
         }
       },
 
-      /** Clears the service entry form after a successful save */
+      
       _clearForm: function () {
         [
           "idCustomerNameInput",
@@ -555,7 +524,7 @@ sap.ui.define(
         var oPaySel = this.byId("idPaymentMethodSelect");
         if (oPaySel) oPaySel.setSelectedKey("Online");
 
-        // Reset edit mode state
+        
         this._isEditMode = false;
         this._editPath = null;
         var oSaveBtn = this.byId("idSaveServiceButton");
@@ -564,14 +533,11 @@ sap.ui.define(
         }
       },
 
-      // ── Event Handlers: Tab 2 (Current Services) ──────────────────
+      
 
-      /**
-       * onButtonEditPress — reads the row data from the JSON viewModel slice,
-       * pre-fills the Service Entry form, and switches to the entry tab.
-       */
+      
       onEditButtonPress: function (oEvent) {
-        // The table is now bound to viewModel>/pendingServicesPage (JSONModel)
+        
         var oContext = oEvent.getSource().getBindingContext("viewModel");
         if (!oContext) {
           MessageToast.show("Cannot read record data. Please try again.");
@@ -583,11 +549,11 @@ sap.ui.define(
           return;
         }
 
-        // Store the OData path for the UPDATE call
+        
         this._editPath = "/ServiceTaskSet('" + oData.Guid + "')";
         this._isEditMode = true;
 
-        // Pre-fill the Service Entry form fields
+        
         var oNameInput = this.byId("idCustomerNameInput");
         var oPhoneInput = this.byId("idPhoneInput");
         var oModelInput = this.byId("idCarModelInput");
@@ -618,13 +584,13 @@ sap.ui.define(
           oPaySel.setSelectedKey(oData.PaymentMethod || "Online");
         }
 
-        // Change the Save button to indicate Update mode
+        
         var oSaveBtn = this.byId("idSaveServiceButton");
         if (oSaveBtn) {
           oSaveBtn.setText("Update Service");
         }
 
-        // Switch to the Service Entry tab
+        
         var oTabBar = this.byId("idIconTabBar");
         if (oTabBar) {
           oTabBar.setSelectedKey("entry");
@@ -635,10 +601,7 @@ sap.ui.define(
         );
       },
 
-      /**
-       * onCompleteButtonPress — PATCHes Status to 'Completed'.
-       * Now uses Guid from the JSON viewModel slice to find the OData path.
-       */
+      
       onCompleteButtonPress: function (oEvent) {
         var oContext = oEvent.getSource().getBindingContext("viewModel");
         if (!oContext) {
@@ -698,12 +661,12 @@ sap.ui.define(
         });
       },
 
-      // Alias for mobile list delete button
+      
       onDeleteButtonPress: function (oEvent) {
         this.onButtonDeletePress(oEvent);
       },
 
-      // ── Pagination Handlers ────────────────────────────────────────
+      
 
       onButtonPendingPrevPagePress: function () {
         var oVM = this.getView().getModel("viewModel");
@@ -724,7 +687,7 @@ sap.ui.define(
         }
       },
 
-      // ── Search ────────────────────────────────────────────────────
+      
 
       onSearchFieldSearch: function () {
         this._loadPendingServices();
@@ -733,7 +696,7 @@ sap.ui.define(
         this._loadPendingServices();
       },
 
-      // Misc
+      
       onButtonTableSettingsPress: function () {
         MessageToast.show("Table Settings");
       },

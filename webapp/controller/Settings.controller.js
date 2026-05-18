@@ -6,7 +6,7 @@ sap.ui.define([
 
 	return Controller.extend("sap.ui.demo.walkthrough.controller.Settings", {
 		onInit: function () {
-            // Apply a solid background directly to the page wrapper if necessary via CSS or class
+            
 			this.getView().addStyleClass("sapUiSizeCompact");
 		},
 

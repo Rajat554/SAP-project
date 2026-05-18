@@ -6,17 +6,17 @@
     <Page id="idServiceRecordsPage" title="Service Records" showHeader="false" class="sapUiResponsiveContentPadding">
         <VBox class="sapUiSmallMargin">
 
-            <!-- Header -->
+            
             <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
                 <Title text="Service Records" level="H2" titleStyle="H2" />
                 <HBox alignItems="Center">
-                    <!-- Count text is driven by the OData binding length -->
+                    
                     <ObjectStatus id="idCompletedServicesCountObjectStatus" text="Completed Services" inverted="true" state="Success" class="sapUiSmallMarginEnd customTag" />
                     <Button icon="sap-icon://synchronize" text="Refresh" press=".onRefreshButtonPress" />
                 </HBox>
             </HBox>
 
-            <!-- Search and Filter -->
+            
             <HBox class="sapUiSmallMarginBottom" alignItems="Center">
                 <SearchField id="idRecordsSearchField" width="30rem" placeholder="Search by customer name, vehicle or phone..." search=".onSearchFieldSearch" liveChange=".onSearchFieldLiveChange" class="sapUiSmallMarginEnd" />
                 <ComboBox id="idPaymentComboBox" placeholder="Payment Method" selectionChange=".onComboBoxSelectionChange" class="sapUiSmallMarginEnd">
@@ -37,7 +37,7 @@
                 </ComboBox>
             </HBox>
 
-            <!-- History Table Panel -->
+            
             <Panel class="customPanel" width="auto">
                 <headerToolbar>
                     <Toolbar design="Transparent">
@@ -48,7 +48,7 @@
                     </Toolbar>
                 </headerToolbar>
 
-                <!-- Desktop Table — bound to JSON viewModel slice for pagination -->
+                
                 <Table id="idCompletedServicesPageTable" items="{recordsModel>/completedServicesPage}" noDataText="No completed service records found." alternateRowColors="true" class="sapUiSizeCompact customServiceList hideOnMobile">
                     <columns>
                         <Column width="20%">
@@ -98,7 +98,7 @@
                     </items>
                 </Table>
 
-                <!-- Pagination Bar for Desktop Table -->
+                
                 <Toolbar id="idCompletedPaginationToolbar" class="sapUiSmallMarginTop">
                     <ToolbarSpacer />
                     <Button id="idCompletedPrevPageButton" icon="sap-icon://navigation-left-arrow" press=".onButtonCompletedPrevPagePress" type="Transparent" enabled="{= ${recordsModel>/completedCurrentPage} > 0}" tooltip="Previous Page" />
@@ -106,7 +106,7 @@
                     <Button id="idCompletedNextPageButton" icon="sap-icon://navigation-right-arrow" press=".onButtonCompletedNextPagePress" type="Transparent" enabled="{= (${recordsModel>/completedCurrentPage} + 1) &lt; ${recordsModel>/completedTotalPages}}" tooltip="Next Page" />
                 </Toolbar>
 
-                <!-- Mobile List -->
+                
                 <List id="idCompletedServicesPageList" items="{recordsModel>/completedServicesPage}" noDataText="No completed service records found." class="stitchCardList showOnMobile sapUiSizeCompact">
                     <items>
                         <CustomListItem class="stitchCard">
@@ -147,7 +147,7 @@
                     </items>
                 </List>
 
-                <!-- Mobile Pagination Bar -->
+                
                 <Toolbar id="idCompletedMobilePaginationToolbar" class="showOnMobile sapUiSmallMarginTop">
                     <ToolbarSpacer />
                     <Button icon="sap-icon://navigation-left-arrow" press=".onButtonCompletedPrevPagePress" type="Transparent" enabled="{= ${recordsModel>/completedCurrentPage} > 0}" />

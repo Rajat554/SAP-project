@@ -7,10 +7,7 @@ sap.ui.define("sap/ui/demo/walkthrough/localService/mockserver", [
     var _oMockServer;
 
     return {
-        /**
-         * init — Starts the mock server.
-         * Returns a Promise so the application can wait for it to initialize.
-         */
+        
         init: function () {
             return new Promise(function(resolve, reject) {
                 try {
@@ -18,10 +15,10 @@ sap.ui.define("sap/ui/demo/walkthrough/localService/mockserver", [
                         return resolve();
                     }
 
-                    // Must EXACTLY match manifest.json → dataSources → mainService → uri
+                    
                     var sServiceUrl = "/destinations/WashWizard/";
 
-                    // Absolute paths to the local metadata and mockdata folder
+                    
                     var sMetadataUrl = sap.ui.require.toUrl(
                         "sap/ui/demo/walkthrough/localService/metadata.xml"
                     );
@@ -29,22 +26,22 @@ sap.ui.define("sap/ui/demo/walkthrough/localService/mockserver", [
                         "sap/ui/demo/walkthrough/localService/mockdata"
                     );
 
-                    // Create the MockServer
+                    
                     _oMockServer = new MockServer({ rootUri: sServiceUrl });
 
-                    // Configure response delay
+                    
                     MockServer.config({
                         autoRespond      : true,
                         autoRespondAfter : 500
                     });
 
-                    // Point MockServer at our metadata.xml and mockdata
+                    
                     _oMockServer.simulate(sMetadataUrl, {
                         sMockdataBaseUrl        : sMockdataUrl,
                         bGenerateMissingMockData: false
                     });
 
-                    // Start interception
+                    
                     _oMockServer.start();
 
                     Log.info("MockServer started on " + sServiceUrl);
