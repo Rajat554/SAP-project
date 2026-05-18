@@ -1,19 +1,4 @@
-/**
- * Analytics.controller.js — WashWizard Revenue Analytics
- * =====================================================================
- *  Reads from the default ODataModel (the "" model).
- *
- *  Data Flow (fixed):
- *    1. On route match, force a fresh oModel.read("/ServiceTaskSet") call.
- *    2. Use the response data directly (not from ODataModel cache) to
- *       guarantee charts render even on first navigation.
- *    3. Filter for Status='Completed', aggregate by month/day/service type.
- *    4. Push results into analyticsModel for chart bindings.
- *
- *  This approach avoids the ODataModel cache timing issue where
- *  getProperty("/ServiceTaskSet") returns empty on first load.
- * =====================================================================
- */
+
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
@@ -23,10 +8,10 @@ sap.ui.define([
 
     return Controller.extend("sap.ui.demo.walkthrough.controller.Analytics", {
 
-        // ── Lifecycle ─────────────────────────────────────────────
+        
 
         onInit: function () {
-            // analyticsModel holds all computed KPIs and chart data
+            
             var oViewModel = new JSONModel({
                 totalRevenue              : 0,
                 totalServices             : 0,
@@ -45,15 +30,15 @@ sap.ui.define([
             });
             this.getView().setModel(oViewModel, "analyticsModel");
 
-            // Listen for navigation to this page
+            
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
             oRouter.getRoute("analytics").attachPatternMatched(this._onObjectMatched, this);
         },
 
-        // ── Private ───────────────────────────────────────────────
+        
 
         _onObjectMatched: function () {
-            // Set current month as default filter value
+            
             var oDatePicker = this.byId("idMonthDatePicker");
             if (oDatePicker && !oDatePicker.getValue()) {
                 var oDate   = new Date();
@@ -61,15 +46,11 @@ sap.ui.define([
                 oDatePicker.setValue(oDate.getFullYear() + "-" + sMonth);
             }
 
-            // Always force a fresh OData read to get up-to-date data
+            
             this._loadAndProcess();
         },
 
-        /**
-         * _loadAndProcess — forces an OData read of /ServiceTaskSet and
-         * passes the results directly to _processData(). This avoids
-         * the ODataModel cache timing issue.
-         */
+        
         _loadAndProcess: function () {
             var oModel = this.getView().getModel();
             if (!oModel) {
@@ -93,7 +74,7 @@ sap.ui.define([
             });
         },
 
-        /** Sets chart visual properties (colors, labels) once on navigation */
+        
         _setupVizFrames: function () {
             var chartConfigs = [
                 {
@@ -147,16 +128,10 @@ sap.ui.define([
             }
         },
 
-        /**
-         * _processData — main analytics calculation function.
-         * Receives the already-filtered array of Completed records directly
-         * from the OData read response (no cache dependency).
-         *
-         * @param {Array} aAllCompleted - all completed ServiceTask records
-         */
+        
         _processData: function (aAllCompleted) {
             if (!aAllCompleted || aAllCompleted.length === 0) {
-                // Reset all KPIs to zero/empty so the UI shows an empty state
+                
                 var oViewModel = this.getView().getModel("analyticsModel");
                 oViewModel.setProperty("/totalRevenue",    0);
                 oViewModel.setProperty("/totalServices",   0);
@@ -175,14 +150,14 @@ sap.ui.define([
                 return;
             }
 
-            // ── Step 1: Filter by selected month ──────────────────
+            
             var oDatePicker = this.byId("idMonthDatePicker");
             if (!oDatePicker) return;
-            var sMonthValue = oDatePicker.getValue(); // "2026-04"
+            var sMonthValue = oDatePicker.getValue(); 
             if (!sMonthValue) return;
 
             var aMonthServices = aAllCompleted.filter(function (oService) {
-                // Check both CompletedAt and Date fields
+                
                 var dDate = oService.CompletedAt || oService.Date;
                 if (!dDate) return false;
                 
@@ -191,13 +166,13 @@ sap.ui.define([
                     var mm = (dDate.getMonth() + 1).toString().padStart(2, "0");
                     sDateStr = dDate.getFullYear() + "-" + mm;
                 } else if (typeof dDate === "string") {
-                    sDateStr = dDate.substring(0, 7); // e.g. "2026-05" from "2026-05-03"
+                    sDateStr = dDate.substring(0, 7); 
                 }
                 
                 return sDateStr === sMonthValue;
             });
 
-            // ── Step 2: Aggregate revenue and service counts ───────
+            
             var totalRevenue       = 0;
             var totalServices      = aMonthServices.length;
             var oDailyRevenue      = {};
@@ -208,7 +183,7 @@ sap.ui.define([
                 var amt = parseFloat(oService.Amount) || 0;
                 totalRevenue += amt;
 
-                // Group by day (just the DD part of the date string)
+                
                 var dDate = oService.CompletedAt || oService.Date;
                 var sDay = "01";
                 if (dDate instanceof Date) {
@@ -220,7 +195,7 @@ sap.ui.define([
                 oDailyRevenue[sDay]   = (oDailyRevenue[sDay]   || 0) + amt;
                 oDailyServices[sDay]  = (oDailyServices[sDay]  || 0) + 1;
 
-                // Split multi-service entries for more accurate distribution
+                
                 var aTypes = (oService.ServiceType || "Unknown").split(",");
                 aTypes.forEach(function (sRaw) {
                     var sType = sRaw.trim();
@@ -228,7 +203,7 @@ sap.ui.define([
                     if (!oServiceDist[sType]) {
                         oServiceDist[sType] = { Count: 0, Revenue: 0 };
                     }
-                    // Distribute revenue equally among service types for this entry
+                    
                     oServiceDist[sType].Count   += 1;
                     oServiceDist[sType].Revenue += (amt / aTypes.length);
                 });
@@ -238,7 +213,7 @@ sap.ui.define([
             var avgDailyRevenue  = workingDaysCount > 0 ? totalRevenue / workingDaysCount : 0;
             var avgServiceValue  = totalServices   > 0 ? totalRevenue / totalServices    : 0;
 
-            // ── Step 3: Build trend chart data (full month) ────────
+            
             var aTrendData   = [];
             var monthParts   = sMonthValue.split("-");
             var daysInMonth  = new Date(monthParts[0], monthParts[1], 0).getDate();
@@ -252,7 +227,7 @@ sap.ui.define([
                 });
             }
 
-            // ── Step 4: Build distribution data ───────────────────
+            
             var aDistData = [];
             for (var key in oServiceDist) {
                 if (oServiceDist.hasOwnProperty(key)) {
@@ -265,7 +240,7 @@ sap.ui.define([
             }
             aDistData.sort(function (a, b) { return b.Revenue - a.Revenue; });
 
-            // Peak day calculation
+            
             var peakRev   = 0;
             var bestDay   = "N/A";
             var busiestDayCount = 0;
@@ -285,7 +260,7 @@ sap.ui.define([
 
             var topServiceType = aDistData.length > 0 ? aDistData[0].ServiceType : "N/A";
 
-            // ── Step 5: Push to analyticsModel ─────────────────────
+            
             var oVM = this.getView().getModel("analyticsModel");
             oVM.setProperty("/totalRevenue",    totalRevenue.toFixed(0));
             oVM.setProperty("/totalServices",   totalServices);
@@ -303,9 +278,9 @@ sap.ui.define([
             });
         },
 
-        // ── Event Handlers ───────────────────────────────────────
+        
 
-        /** Called when the month/year picker changes */
+        
         onDatePickerMonthChange: function () {
             this._loadAndProcess();
         }

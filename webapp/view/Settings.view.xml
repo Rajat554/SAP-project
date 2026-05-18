@@ -13,7 +13,7 @@
 					<items>
 						<IconTabFilter key="profile" text="Profile" icon="sap-icon://person-placeholder" class="tabFilterButton">
 
-							<!-- Profile Information Block -->
+							
 							<VBox class="customWhiteCard sapUiMediumMarginBottom sapUiSmallMarginTop">
 								<VBox class="sapUiSmallMargin">
 									<HBox alignItems="Center" class="sapUiSmallMarginBottom">
@@ -35,7 +35,7 @@
 								</VBox>
 							</VBox>
 
-							<!-- Change Password Block -->
+							
 							<VBox class="customWhiteCard sapUiMediumMarginBottom">
 								<VBox class="sapUiSmallMargin">
 									<Title text="Change Password" level="H3" titleStyle="H3" class="cardTitle sapUiSmallMarginBottom" />

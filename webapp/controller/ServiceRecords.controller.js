@@ -1,21 +1,4 @@
-/**
- * ServiceRecords.controller.js — WashWizard History View
- * =====================================================================
- *  This view shows all COMPLETED service jobs.
- *
- *  Data Flow:
- *    - On route match, reads all Completed records from OData into
- *      recordsModel>/allCompletedServices (full array).
- *    - Pagination slices the array into pages of 8.
- *    - Search/filter re-computes the filtered array and resets to page 0.
- *    - Both desktop table and mobile list bind to recordsModel>/completedServicesPage.
- *
- *  Why JSONModel instead of direct OData binding?
- *    Client-side slicing gives deterministic, exact page sizes without
- *    relying on OData $skip/$top which the mock server may not support
- *    fully in combination with $filter.
- * =====================================================================
- */
+
 sap.ui.define(
   [
     "sap/ui/core/mvc/Controller",
@@ -41,15 +24,15 @@ sap.ui.define(
   ) {
     "use strict";
 
-    var PAGE_SIZE = 8; // rows per page
+    var PAGE_SIZE = 8; 
 
     return Controller.extend(
       "sap.ui.demo.walkthrough.controller.ServiceRecords",
       {
-        // ── Lifecycle ───────────────────────────────────────────
+        
 
         onInit: function () {
-          // Bind to route matched
+          
           var oRouter = UIComponent.getRouterFor(this);
           oRouter
             .getRoute("serviceRecords")
@@ -124,9 +107,9 @@ sap.ui.define(
           this._applyServerSideFilters();
         },
 
-        // ── Action Handlers ──────────────────────────────────────
+        
 
-        /** Print Bill — 1-click trigger for Bluetooth Thermal Printers */
+        
         onButtonPrintBillPress: function (oEvent) {
           this._printReceipt(oEvent);
         },
@@ -139,7 +122,7 @@ sap.ui.define(
             var oData = oContext ? oContext.getObject() : oEvent.getSource().getBindingContext("recordsModel").getObject();
             if (!oData) return;
 
-            // Generate a simple HTML string for the receipt
+            
             var sReceiptHtml = 
                 "<div style='width: 300px; font-family: monospace; padding: 10px; margin: 0 auto;'>" +
                 "<h2 style='text-align: center; margin-bottom: 5px;'>WASH WIZARD</h2>" +
@@ -158,7 +141,7 @@ sap.ui.define(
                 "<p style='text-align: center; font-size: 12px;'>Thank you for your business!</p>" +
                 "</div>";
 
-            // Open a new invisible print window and trigger the OS print dialog (1-click to Bluetooth printer)
+            
             var oPrintWindow = window.open("", "_blank", "width=400,height=600");
             oPrintWindow.document.write("<html><head><title>Print Receipt</title></head><body onload='window.print();window.close();'>" + sReceiptHtml + "</body></html>");
             oPrintWindow.document.close();
@@ -166,7 +149,7 @@ sap.ui.define(
             MessageToast.show("Sending to printer...");
         },
 
-        /** Delete a completed record from history */
+        
         onButtonDeletePress: function (oEvent) {
           var oContext = oEvent.getSource().getBindingContext("recordsModel");
           if (!oContext) return;
@@ -197,7 +180,7 @@ sap.ui.define(
           this.onButtonDeletePress(oEvent);
         },
 
-        // ── Table Settings (Column Visibility) ────────────────────────
+        
         onButtonTableSettingsPress: function () {
           var oView = this.getView();
           var oTable = this.byId("idServiceTaskSetCompletedTable");
@@ -215,7 +198,7 @@ sap.ui.define(
           }
 
           this._pColumnSettingsDialog.then(function (oDialog) {
-            // Build column data model for the list
+            
             var aCols = oTable.getColumns().map(function (oCol, i) {
               var sName = "Column " + (i + 1);
               var oHeader = oCol.getHeader();

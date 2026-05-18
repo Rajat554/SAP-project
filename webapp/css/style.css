@@ -1,11 +1,8 @@
-/* ============================================================
-   WashWizard Manager – Global Stylesheet
-   Full responsive, premium look for all screen sizes
-   ============================================================ */
 
-/* ── 1. APP SHELL BACKGROUND ─────────────────────────────── */
 
-/* Ensure the full UI5 App shell and ToolPage get the background */
+
+
+
 .sapUiBody,
 #content,
 .sapMApp,
@@ -16,7 +13,7 @@
 }
 
 
-/* ── 3. SIDE NAVIGATION ──────────────────────────────────── */
+
 .sapTntSideNavigation {
     background-color: #ffffff !important;
     border-right: 1px solid #E8EDF4 !important;
@@ -36,14 +33,14 @@
     background-color: #F5F8FF !important;
 }
 
-/* ── 4. TOOL HEADER ──────────────────────────────────────── */
+
 .sapTntToolHeader {
     background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%) !important;
     border-bottom: 1px solid #E2E8F4 !important;
     box-shadow: 0 2px 8px rgba(0, 112, 242, 0.06) !important;
 }
 
-/* ── 5. BRAND AREA ───────────────────────────────────────── */
+
 .brandTitle {
     font-size: 1.3rem !important;
     font-weight: 700 !important;
@@ -60,7 +57,7 @@
     padding: 0%;
 }
 
-/* ── 6. USER PROFILE ─────────────────────────────────────── */
+
 .userNameText {
     font-weight: 600 !important;
     font-size: 1rem !important;
@@ -71,7 +68,7 @@
     color: #8A94A8 !important;
 }
 
-/* ── 7. DASHBOARD / PAGE TITLES ──────────────────────────── */
+
 .dashboardTitle {
     font-size: 1.5rem !important;
     font-weight: 700 !important;
@@ -85,7 +82,7 @@
     font-weight: 500;
 }
 
-/* ── 8. ICON TAB BAR ─────────────────────────────────────── */
+
 .customTabBar {
     background: transparent !important;
 }
@@ -115,7 +112,7 @@
     border-bottom: 3px solid #0070F2 !important;
 }
 
-/* ── 9. CARDS ────────────────────────────────────────────── */
+
 .cardBox {
     background: #ffffff !important;
     border-radius: 14px !important;
@@ -144,7 +141,7 @@
     box-shadow: 0 6px 24px rgba(0, 30, 80, 0.11) !important;
 }
 
-/* ── 10. CARD HEADERS ────────────────────────────────────── */
+
 .cardTitle {
     font-size: 1.3rem !important;
     font-weight: 600 !important;
@@ -155,13 +152,13 @@
     font-size: 1.2rem !important;
 }
 
-/* ── 11. FLEX UTILITIES ──────────────────────────────────── */
+
 .flexColumn {
     display: flex;
     flex-direction: column;
 }
 
-/* ── 12. INPUTS & LABELS ─────────────────────────────────── */
+
 .customLabel {
     color: #4A5568 !important;
     font-size: 1rem !important;
@@ -193,7 +190,7 @@
     border-color: #C5D8F8 !important;
 }
 
-/* ── 13. SERVICE PANELS ──────────────────────────────────── */
+
 .servicePanel {
     border: 1.5px solid #E2E8F4 !important;
     border-radius: 10px !important;
@@ -213,8 +210,8 @@
     font-size: 0.82rem;
 }
 
-/* ── 14. BUTTONS ─────────────────────────────────────────── */
-/* Save / Primary Button */
+
+
 .customSaveBtn {
     height: 44px !important;
     border-radius: 10px !important;
@@ -244,7 +241,7 @@
     color: #ffffff !important;
 }
 
-/* Complete Button */
+
 .completeBtn .sapMBtnInner {
     background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
     border-color: #10B981 !important;
@@ -262,7 +259,7 @@
     color: #ffffff !important;
 }
 
-/* Action Icon Buttons */
+
 .actionBtn .sapMBtnInner {
     border: 1px solid #E2E8F4 !important;
     border-radius: 8px !important;
@@ -276,7 +273,7 @@
     border-color: #BDD6F8 !important;
 }
 
-/* ── 15. SERVICE RECORD CARDS (Table rows as cards) ──────── */
+
 .noStandardBackgroundList,
 .noStandardBackgroundList .sapMListBGSolid {
     background: transparent !important;
@@ -334,7 +331,7 @@
     font-size: 0.88rem !important;
 }
 
-/* ── 16. PADDING UTILITIES ───────────────────────────────── */
+
 .responsivePadding {
     padding-left: 2rem !important;
     padding-right: 2rem !important;
@@ -349,7 +346,7 @@
     padding-bottom: 2rem;
 }
 
-/* ── 17. STATUS BADGES ───────────────────────────────────── */
+
 .statusPending {
     color: #F59E0B !important;
     background: #FEF3C7 !important;
@@ -368,7 +365,7 @@
     font-weight: 600;
 }
 
-/* ── 18. ANALYTICS / CHART CONTAINERS ───────────────────── */
+
 .analyticsCard {
     background: #ffffff !important;
     border-radius: 14px !important;
@@ -377,9 +374,9 @@
     padding: 1.25rem !important;
 }
 
-/* ── 19. RESPONSIVE BREAKPOINTS ──────────────────────────── */
 
-/* Large Desktop (1400px+) */
+
+
 @media (min-width: 1400px) {
     .responsivePadding {
         padding-left: 2.5rem !important;
@@ -391,7 +388,7 @@
     }
 }
 
-/* Standard Desktop (1024px – 1399px) */
+
 @media (min-width: 1024px) and (max-width: 1399px) {
     .responsivePadding {
         padding-left: 1.75rem !important;
@@ -399,7 +396,7 @@
     }
 }
 
-/* Tablet (768px – 1023px) */
+
 @media (min-width: 768px) and (max-width: 1023px) {
     .responsivePadding {
         padding-left: 1.25rem !important;
@@ -415,7 +412,7 @@
     }
 }
 
-/* Phone (< 768px) */
+
 @media (max-width: 767px) {
     .hiddenOnSmall {
         display: none !important;
@@ -472,7 +469,7 @@
     }
 }
 
-/* Very small phone (< 400px) */
+
 @media (max-width: 400px) {
     .responsivePadding {
         padding-left: 0.5rem !important;
@@ -488,8 +485,8 @@
     padding-top: 0.4rem;    
 }
 
-/* ── 20. RESPONSIVE TABLE vs LIST TOGGLE ─────────────────── */
-/* Default: Show Table, Hide List */
+
+
 .hideOnMobile {
     display: flex !important;
     width: 100%;
@@ -499,7 +496,7 @@
 }
 
 @media (max-width: 1023px) {
-    /* On Tablet & Mobile: Hide Table, Show List */
+    
     .hideOnMobile {
         display: none !important;
     }
@@ -509,7 +506,7 @@
     }
 }
 
-/* ── 21. STITCH MOBILE/TABLET DETAILED CARDS ──────────────── */
+
 .stitchCardList .sapMListBGSolid {
     background: transparent !important;
 }

@@ -12,21 +12,21 @@ sap.ui.define(
       onInit: function () {
         this.getView().addStyleClass("sapUiSizeCompact");
 
-        // ── SELF-CONTAINED AUTH GUARD ─────────────────────────────
-        // This fires every time the Settings view is instantiated,
-        // regardless of whether the global route guard caught it.
-        // It is the definitive last line of defense against direct URL access.
+        
+        
+        
+        
         var oComponent = this.getOwnerComponent();
         var oUserModel = oComponent.getModel("userModel");
 
-        // The model may not be ready yet on first load — poll for it.
+        
         var that = this;
         var _checkAuth = function () {
           var bIsLoggedIn = oUserModel.getProperty("/isLoggedIn");
           var sRole = oUserModel.getProperty("/role");
 
           if (!bIsLoggedIn) {
-            // Not logged in at all — redirect to login by reloading clean
+            
             window.sessionStorage.clear();
             window.location.hash = "";
             window.location.reload();
@@ -34,13 +34,13 @@ sap.ui.define(
           }
 
           if (sRole !== "Admin") {
-            // Logged in but wrong role — immediately kick to dashboard
+            
             MessageBox.error(
               "Access Denied: You do not have permission to view the Settings page.\nThis area is restricted to Administrators only.",
               {
                 title: "Unauthorized",
                 onClose: function () {
-                  // Make the view content invisible while we navigate away
+                  
                   that.getView().setVisible(false);
                   oComponent.getRouter().navTo("dashboard", {}, {}, true);
                 },
@@ -49,7 +49,7 @@ sap.ui.define(
           }
         };
 
-        // Run immediately; if model not loaded yet, retry after render
+        
         if (oUserModel) {
           _checkAuth();
         } else {

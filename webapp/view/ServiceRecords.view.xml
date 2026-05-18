@@ -6,17 +6,17 @@
     <Page id="idServiceRecordsPage" title="Service Records" showHeader="false" class="sapUiResponsiveContentPadding">
         <VBox class="sapUiSmallMargin">
 
-            <!-- Header -->
+            
             <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
                 <Title text="Service Records" level="H2" titleStyle="H2" />
                 <HBox alignItems="Center">
-                    <!-- Count text is driven by the OData binding length -->
+                    
                     <ObjectStatus id="idCompletedServicesCountObjectStatus" text="Completed Services" inverted="true" state="Success" class="sapUiSmallMarginEnd customTag" />
                     <Button icon="sap-icon://synchronize" text="Refresh" press=".onRefreshButtonPress" />
                 </HBox>
             </HBox>
 
-            <!-- Search and Filter -->
+            
             <HBox class="sapUiSmallMarginBottom" alignItems="Center">
                 <SearchField id="idRecordsSearchField" width="30rem" placeholder="Search by customer name, vehicle or phone..." search=".onSearchFieldSearch" liveChange=".onSearchFieldLiveChange" class="sapUiSmallMarginEnd" />
                 <ComboBox id="idPaymentComboBox" placeholder="Payment Method" selectionChange=".onComboBoxSelectionChange" class="sapUiSmallMarginEnd">
@@ -37,7 +37,7 @@
                 </ComboBox>
             </HBox>
 
-            <!-- History Table Panel -->
+            
             <Panel class="customPanel" width="auto">
                 <headerToolbar>
                     <Toolbar design="Transparent">
@@ -48,7 +48,7 @@
                     </Toolbar>
                 </headerToolbar>
 
-                <!-- Desktop Table — bound directly to OData model with server-side growing -->
+                
                 <Table id="idServiceTaskSetCompletedTable" items="{
                     path: '/ServiceTaskSet',
                     filters: [{path: 'Status', operator: 'EQ', value1: 'Completed'}],
@@ -105,9 +105,9 @@
                     </items>
                 </Table>
 
-                <!-- Pagination removed - handled by growing list -->
+                
 
-                <!-- Mobile List -->
+                
                 <List id="idServiceTaskSetCompletedList" items="{
                     path: '/ServiceTaskSet',
                     filters: [{path: 'Status', operator: 'EQ', value1: 'Completed'}],
@@ -152,7 +152,7 @@
                     </items>
                 </List>
 
-                <!-- Pagination removed - handled by growing list -->
+                
 
             </Panel>
         </VBox>

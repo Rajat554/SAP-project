@@ -10,11 +10,11 @@ sap.ui.define(
   function (Controller, Fragment, MessageToast, JSONModel, MessageBox, HashChanger) {
     "use strict";
 
-    // ==============================================================
-    //  ROUTE PERMISSIONS MAP
-    //  "any"   = any authenticated user (Admin or Staff)
-    //  "Admin" = Admin only
-    // ==============================================================
+    
+    
+    
+    
+    
     var ROUTE_PERMISSIONS = {
       "dashboard":      "any",
       "serviceRecords": "any",
@@ -24,14 +24,14 @@ sap.ui.define(
 
     return Controller.extend("sap.ui.demo.walkthrough.controller.App", {
 
-      // ────────────────────────────────────────────────────────────
-      //  LIFECYCLE
-      // ────────────────────────────────────────────────────────────
+      
+      
+      
 
       onInit: function () {
         this.getView().addStyleClass("sapUiSizeCompact");
 
-        // 1. Initialise user model (always start as logged-out)
+        
         var oUserModel = new JSONModel({
           isLoggedIn: false,
           username:   "",
@@ -39,12 +39,12 @@ sap.ui.define(
         });
         this.getOwnerComponent().setModel(oUserModel, "userModel");
 
-        // 2. Attach the route guard BEFORE checking the session,
-        //    so it is in place when the router fires on first load.
+        
+        
         var oRouter = this.getOwnerComponent().getRouter();
         oRouter.attachBeforeRouteMatched(this._onBeforeRouteMatched, this);
 
-        // 3. Try to restore an existing session from sessionStorage
+        
         var sToken    = window.sessionStorage.getItem("jwtToken");
         var sUsername = window.sessionStorage.getItem("username");
         var sRole     = window.sessionStorage.getItem("role");
@@ -59,29 +59,29 @@ sap.ui.define(
         }
 
         if (sToken && sUsername && sRole && !isTokenExpired(sToken)) {
-          // Re-attach the JWT to every OData request
+          
           this.getOwnerComponent().getModel().setHeaders({
             Authorization: "Bearer " + sToken
           });
 
-          // Restore the user model so guards work correctly
+          
           oUserModel.setProperty("/isLoggedIn", true);
           oUserModel.setProperty("/username",   sUsername);
           oUserModel.setProperty("/role",       sRole);
 
-          // Show the main shell. The router's beforeRouteMatched will
-          // then decide whether the current hash is allowed.
+          
+          
           var that = this;
           setTimeout(function () {
             that.byId("idRootApp").to(that.byId("idMainPage"));
           }, 0);
 
         } else {
-          // Token is expired or missing. Clean up completely.
+          
           window.sessionStorage.clear();
           
-          // No valid session → make sure the URL hash is clean so the
-          // route guard cannot accidentally fire a protected route.
+          
+          
           HashChanger.getInstance().replaceHash("");
         }
       },
@@ -98,7 +98,7 @@ sap.ui.define(
 
         var sRequiredRole = ROUTE_PERMISSIONS[sRouteName];
 
-        // ── Guard 1: Not logged in → block everything ──────────────
+        
         if (!bIsLoggedIn) {
           oEvent.preventDefault();
           HashChanger.getInstance().replaceHash("");
@@ -112,14 +112,14 @@ sap.ui.define(
             "Access Denied\n\nYou do not have permission to view the \"" + sRouteName + "\" page.\nThis area is restricted to Administrators only.",
             { title: "Unauthorized" }
           );
-          // Redirect to dashboard and replace history so Back doesn't return here
+          
           this.getOwnerComponent().getRouter().navTo("dashboard", {}, {}, true);
         }
       },
 
-      // ────────────────────────────────────────────────────────────
-      //  LOGIN
-      // ────────────────────────────────────────────────────────────
+      
+      
+      
 
       onInputSubmit: function () {
         this.onLoginButtonPress();
@@ -144,7 +144,7 @@ sap.ui.define(
         })
         .then(function (oResponse) {
           if (!oResponse.ok) {
-            // Server returned 401 or similar – credentials are wrong
+            
             throw new Error("InvalidCredentials");
           }
           return oResponse.json();
@@ -152,10 +152,10 @@ sap.ui.define(
         .then(function (oData) {
           var sRole = oData.role || "Staff";
 
-          // Attach JWT to every future OData request
+          
           oModel.setHeaders({ Authorization: "Bearer " + oData.token });
 
-          // Persist session for page refresh (survives reload, cleared on tab close)
+          
           window.sessionStorage.setItem("jwtToken", oData.token);
           window.sessionStorage.setItem("username",  oData.username);
           window.sessionStorage.setItem("role",      sRole);
@@ -164,42 +164,42 @@ sap.ui.define(
         })
         .catch(function () {
           MessageToast.show("Login failed. Invalid username or password.");
-          oModel.setHeaders({}); // clear any stale header
+          oModel.setHeaders({}); 
         });
       },
 
       _completeLogin: function (sUsername, sRole) {
-        // Update user model
+        
         var oUserModel = this.getOwnerComponent().getModel("userModel");
         oUserModel.setProperty("/isLoggedIn", true);
         oUserModel.setProperty("/username",   sUsername);
         oUserModel.setProperty("/role",       sRole);
 
-        // Clear the login fields
+        
         this.byId("idLoginUsernameInput").setValue("");
         this.byId("idLoginPasswordInput").setValue("");
 
         // Show the main shell
         this.byId("idRootApp").to(this.byId("idMainPage"));
 
-        // ALWAYS land on dashboard after login – never trust a stale hash
-        // Replace history so hitting Back doesn't re-open a restricted page
+        
+        
         this.getOwnerComponent().getRouter().navTo("dashboard", {}, {}, true);
 
         MessageToast.show("Welcome, " + sUsername + "! (" + sRole + ")");
 
-        // Refresh model data with the new auth token
+        
         this.getOwnerComponent().getModel().refresh();
       },
 
-      // ────────────────────────────────────────────────────────────
-      //  LOGOUT
-      // ────────────────────────────────────────────────────────────
+      
+      
+      
 
       onLogoutPress: function () {
         var sToken = window.sessionStorage.getItem("jwtToken");
 
-        // Tell the server to log the logout event (fire-and-forget)
+        
         if (sToken) {
           fetch("/api/logout", {
             method:  "POST",
@@ -207,9 +207,9 @@ sap.ui.define(
           }).catch(function () {});
         }
 
-        // ── CRITICAL: Wipe the hash BEFORE clearing sessionStorage ──
-        // This prevents the router from re-firing a protected route
-        // when the page reloads and finds the hash still in the URL.
+        
+        
+        
         HashChanger.getInstance().replaceHash("");
 
         // Clear all session data
@@ -219,16 +219,16 @@ sap.ui.define(
 
         MessageToast.show("Logged out successfully.");
 
-        // Hard reload: destroys all UI5 models, views, OData bindings,
-        // and the router state – the cleanest possible reset.
+        
+        
         setTimeout(function () {
           window.location.reload();
         }, 600);
       },
 
-      // ────────────────────────────────────────────────────────────
-      //  PROFILE POPOVER
-      // ────────────────────────────────────────────────────────────
+      
+      
+      
 
       onAvatarPress: function (oEvent) {
         var oButton = oEvent.getSource();
@@ -260,9 +260,9 @@ sap.ui.define(
         }
       },
 
-      // ────────────────────────────────────────────────────────────
-      //  SIDE NAVIGATION
-      // ────────────────────────────────────────────────────────────
+      
+      
+      
 
       onButtonSideNavPress: function () {
         var oToolPage   = this.byId("idAppToolPage");

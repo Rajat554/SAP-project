@@ -3,14 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>WashWizard Manager</title>
-    <!--
-      Startup order (with async=true):
-      1. UI5 core loads asynchronously from CDN
-      2. data-sap-ui-oninit fires our "initApp" module
-      3. initApp starts MockServer first, then defers to ComponentSupport
-      4. ComponentSupport creates the UIComponent which creates the ODataModel
-      5. ODataModel fires $metadata → intercepted by MockServer ✅
-    -->
+    
     <script
       id="sap-ui-bootstrap"
       src="https://ui5.sap.com/resources/sap-ui-core.js"
