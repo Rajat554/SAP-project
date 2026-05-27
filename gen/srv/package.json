@@ -8,18 +8,8 @@
     "start": "cds serve",
     "watch": "cds watch"
   },
-  "overrides": {
-    "ajv": "^8.16.0",
-    "axios": "^1.16.1",
-    "lodash": "^4.18.1",
-    "@sap/cds-dk": {
-      "qs": "^6.15.2",
-      "ws": "^8.21.0"
-    }
-  },
   "dependencies": {
     "@sap/cds": "^9",
-    "better-sqlite3": "^12.10.0",
     "express": "^5"
   },
   "devDependencies": {
@@ -59,14 +49,13 @@
       }
     }
   },
-  "workspaces": [
-    "app/*"
-  ],
   "sapux": [
     "app/service-entries",
     "app/service-records",
     "app/analytics",
-    "app/admin",
-    "app/catalog"
-  ]
+    "app/admin"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
 }

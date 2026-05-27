@@ -1,0 +1,9 @@
+specVersion: "workspace/1.0"
+metadata:
+  name: washwizard-workspace
+dependencyManagement:
+  resolutions:
+    - path: app/admin
+    - path: app/analytics
+    - path: app/service-entries
+    - path: app/service-records

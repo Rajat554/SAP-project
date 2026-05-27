@@ -1,0 +1,1877 @@
+{
+  "namespace": "WashWizard",
+  "definitions": {
+    "WashWizard.ServiceTask": {
+      "kind": "entity",
+      "includes": [
+        "cuid",
+        "managed"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "CustomerName": {
+          "@title": "Customer Name",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 100
+        },
+        "Phone": {
+          "@title": "Phone",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 10
+        },
+        "CarModel": {
+          "@title": "Car Model",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 100
+        },
+        "VehiclePlate": {
+          "@title": "Vehicle Plate",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "ServiceType": {
+          "@title": "Service Type",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 500
+        },
+        "Amount": {
+          "@title": "Amount",
+          "@mandatory": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "PaymentMethod": {
+          "@title": "Payment Method",
+          "type": "cds.String",
+          "length": 20,
+          "default": {
+            "val": "Online"
+          }
+        },
+        "Status": {
+          "@title": "Status",
+          "type": "cds.String",
+          "length": 20,
+          "default": {
+            "val": "Pending"
+          }
+        },
+        "ServiceDate": {
+          "@title": "Service Date",
+          "type": "cds.Date"
+        },
+        "CompletedAt": {
+          "@title": "Completed At",
+          "type": "cds.Date"
+        },
+        "HandledBy": {
+          "@title": "Handled By",
+          "type": "cds.String",
+          "length": 50
+        }
+      }
+    },
+    "WashWizard.Users": {
+      "kind": "entity",
+      "elements": {
+        "Username": {
+          "@title": "Username",
+          "key": true,
+          "type": "cds.String",
+          "length": 50
+        },
+        "Role": {
+          "@title": "Role",
+          "type": "cds.String",
+          "length": 20,
+          "default": {
+            "val": "Staff"
+          }
+        }
+      }
+    },
+    "WashWizard.CarModelMaster": {
+      "kind": "entity",
+      "includes": [
+        "cuid"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Brand": {
+          "@title": "Brand",
+          "type": "cds.String",
+          "length": 100
+        },
+        "ModelName": {
+          "@title": "Model Name",
+          "type": "cds.String",
+          "length": 100
+        }
+      }
+    },
+    "WashWizard.ServiceCatalog": {
+      "kind": "entity",
+      "includes": [
+        "cuid"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Category": {
+          "@title": "Category",
+          "type": "cds.String",
+          "length": 50
+        },
+        "ServiceName": {
+          "@title": "Service Name",
+          "type": "cds.String",
+          "length": 100
+        },
+        "Price": {
+          "@title": "Price",
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        }
+      }
+    },
+    "WashWizardService": {
+      "@source": "srv/service.cds",
+      "kind": "service",
+      "@requires": "authenticated-user"
+    },
+    "WashWizardService.ServiceTaskSet": {
+      "kind": "entity",
+      "@odata.draft.enabled": true,
+      "@restrict": [
+        {
+          "grant": "*",
+          "to": "Admin"
+        },
+        {
+          "grant": [
+            "READ",
+            "CREATE",
+            "UPDATE"
+          ],
+          "to": "Staff"
+        }
+      ],
+      "@UI.HeaderInfo.TypeName": "Service Entry",
+      "@UI.HeaderInfo.TypeNamePlural": "Service Entries",
+      "@UI.HeaderInfo.Title.$Type": "UI.DataField",
+      "@UI.HeaderInfo.Title.Value": {
+        "=": "CustomerName"
+      },
+      "@UI.HeaderInfo.Description.$Type": "UI.DataField",
+      "@UI.HeaderInfo.Description.Value": {
+        "=": "VehiclePlate"
+      },
+      "@UI.SelectionFields": [
+        {
+          "=": "Status"
+        },
+        {
+          "=": "PaymentMethod"
+        },
+        {
+          "=": "ServiceDate"
+        },
+        {
+          "=": "CustomerName"
+        }
+      ],
+      "@UI.LineItem": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "CustomerName"
+          },
+          "Label": "Customer",
+          "@UI.Importance": {
+            "#": "High"
+          }
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Phone"
+          },
+          "Label": "Phone"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "CarModel"
+          },
+          "Label": "Car Model"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "VehiclePlate"
+          },
+          "Label": "Vehicle Plate",
+          "@UI.Importance": {
+            "#": "High"
+          }
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "ServiceType"
+          },
+          "Label": "Services"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Amount"
+          },
+          "Label": "Amount (₹)",
+          "@UI.Importance": {
+            "#": "High"
+          }
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "PaymentMethod"
+          },
+          "Label": "Payment"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Status"
+          },
+          "Label": "Status",
+          "Criticality": {
+            "$edmJson": {
+              "$If": [
+                {
+                  "$Eq": [
+                    {
+                      "$Path": "Status"
+                    },
+                    "Completed"
+                  ]
+                },
+                3,
+                {
+                  "$If": [
+                    {
+                      "$Eq": [
+                        {
+                          "$Path": "Status"
+                        },
+                        "Pending"
+                      ]
+                    },
+                    2,
+                    0
+                  ]
+                }
+              ]
+            }
+          },
+          "@UI.Importance": {
+            "#": "High"
+          }
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "ServiceDate"
+          },
+          "Label": "Date"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "CompletedAt"
+          },
+          "Label": "Completed On"
+        }
+      ],
+      "@UI.Facets": [
+        {
+          "$Type": "UI.ReferenceFacet",
+          "ID": "ContactFacet",
+          "Label": "Contact Details",
+          "Target": "@UI.FieldGroup#Contact"
+        },
+        {
+          "$Type": "UI.ReferenceFacet",
+          "ID": "VehicleFacet",
+          "Label": "Vehicle Details",
+          "Target": "@UI.FieldGroup#Vehicle"
+        },
+        {
+          "$Type": "UI.ReferenceFacet",
+          "ID": "ServiceFacet",
+          "Label": "Service & Payment",
+          "Target": "@UI.FieldGroup#Service"
+        },
+        {
+          "$Type": "UI.ReferenceFacet",
+          "ID": "LifecycleFacet",
+          "Label": "Lifecycle",
+          "Target": "@UI.FieldGroup#Lifecycle"
+        }
+      ],
+      "@UI.FieldGroup#Contact.$Type": "UI.FieldGroupType",
+      "@UI.FieldGroup#Contact.Data": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "CustomerName"
+          },
+          "Label": "Customer Name"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Phone"
+          },
+          "Label": "Phone Number"
+        }
+      ],
+      "@UI.FieldGroup#Vehicle.$Type": "UI.FieldGroupType",
+      "@UI.FieldGroup#Vehicle.Data": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "CarModel"
+          },
+          "Label": "Car Model"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "VehiclePlate"
+          },
+          "Label": "Vehicle Plate"
+        }
+      ],
+      "@UI.FieldGroup#Service.$Type": "UI.FieldGroupType",
+      "@UI.FieldGroup#Service.Data": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "ServiceType"
+          },
+          "Label": "Service Type"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Amount"
+          },
+          "Label": "Amount"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "PaymentMethod"
+          },
+          "Label": "Payment Method"
+        }
+      ],
+      "@UI.FieldGroup#Lifecycle.$Type": "UI.FieldGroupType",
+      "@UI.FieldGroup#Lifecycle.Data": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Status"
+          },
+          "Label": "Status"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "ServiceDate"
+          },
+          "Label": "Service Date"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "CompletedAt"
+          },
+          "Label": "Completed At"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "HandledBy"
+          },
+          "Label": "Handled By"
+        }
+      ],
+      "@UI.SelectionVariant#Pending.Text": "Pending Services",
+      "@UI.SelectionVariant#Pending.SelectOptions": [
+        {
+          "PropertyName": {
+            "=": "Status"
+          },
+          "Ranges": [
+            {
+              "Sign": {
+                "#": "I"
+              },
+              "Option": {
+                "#": "EQ"
+              },
+              "Low": "Pending"
+            }
+          ]
+        }
+      ],
+      "@UI.SelectionVariant#Completed.Text": "Completed Services",
+      "@UI.SelectionVariant#Completed.SelectOptions": [
+        {
+          "PropertyName": {
+            "=": "Status"
+          },
+          "Ranges": [
+            {
+              "Sign": {
+                "#": "I"
+              },
+              "Option": {
+                "#": "EQ"
+              },
+              "Low": "Completed"
+            }
+          ]
+        }
+      ],
+      "@UI.Chart#RevenueByDate.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#RevenueByDate.ChartType": {
+        "#": "Line"
+      },
+      "@UI.Chart#RevenueByDate.Title": "Daily Revenue Trend",
+      "@UI.Chart#RevenueByDate.Dimensions": [
+        {
+          "=": "ServiceDate"
+        }
+      ],
+      "@UI.Chart#RevenueByDate.Measures": [
+        {
+          "=": "Amount"
+        }
+      ],
+      "@UI.Chart#RevenueByDate.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "ServiceDate"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#RevenueByDate.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "Amount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.Chart#ServiceDistribution.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#ServiceDistribution.ChartType": {
+        "#": "Donut"
+      },
+      "@UI.Chart#ServiceDistribution.Title": "Revenue by Service Type",
+      "@UI.Chart#ServiceDistribution.Dimensions": [
+        {
+          "=": "ServiceType"
+        }
+      ],
+      "@UI.Chart#ServiceDistribution.Measures": [
+        {
+          "=": "Amount"
+        }
+      ],
+      "@UI.Chart#ServiceDistribution.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "ServiceType"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#ServiceDistribution.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "Amount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.Chart#PaymentBreakdown.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#PaymentBreakdown.ChartType": {
+        "#": "Column"
+      },
+      "@UI.Chart#PaymentBreakdown.Title": "Revenue by Payment Method",
+      "@UI.Chart#PaymentBreakdown.Dimensions": [
+        {
+          "=": "PaymentMethod"
+        }
+      ],
+      "@UI.Chart#PaymentBreakdown.Measures": [
+        {
+          "=": "Amount"
+        }
+      ],
+      "@UI.Chart#PaymentBreakdown.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "PaymentMethod"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#PaymentBreakdown.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "Amount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.DataPoint#Revenue.Value": {
+        "=": "Amount"
+      },
+      "@UI.DataPoint#Revenue.Title": "Revenue",
+      "@UI.PresentationVariant#Default.SortOrder": [
+        {
+          "Property": {
+            "=": "ServiceDate"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.PresentationVariant#Default.Visualizations": [
+        "@UI.LineItem"
+      ],
+      "@UI.PresentationVariant#WithChart.SortOrder": [
+        {
+          "Property": {
+            "=": "ServiceDate"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.PresentationVariant#WithChart.Visualizations": [
+        "@UI.LineItem",
+        "@UI.Chart#RevenueByDate"
+      ],
+      "@UI.PresentationVariant#AnalyticsView.Text": "Revenue Analytics",
+      "@UI.PresentationVariant#AnalyticsView.SortOrder": [
+        {
+          "Property": {
+            "=": "ServiceDate"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.PresentationVariant#AnalyticsView.Visualizations": [
+        "@UI.LineItem",
+        "@UI.Chart#RevenueByDate"
+      ],
+      "@UI.PresentationVariant#CompletedRecords.Text": "Completed Services",
+      "@UI.PresentationVariant#CompletedRecords.SortOrder": [
+        {
+          "Property": {
+            "=": "CompletedAt"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.PresentationVariant#CompletedRecords.Visualizations": [
+        "@UI.LineItem"
+      ],
+      "projection": {
+        "from": {
+          "ref": [
+            "WashWizard.ServiceTask"
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "CustomerName": {
+          "@title": "Customer Name",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 100
+        },
+        "Phone": {
+          "@title": "Phone",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 10
+        },
+        "CarModel": {
+          "@title": "Car Model",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 100
+        },
+        "VehiclePlate": {
+          "@title": "Vehicle Plate",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "ServiceType": {
+          "@title": "Service Type",
+          "@mandatory": true,
+          "type": "cds.String",
+          "length": 500
+        },
+        "Amount": {
+          "@title": "Amount",
+          "@mandatory": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "PaymentMethod": {
+          "@Common.ValueListWithFixedValues": true,
+          "@Common.ValueList.CollectionPath": "ServiceTaskSet",
+          "@Common.ValueList.Parameters": [
+            {
+              "$Type": "Common.ValueListParameterOut",
+              "LocalDataProperty": {
+                "=": "PaymentMethod"
+              },
+              "ValueListProperty": "PaymentMethod"
+            }
+          ],
+          "@title": "Payment Method",
+          "type": "cds.String",
+          "length": 20,
+          "default": {
+            "val": "Online"
+          }
+        },
+        "Status": {
+          "@Common.Text": {
+            "=": "Status"
+          },
+          "@Common.TextArrangement": {
+            "#": "TextOnly"
+          },
+          "@Common.ValueListWithFixedValues": true,
+          "@title": "Status",
+          "type": "cds.String",
+          "length": 20,
+          "default": {
+            "val": "Pending"
+          }
+        },
+        "ServiceDate": {
+          "@title": "Service Date",
+          "type": "cds.Date"
+        },
+        "CompletedAt": {
+          "@title": "Completed At",
+          "type": "cds.Date"
+        },
+        "HandledBy": {
+          "@title": "Handled By",
+          "type": "cds.String",
+          "length": 50
+        }
+      },
+      "actions": {
+        "completeService": {
+          "kind": "action",
+          "@cds.odata.bindingparameter.name": "_self",
+          "returns": {
+            "type": "WashWizardService.ServiceTaskSet"
+          }
+        }
+      }
+    },
+    "WashWizardService.UsersSet": {
+      "kind": "entity",
+      "@requires": "Admin",
+      "@UI.HeaderInfo.TypeName": "User",
+      "@UI.HeaderInfo.TypeNamePlural": "Users",
+      "@UI.HeaderInfo.Title.$Type": "UI.DataField",
+      "@UI.HeaderInfo.Title.Value": {
+        "=": "Username"
+      },
+      "@UI.SelectionFields": [
+        {
+          "=": "Role"
+        }
+      ],
+      "@UI.LineItem": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Username"
+          },
+          "Label": "Username"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Role"
+          },
+          "Label": "Role",
+          "Criticality": {
+            "$edmJson": {
+              "$If": [
+                {
+                  "$Eq": [
+                    {
+                      "$Path": "Role"
+                    },
+                    "Admin"
+                  ]
+                },
+                1,
+                3
+              ]
+            }
+          }
+        }
+      ],
+      "@UI.Facets": [
+        {
+          "$Type": "UI.ReferenceFacet",
+          "Label": "User Details",
+          "Target": "@UI.FieldGroup#UserInfo"
+        }
+      ],
+      "@UI.FieldGroup#UserInfo.$Type": "UI.FieldGroupType",
+      "@UI.FieldGroup#UserInfo.Data": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Username"
+          },
+          "Label": "Username"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Role"
+          },
+          "Label": "Role"
+        }
+      ],
+      "projection": {
+        "from": {
+          "ref": [
+            "WashWizard.Users"
+          ]
+        }
+      },
+      "elements": {
+        "Username": {
+          "@title": "Username",
+          "key": true,
+          "type": "cds.String",
+          "length": 50
+        },
+        "Role": {
+          "@title": "Role",
+          "type": "cds.String",
+          "length": 20,
+          "default": {
+            "val": "Staff"
+          }
+        }
+      }
+    },
+    "WashWizardService.CarModelMasterSet": {
+      "kind": "entity",
+      "@readonly": true,
+      "@restrict": [
+        {
+          "grant": "*",
+          "to": "Admin"
+        },
+        {
+          "grant": "READ",
+          "to": "Staff"
+        }
+      ],
+      "@UI.HeaderInfo.TypeName": "Car Model",
+      "@UI.HeaderInfo.TypeNamePlural": "Car Models",
+      "@UI.HeaderInfo.Title.$Type": "UI.DataField",
+      "@UI.HeaderInfo.Title.Value": {
+        "=": "ModelName"
+      },
+      "@UI.LineItem": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Brand"
+          },
+          "Label": "Brand"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "ModelName"
+          },
+          "Label": "Model Name"
+        }
+      ],
+      "projection": {
+        "from": {
+          "ref": [
+            "WashWizard.CarModelMaster"
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Brand": {
+          "@title": "Brand",
+          "type": "cds.String",
+          "length": 100
+        },
+        "ModelName": {
+          "@title": "Model Name",
+          "type": "cds.String",
+          "length": 100
+        }
+      }
+    },
+    "WashWizardService.ServiceCatalogSet": {
+      "kind": "entity",
+      "@readonly": true,
+      "@restrict": [
+        {
+          "grant": "*",
+          "to": "Admin"
+        },
+        {
+          "grant": "READ",
+          "to": "Staff"
+        }
+      ],
+      "@UI.HeaderInfo.TypeName": "Service",
+      "@UI.HeaderInfo.TypeNamePlural": "Service Catalog",
+      "@UI.HeaderInfo.Title.$Type": "UI.DataField",
+      "@UI.HeaderInfo.Title.Value": {
+        "=": "ServiceName"
+      },
+      "@UI.LineItem": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Category"
+          },
+          "Label": "Category"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "ServiceName"
+          },
+          "Label": "Service Name"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Price"
+          },
+          "Label": "Price (₹)"
+        }
+      ],
+      "projection": {
+        "from": {
+          "ref": [
+            "WashWizard.ServiceCatalog"
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Category": {
+          "@title": "Category",
+          "type": "cds.String",
+          "length": 50
+        },
+        "ServiceName": {
+          "@title": "Service Name",
+          "type": "cds.String",
+          "length": 100
+        },
+        "Price": {
+          "@title": "Price",
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        }
+      }
+    },
+    "cds.outbox.Messages": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "timestamp": {
+          "type": "cds.Timestamp"
+        },
+        "target": {
+          "type": "cds.String"
+        },
+        "msg": {
+          "type": "cds.LargeString"
+        },
+        "attempts": {
+          "type": "cds.Integer",
+          "default": {
+            "val": 0
+          }
+        },
+        "partition": {
+          "type": "cds.Integer",
+          "default": {
+            "val": 0
+          }
+        },
+        "lastError": {
+          "type": "cds.LargeString"
+        },
+        "lastAttemptTimestamp": {
+          "type": "cds.Timestamp"
+        },
+        "status": {
+          "type": "cds.String",
+          "length": 23
+        },
+        "task": {
+          "type": "cds.String",
+          "length": 255
+        },
+        "appid": {
+          "type": "cds.String",
+          "length": 255
+        }
+      }
+    },
+    "Language": {
+      "kind": "type",
+      "@title": "{i18n>Language}",
+      "@description": "{i18n>LanguageCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Languages",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Currency": {
+      "kind": "type",
+      "@title": "{i18n>Currency}",
+      "@description": "{i18n>CurrencyCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Currencies",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Country": {
+      "kind": "type",
+      "@title": "{i18n>Country}",
+      "@description": "{i18n>CountryCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Countries",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Timezone": {
+      "kind": "type",
+      "type": "cds.Association",
+      "target": "sap.common.Timezones",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "sap.common": {
+      "kind": "context"
+    },
+    "sap.common.Locale": {
+      "kind": "type",
+      "@title": "{i18n>LanguageCode}",
+      "type": "cds.String",
+      "length": 14
+    },
+    "sap.common.Languages": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Text": {
+            "=": "name"
+          },
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Languages.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Languages.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Countries": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CountryCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Countries.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Countries.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Currencies": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "symbol": {
+          "@title": "{i18n>CurrencySymbol}",
+          "type": "cds.String",
+          "length": 5
+        },
+        "minorUnit": {
+          "@title": "{i18n>CurrencyMinorUnit}",
+          "type": "cds.Int16"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Timezones": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>TimeZoneCode}",
+          "key": true,
+          "type": "cds.String",
+          "length": 100
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Timezones.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Timezones.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.CodeList": {
+      "kind": "aspect",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        }
+      }
+    },
+    "sap.common.TextsAspect": {
+      "kind": "aspect",
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        }
+      }
+    },
+    "sap.common.FlowHistory": {
+      "kind": "aspect",
+      "@cds.persistence.skip": "if-unused",
+      "elements": {
+        "transitions_": {
+          "@odata.draft.enabled": false,
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "targetAspect": {
+            "elements": {
+              "timestamp": {
+                "@cds.on.insert": {
+                  "=": "$now"
+                },
+                "@UI.HiddenFilter": true,
+                "@UI.ExcludeFromNavigationContext": true,
+                "@Core.Immutable": true,
+                "@title": "{i18n>CreatedAt}",
+                "@readonly": true,
+                "key": true,
+                "type": {
+                  "ref": [
+                    "managed",
+                    "createdAt"
+                  ]
+                }
+              },
+              "user": {
+                "@cds.on.insert": {
+                  "=": "$user"
+                },
+                "@UI.HiddenFilter": true,
+                "@UI.ExcludeFromNavigationContext": true,
+                "@Core.Immutable": true,
+                "@title": "{i18n>CreatedBy}",
+                "@readonly": true,
+                "@description": "{i18n>UserID.Description}",
+                "type": {
+                  "ref": [
+                    "managed",
+                    "createdBy"
+                  ]
+                },
+                "length": 255
+              },
+              "status": {
+                "type": "cds.String"
+              },
+              "comment": {
+                "type": "cds.String"
+              }
+            }
+          }
+        }
+      }
+    },
+    "cuid": {
+      "kind": "aspect",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "managed": {
+      "kind": "aspect",
+      "elements": {
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        }
+      }
+    },
+    "temporal": {
+      "kind": "aspect",
+      "elements": {
+        "validFrom": {
+          "@cds.valid.from": true,
+          "type": "cds.Timestamp"
+        },
+        "validTo": {
+          "@cds.valid.to": true,
+          "type": "cds.Timestamp"
+        }
+      }
+    },
+    "User": {
+      "kind": "type",
+      "@title": "{i18n>UserID}",
+      "@description": "{i18n>UserID.Description}",
+      "type": "cds.String",
+      "length": 255
+    },
+    "sap.common.Languages.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@Common.Text": {
+            "=": "name"
+          },
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        }
+      }
+    },
+    "sap.common.Countries.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CountryCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "sap.common.Currencies.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "sap.common.Timezones.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>TimeZoneCode}",
+          "key": true,
+          "type": "cds.String",
+          "length": 100
+        }
+      }
+    }
+  },
+  "meta": {
+    "creator": "CDS Compiler v6.9.2",
+    "compilerVersion": "6.9.2",
+    "compilerCsnFlavor": "inferred",
+    "flavor": "inferred"
+  },
+  "$version": "2.0"
+}
