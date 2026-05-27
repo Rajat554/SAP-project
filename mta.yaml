@@ -25,6 +25,7 @@ modules:
     requires:
       - name: sap-project-hdi-container
       - name: sap-project-xsuaa
+      - name: sap-project-db-deployer
     provides:
       - name: srv_api
         properties:
