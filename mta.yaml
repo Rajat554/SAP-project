@@ -91,10 +91,7 @@ modules:
           artifacts:
             - catalog.zip
           target-path: resources/
-        - name: index-launchpad
-          artifacts:
-            - index.html
-          target-path: resources/
+
 
   # ── 5. HTML5 Modules (Static App Builds) ──────────────────────
   - name: service-entries
@@ -142,16 +139,6 @@ modules:
       builder: custom
       commands: []
 
-  - name: index-launchpad
-    type: html5
-    path: app
-    build-parameters:
-      supported-platforms: []
-      build-result: launchpad
-      builder: custom
-      commands:
-        - npx shx mkdir -p launchpad
-        - npx shx cp index.html launchpad/
 
 resources:
   # HANA HDI Container (production database)
