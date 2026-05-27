@@ -100,56 +100,46 @@ modules:
     type: html5
     path: app/service-entries
     build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build --if-present
       supported-platforms: []
-      build-result: dist
+      build-result: webapp
+      builder: custom
+      commands: []
 
   - name: service-records
     type: html5
     path: app/service-records
     build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build --if-present
       supported-platforms: []
-      build-result: dist
+      build-result: webapp
+      builder: custom
+      commands: []
 
   - name: analytics
     type: html5
     path: app/analytics
     build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build --if-present
       supported-platforms: []
-      build-result: dist
+      build-result: webapp
+      builder: custom
+      commands: []
 
   - name: admin
     type: html5
     path: app/admin
     build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build --if-present
       supported-platforms: []
-      build-result: dist
+      build-result: webapp
+      builder: custom
+      commands: []
 
   - name: catalog
     type: html5
     path: app/catalog
     build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build --if-present
       supported-platforms: []
-      build-result: dist
+      build-result: webapp
+      builder: custom
+      commands: []
 
   - name: index-launchpad
     type: html5
