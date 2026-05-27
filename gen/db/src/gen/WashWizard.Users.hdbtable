@@ -1,0 +1,5 @@
+COLUMN TABLE WashWizard_Users (
+  Username NVARCHAR(50) NOT NULL,
+  Role NVARCHAR(20) DEFAULT 'Staff',
+  PRIMARY KEY(Username)
+)

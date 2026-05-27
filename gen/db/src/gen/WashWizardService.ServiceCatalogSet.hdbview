@@ -1,0 +1,10 @@
+VIEW WashWizardService_ServiceCatalogSet AS SELECT
+  ServiceCatalog_0.ID,
+  ServiceCatalog_0.createdAt,
+  ServiceCatalog_0.createdBy,
+  ServiceCatalog_0.modifiedAt,
+  ServiceCatalog_0.modifiedBy,
+  ServiceCatalog_0.Category,
+  ServiceCatalog_0.ServiceName,
+  ServiceCatalog_0.Price
+FROM WashWizard_ServiceCatalog AS ServiceCatalog_0

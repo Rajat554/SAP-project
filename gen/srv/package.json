@@ -8,8 +8,18 @@
     "start": "cds serve",
     "watch": "cds watch"
   },
+  "overrides": {
+    "ajv": "^8.16.0",
+    "axios": "^1.16.1",
+    "lodash": "^4.18.1",
+    "@sap/cds-dk": {
+      "qs": "^6.15.2",
+      "ws": "^8.21.0"
+    }
+  },
   "dependencies": {
     "@sap/cds": "^9",
+    "better-sqlite3": "^12.10.0",
     "express": "^5"
   },
   "devDependencies": {
@@ -17,43 +27,12 @@
     "@sap/cds-dk": "^9",
     "@sap/ux-specification": "^1.120.16"
   },
-  "cds": {
-    "requires": {
-      "db": "sqlite",
-      "auth": {
-        "kind": "mocked",
-        "users": {
-          "admin": {
-            "password": "admin123",
-            "roles": [
-              "Admin"
-            ]
-          },
-          "staff": {
-            "password": "staff123",
-            "roles": [
-              "Staff"
-            ]
-          }
-        }
-      }
-    },
-    "[production]": {
-      "requires": {
-        "db": {
-          "kind": "hana"
-        },
-        "auth": {
-          "kind": "xsuaa"
-        }
-      }
-    }
-  },
   "sapux": [
     "app/service-entries",
     "app/service-records",
     "app/analytics",
-    "app/admin"
+    "app/admin",
+    "app/catalog"
   ],
   "engines": {
     "node": ">=20"

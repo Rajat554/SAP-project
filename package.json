@@ -27,38 +27,6 @@
     "@sap/cds-dk": "^9",
     "@sap/ux-specification": "^1.120.16"
   },
-  "cds": {
-    "requires": {
-      "db": "sqlite",
-      "auth": {
-        "kind": "mocked",
-        "users": {
-          "admin": {
-            "password": "admin123",
-            "roles": [
-              "Admin"
-            ]
-          },
-          "staff": {
-            "password": "staff123",
-            "roles": [
-              "Staff"
-            ]
-          }
-        }
-      }
-    },
-    "[production]": {
-      "requires": {
-        "db": {
-          "kind": "hana"
-        },
-        "auth": {
-          "kind": "xsuaa"
-        }
-      }
-    }
-  },
   "workspaces": [
     "app/*"
   ],

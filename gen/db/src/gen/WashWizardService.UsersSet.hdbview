@@ -1,0 +1,4 @@
+VIEW WashWizardService_UsersSet AS SELECT
+  Users_0.Username,
+  Users_0.Role
+FROM WashWizard_Users AS Users_0

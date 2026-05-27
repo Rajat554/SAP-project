@@ -1,0 +1,19 @@
+COLUMN TABLE WashWizard_ServiceTask (
+  ID NVARCHAR(36) NOT NULL,
+  createdAt TIMESTAMP,
+  createdBy NVARCHAR(255),
+  modifiedAt TIMESTAMP,
+  modifiedBy NVARCHAR(255),
+  CustomerName NVARCHAR(100),
+  Phone NVARCHAR(10),
+  CarModel NVARCHAR(100),
+  VehiclePlate NVARCHAR(20),
+  ServiceType NVARCHAR(500),
+  Amount DECIMAL(10, 2),
+  PaymentMethod NVARCHAR(20) DEFAULT 'Online',
+  Status NVARCHAR(20) DEFAULT 'Pending',
+  ServiceDate DATE,
+  CompletedAt DATE,
+  HandledBy NVARCHAR(50),
+  PRIMARY KEY(ID)
+)

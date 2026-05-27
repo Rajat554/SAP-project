@@ -49,4 +49,51 @@ module.exports = cds.service.impl(async function () {
 
         return SELECT.one.from('WashWizard.ServiceTask').where({ ID });
     });
+
+    // ── Auto-populate Price from Catalog when ServiceType changes ──
+    this.before('PATCH', 'ServiceTaskSet', async (req) => {
+        const { ServiceType } = req.data;
+        if (ServiceType === undefined) return; // ServiceType wasn't changed
+
+        if (!ServiceType) {
+            req.data.Amount = 0;
+            return;
+        }
+
+        // Look up the price in the ServiceCatalog master table
+        const catalogItem = await SELECT.one.from('WashWizard.ServiceCatalog')
+            .where({ ServiceName: ServiceType });
+
+        if (catalogItem) {
+            req.data.Amount = catalogItem.Price;
+        } else {
+            req.data.Amount = 0;
+        }
+    });
+
+    // ── Draft Garbage Collection (State Cleanup) ────────────────
+    const CLEANUP_INTERVAL = 60 * 60 * 1000; // Run every hour
+    const STALE_DRAFT_RETENTION_DAYS = 30; // Purge drafts older than 30 days
+
+    async function cleanupStaleDrafts() {
+        try {
+            const thresholdDate = new Date(Date.now() - STALE_DRAFT_RETENTION_DAYS * 24 * 60 * 60 * 1000).toISOString();
+            
+            // Delete drafts from DraftAdministrativeData (cascades to all draft tables)
+            const deletedCount = await DELETE.from('WashWizardService.DraftAdministrativeData')
+                .where({ LastChangeDateTime: { '<': thresholdDate } });
+                
+            if (deletedCount > 0) {
+                console.log(`[Draft Cleanup] Purged ${deletedCount} stale draft records older than ${STALE_DRAFT_RETENTION_DAYS} days.`);
+            }
+        } catch (err) {
+            console.error('[Draft Cleanup] Error cleaning up stale drafts:', err);
+        }
+    }
+
+    // Run cleanup on startup and then periodically
+    cds.spawn({}, async () => {
+        await cleanupStaleDrafts();
+        setInterval(cleanupStaleDrafts, CLEANUP_INTERVAL);
+    });
 });

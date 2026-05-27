@@ -1,47 +1,27 @@
 _schema-version: "3.2"
 ID: sap-project
-version: 1.0.0
-description: A Fiori application for WashWizard.
+version: 2.0.0
+description: A Fiori application for WashWizard with optimized memory.
 
 parameters:
   enable-parallel-executions: true
 
-modules:
-  # 1. The UI Module (static Fiori app — served via HTML5 App Host)
-  - name: sap-project-ui
-    type: javascript.nodejs
-    path: .
-    build-parameters:
-      build-result: dist
-      builder: custom
+build-parameters:
+  before-all:
+    - builder: custom
       commands:
-        - npm install
-        - npm run build
-    parameters:
-      buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
-      memory: 128M
-      disk-quota: 256M
-    requires:
-      - name: sap-project-repo-host
-    provides:
-      - name: ui_api
-        properties:
-          url: ${default-url}
+        - npm ci
+        - npx cds build --production
 
-  # 2. The CAP Backend / OData Service
+modules:
+  # ── 1. Backend CAP OData Service ──────────────────────────────
   - name: sap-project-srv
     type: nodejs
-    path: .
+    path: gen/srv
     parameters:
       buildpack: nodejs_buildpack
       memory: 256M
       disk-quota: 512M
-    build-parameters:
-      builder: npm
-      ignore:
-        - .env
-        - node_modules/
-        - default-env.json
     requires:
       - name: sap-project-hdi-container
       - name: sap-project-xsuaa
@@ -50,10 +30,10 @@ modules:
         properties:
           srv-url: ${default-url}
 
-  # 3. The DB Deployer (pushes CDS model + seed data to HANA HDI)
+  # ── 2. Database Deployer (HANA Cloud) ─────────────────────────
   - name: sap-project-db-deployer
     type: hdb
-    path: db
+    path: gen/db
     parameters:
       buildpack: nodejs_buildpack
       memory: 256M
@@ -61,28 +41,126 @@ modules:
     requires:
       - name: sap-project-hdi-container
 
-  # 4. The Standalone Approuter (enforces XSUAA auth)
+  # ── 3. Standalone Approuter (Enforces Security & Routing) ─────
   - name: sap-project-router
     type: approuter.nodejs
     path: router
     parameters:
-      disk-quota: 256M
       memory: 256M
+      disk-quota: 256M
     requires:
-      - name: ui_api
-        group: destinations
-        properties:
-          forwardAuthToken: false
-          name: ui_target
-          url: ~{url}
+      - name: sap-project-xsuaa
+      - name: sap-project-dest-service
+      - name: sap-project-repo-runtime
       - name: srv_api
         group: destinations
         properties:
-          forwardAuthToken: true
           name: srv_target
           url: ~{srv-url}
-      - name: sap-project-xsuaa
-      - name: sap-project-dest-service
+          forwardAuthToken: true
+
+  # ── 4. HTML5 App Content Deployer (0 MB CF Runtime Memory) ────
+  - name: sap-project-ui-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: sap-project-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: service-entries
+          artifacts:
+            - service-entries.zip
+          target-path: resources/
+        - name: service-records
+          artifacts:
+            - service-records.zip
+          target-path: resources/
+        - name: analytics
+          artifacts:
+            - analytics.zip
+          target-path: resources/
+        - name: admin
+          artifacts:
+            - admin.zip
+          target-path: resources/
+        - name: catalog
+          artifacts:
+            - catalog.zip
+          target-path: resources/
+        - name: index-launchpad
+          artifacts:
+            - index.html
+          target-path: resources/
+
+  # ── 5. HTML5 Modules (Static App Builds) ──────────────────────
+  - name: service-entries
+    type: html5
+    path: app/service-entries
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build --if-present
+      supported-platforms: []
+      build-result: dist
+
+  - name: service-records
+    type: html5
+    path: app/service-records
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build --if-present
+      supported-platforms: []
+      build-result: dist
+
+  - name: analytics
+    type: html5
+    path: app/analytics
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build --if-present
+      supported-platforms: []
+      build-result: dist
+
+  - name: admin
+    type: html5
+    path: app/admin
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build --if-present
+      supported-platforms: []
+      build-result: dist
+
+  - name: catalog
+    type: html5
+    path: app/catalog
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build --if-present
+      supported-platforms: []
+      build-result: dist
+
+  - name: index-launchpad
+    type: html5
+    path: app
+    build-parameters:
+      supported-platforms: []
+      build-result: launchpad
+      builder: custom
+      commands:
+        - npx shx mkdir -p launchpad
+        - npx shx cp index.html launchpad/
 
 resources:
   # HANA HDI Container (production database)
@@ -105,14 +183,21 @@ resources:
         xsappname: sap-project
         tenant-mode: dedicated
 
-  # HTML5 App Host (serves the static Fiori build artefacts)
+  # HTML5 App Host (stores static resources)
   - name: sap-project-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
       service-plan: app-host
 
-  # Destination Service (for Launchpad visibility)
+  # HTML5 App Runtime (allows Approuter to fetch resources)
+  - name: sap-project-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  # Destination Service
   - name: sap-project-dest-service
     type: org.cloudfoundry.managed-service
     parameters:

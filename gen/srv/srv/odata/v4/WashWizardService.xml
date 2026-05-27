@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
-    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.xml">
+    <edmx:Include Alias="Aggregation" Namespace="Org.OData.Aggregation.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Analytics.xml">
+    <edmx:Include Alias="Analytics" Namespace="com.sap.vocabularies.Analytics.v1"/>
   </edmx:Reference>
   <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
     <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
@@ -27,8 +30,12 @@
           <NavigationPropertyBinding Path="SiblingEntity" Target="ServiceTaskSet"/>
         </EntitySet>
         <EntitySet Name="UsersSet" EntityType="WashWizardService.UsersSet"/>
-        <EntitySet Name="CarModelMasterSet" EntityType="WashWizardService.CarModelMasterSet"/>
-        <EntitySet Name="ServiceCatalogSet" EntityType="WashWizardService.ServiceCatalogSet"/>
+        <EntitySet Name="CarModelMasterSet" EntityType="WashWizardService.CarModelMasterSet">
+          <NavigationPropertyBinding Path="SiblingEntity" Target="CarModelMasterSet"/>
+        </EntitySet>
+        <EntitySet Name="ServiceCatalogSet" EntityType="WashWizardService.ServiceCatalogSet">
+          <NavigationPropertyBinding Path="SiblingEntity" Target="ServiceCatalogSet"/>
+        </EntitySet>
       </EntityContainer>
       <EntityType Name="ServiceTaskSet">
         <Key>
@@ -51,6 +58,9 @@
         <Property Name="ServiceDate" Type="Edm.Date"/>
         <Property Name="CompletedAt" Type="Edm.Date"/>
         <Property Name="HandledBy" Type="Edm.String" MaxLength="50"/>
+        <Property Name="ServiceCount" Type="Edm.Int32"/>
+        <Property Name="AvgAmount" Type="Edm.Decimal" Precision="10" Scale="2"/>
+        <Property Name="AvgDailyAmount" Type="Edm.Decimal" Precision="10" Scale="2"/>
         <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
         <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
         <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
@@ -68,19 +78,41 @@
       <EntityType Name="CarModelMasterSet">
         <Key>
           <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
         </Key>
         <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
         <Property Name="Brand" Type="Edm.String" MaxLength="100"/>
         <Property Name="ModelName" Type="Edm.String" MaxLength="100"/>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="WashWizardService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="WashWizardService.CarModelMasterSet"/>
+        <Property Name="DraftMessages" Type="Collection(WashWizardService.DRAFT_DraftAdministrativeData_DraftMessage)" Nullable="true"/>
       </EntityType>
       <EntityType Name="ServiceCatalogSet">
         <Key>
           <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
         </Key>
         <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
         <Property Name="Category" Type="Edm.String" MaxLength="50"/>
         <Property Name="ServiceName" Type="Edm.String" MaxLength="100"/>
         <Property Name="Price" Type="Edm.Decimal" Precision="10" Scale="2"/>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="WashWizardService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="WashWizardService.ServiceCatalogSet"/>
+        <Property Name="DraftMessages" Type="Collection(WashWizardService.DRAFT_DraftAdministrativeData_DraftMessage)" Nullable="true"/>
       </EntityType>
       <EntityType Name="DraftAdministrativeData">
         <Key>
@@ -113,14 +145,42 @@
         <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
         <ReturnType Type="WashWizardService.ServiceTaskSet"/>
       </Action>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="WashWizardService.CarModelMasterSet"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="WashWizardService.CarModelMasterSet"/>
+      </Action>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="WashWizardService.ServiceCatalogSet"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="WashWizardService.ServiceCatalogSet"/>
+      </Action>
       <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
         <Parameter Name="in" Type="WashWizardService.ServiceTaskSet"/>
         <ReturnType Type="WashWizardService.ServiceTaskSet"/>
+      </Action>
+      <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="WashWizardService.CarModelMasterSet"/>
+        <ReturnType Type="WashWizardService.CarModelMasterSet"/>
+      </Action>
+      <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="WashWizardService.ServiceCatalogSet"/>
+        <ReturnType Type="WashWizardService.ServiceCatalogSet"/>
       </Action>
       <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
         <Parameter Name="in" Type="WashWizardService.ServiceTaskSet"/>
         <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
         <ReturnType Type="WashWizardService.ServiceTaskSet"/>
+      </Action>
+      <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="WashWizardService.CarModelMasterSet"/>
+        <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+        <ReturnType Type="WashWizardService.CarModelMasterSet"/>
+      </Action>
+      <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="WashWizardService.ServiceCatalogSet"/>
+        <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+        <ReturnType Type="WashWizardService.ServiceCatalogSet"/>
       </Action>
       <Annotations Target="WashWizardService.EntityContainer">
         <Annotation Term="Common.AddressViaNavigationPath" Bool="true"/>
@@ -213,6 +273,20 @@
               <PropertyValue Property="Value" Path="CompletedAt"/>
               <PropertyValue Property="Label" String="Completed On"/>
             </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="HandledBy"/>
+              <PropertyValue Property="Label" String="Handled By"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.HeaderFacets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Status"/>
+            </Record>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Amount"/>
+            </Record>
           </Collection>
         </Annotation>
         <Annotation Term="UI.Facets">
@@ -281,7 +355,7 @@
                 </Record>
                 <Record Type="UI.DataField">
                   <PropertyValue Property="Value" Path="Amount"/>
-                  <PropertyValue Property="Label" String="Amount"/>
+                  <PropertyValue Property="Label" String="Amount (₹)"/>
                 </Record>
                 <Record Type="UI.DataField">
                   <PropertyValue Property="Value" Path="PaymentMethod"/>
@@ -312,6 +386,43 @@
                   <PropertyValue Property="Label" String="Handled By"/>
                 </Record>
               </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="Status">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="Status"/>
+            <PropertyValue Property="Title" String="Status"/>
+            <PropertyValue Property="Criticality">
+              <If>
+                <Eq>
+                  <Path>Status</Path>
+                  <String>Completed</String>
+                </Eq>
+                <Int>3</Int>
+                <If>
+                  <Eq>
+                    <Path>Status</Path>
+                    <String>Pending</String>
+                  </Eq>
+                  <Int>2</Int>
+                  <Int>0</Int>
+                </If>
+              </If>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="Amount">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="Amount"/>
+            <PropertyValue Property="Title" String="Amount (₹)"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionVariant" Qualifier="All">
+          <Record Type="UI.SelectionVariantType">
+            <PropertyValue Property="Text" String="All Services"/>
+            <PropertyValue Property="SelectOptions">
+              <Collection/>
             </PropertyValue>
           </Record>
         </Annotation>
@@ -353,6 +464,24 @@
                     </Collection>
                   </PropertyValue>
                 </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="Default">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Text" String="Default"/>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.LineItem</AnnotationPath>
               </Collection>
             </PropertyValue>
           </Record>
@@ -392,7 +521,7 @@
         <Annotation Term="UI.Chart" Qualifier="ServiceDistribution">
           <Record Type="UI.ChartDefinitionType">
             <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut"/>
-            <PropertyValue Property="Title" String="Revenue by Service Type"/>
+            <PropertyValue Property="Title" String="Service Type Distribution"/>
             <PropertyValue Property="Dimensions">
               <Collection>
                 <PropertyPath>ServiceType</PropertyPath>
@@ -419,11 +548,12 @@
                 </Record>
               </Collection>
             </PropertyValue>
+            <PropertyValue Property="Description" String="Revenue breakdown by service type"/>
           </Record>
         </Annotation>
         <Annotation Term="UI.Chart" Qualifier="PaymentBreakdown">
           <Record Type="UI.ChartDefinitionType">
-            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
             <PropertyValue Property="Title" String="Revenue by Payment Method"/>
             <PropertyValue Property="Dimensions">
               <Collection>
@@ -453,14 +583,580 @@
             </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="UI.DataPoint" Qualifier="Revenue">
+        <Annotation Term="UI.Chart" Qualifier="StatusOverview">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="Title" String="Services by Status"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>Status</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>Amount</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="Status"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="Amount"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="RevenueAnalytics">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Revenue Analytics"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="SortOrder">
+                  <Collection>
+                    <Record Type="Common.SortOrderType">
+                      <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                      <PropertyValue Property="Descending" Bool="true"/>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#RevenueByDate</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="ServiceAnalytics">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Service Distribution"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#ServiceDistribution</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="PaymentAnalytics">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Payment Analysis"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#PaymentBreakdown</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="PendingView">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Pending Services"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection>
+                    <Record Type="UI.SelectOptionType">
+                      <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                      <PropertyValue Property="Ranges">
+                        <Collection>
+                          <Record Type="UI.SelectionRangeType">
+                            <PropertyValue Property="Sign" EnumMember="UI.SelectionRangeSignType/I"/>
+                            <PropertyValue Property="Option" EnumMember="UI.SelectionRangeOptionType/EQ"/>
+                            <PropertyValue Property="Low" String="Pending"/>
+                          </Record>
+                        </Collection>
+                      </PropertyValue>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="SortOrder">
+                  <Collection>
+                    <Record Type="Common.SortOrderType">
+                      <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                      <PropertyValue Property="Descending" Bool="true"/>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="CompletedView">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Completed Services"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection>
+                    <Record Type="UI.SelectOptionType">
+                      <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                      <PropertyValue Property="Ranges">
+                        <Collection>
+                          <Record Type="UI.SelectionRangeType">
+                            <PropertyValue Property="Sign" EnumMember="UI.SelectionRangeSignType/I"/>
+                            <PropertyValue Property="Option" EnumMember="UI.SelectionRangeOptionType/EQ"/>
+                            <PropertyValue Property="Low" String="Completed"/>
+                          </Record>
+                        </Collection>
+                      </PropertyValue>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="SortOrder">
+                  <Collection>
+                    <Record Type="Common.SortOrderType">
+                      <PropertyValue Property="Property" PropertyPath="CompletedAt"/>
+                      <PropertyValue Property="Descending" Bool="true"/>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.KPI" Qualifier="TotalRevenue">
+          <Record Type="UI.KPIType">
+            <PropertyValue Property="ID" String="KPI_TotalRevenue"/>
+            <PropertyValue Property="DataPoint" Path="@UI.DataPoint#TotalRevenueValue"/>
+            <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#AllData"/>
+            <PropertyValue Property="Detail">
+              <Record Type="UI.KPIDetailType">
+                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#KPITotalRevenue"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.KPI" Qualifier="TotalServices">
+          <Record Type="UI.KPIType">
+            <PropertyValue Property="ID" String="KPI_TotalServices"/>
+            <PropertyValue Property="DataPoint" Path="@UI.DataPoint#TotalServicesValue"/>
+            <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#AllData"/>
+            <PropertyValue Property="Detail">
+              <Record Type="UI.KPIDetailType">
+                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#KPITotalServices"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.KPI" Qualifier="AvgDailyRevenue">
+          <Record Type="UI.KPIType">
+            <PropertyValue Property="ID" String="KPI_AvgDailyRevenue"/>
+            <PropertyValue Property="DataPoint" Path="@UI.DataPoint#AvgDailyRevenueValue"/>
+            <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#AllData"/>
+            <PropertyValue Property="Detail">
+              <Record Type="UI.KPIDetailType">
+                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#KPIAvgDailyRevenue"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.KPI" Qualifier="AvgServiceValue">
+          <Record Type="UI.KPIType">
+            <PropertyValue Property="ID" String="KPI_AvgServiceValue"/>
+            <PropertyValue Property="DataPoint" Path="@UI.DataPoint#AvgServiceValueValue"/>
+            <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#AllData"/>
+            <PropertyValue Property="Detail">
+              <Record Type="UI.KPIDetailType">
+                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#KPIAvgServiceValue"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionVariant" Qualifier="AllData">
+          <Record Type="UI.SelectionVariantType">
+            <PropertyValue Property="SelectOptions">
+              <Collection/>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPITotalRevenue">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.DataPoint#TotalRevenueValue</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPITotalServices">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.DataPoint#TotalServicesValue</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPIAvgDailyRevenue">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.DataPoint#AvgDailyRevenueValue</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPIAvgServiceValue">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.DataPoint#AvgServiceValueValue</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="TotalRevenueValue">
           <Record Type="UI.DataPointType">
             <PropertyValue Property="Value" Path="Amount"/>
-            <PropertyValue Property="Title" String="Revenue"/>
+            <PropertyValue Property="Title" String="Total Revenue"/>
+            <PropertyValue Property="Description" String="This month's total"/>
+            <PropertyValue Property="ValueFormat">
+              <Record Type="UI.NumberFormat">
+                <PropertyValue Property="NumberOfFractionalDigits" Int="2"/>
+              </Record>
+            </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="UI.PresentationVariant" Qualifier="Default">
+        <Annotation Term="UI.DataPoint" Qualifier="TotalServicesValue">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="ServiceCount"/>
+            <PropertyValue Property="Title" String="Total Services"/>
+            <PropertyValue Property="Description" String="Services completed"/>
+            <PropertyValue Property="ValueFormat">
+              <Record Type="UI.NumberFormat">
+                <PropertyValue Property="NumberOfFractionalDigits" Int="0"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="AvgDailyRevenueValue">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="AvgDailyAmount"/>
+            <PropertyValue Property="Title" String="Avg Daily Revenue"/>
+            <PropertyValue Property="Description" String="Per working day"/>
+            <PropertyValue Property="ValueFormat">
+              <Record Type="UI.NumberFormat">
+                <PropertyValue Property="NumberOfFractionalDigits" Int="2"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="AvgServiceValueValue">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="AvgAmount"/>
+            <PropertyValue Property="Title" String="Avg Service Value"/>
+            <PropertyValue Property="Description" String="Revenue per service"/>
+            <PropertyValue Property="ValueFormat">
+              <Record Type="UI.NumberFormat">
+                <PropertyValue Property="NumberOfFractionalDigits" Int="2"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="RevenueTrend">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line"/>
+            <PropertyValue Property="Title" String="Daily Revenue Overview"/>
+            <PropertyValue Property="Description" String="Revenue breakdown for selected month"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>ServiceDate</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>Amount</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="ServiceDate"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="Amount"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="ServiceCountTrend">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="Title" String="Services Count Trend"/>
+            <PropertyValue Property="Description" String="Daily service count for selected month"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>ServiceDate</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>ServiceCount</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="ServiceDate"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="ServiceCount"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="ServiceVolumeByType">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="Title" String="Service Volume by Type"/>
+            <PropertyValue Property="Description" String="Number of services by type"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>ServiceType</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>ServiceCount</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="ServiceType"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="ServiceCount"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="StaffRevenue">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
+            <PropertyValue Property="Title" String="Revenue by Staff Member"/>
+            <PropertyValue Property="Description" String="Staff-wise revenue contribution"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>HandledBy</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>Amount</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="HandledBy"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="Amount"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="StaffVolume">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="Title" String="Services by Staff Member"/>
+            <PropertyValue Property="Description" String="Staff-wise service volume"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>HandledBy</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>ServiceCount</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="HandledBy"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="ServiceCount"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="RevenueTrends">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Daily Overview"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="SortOrder">
+                  <Collection>
+                    <Record Type="Common.SortOrderType">
+                      <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                      <PropertyValue Property="Descending" Bool="true"/>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.Chart#RevenueTrend</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#ServiceCountTrend</AnnotationPath>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="ServiceDistribution">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Service Type Distribution"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.Chart#ServiceDistribution</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#ServiceVolumeByType</AnnotationPath>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="Performance">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Revenue by Staff Member"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.Chart#StaffRevenue</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#StaffVolume</AnnotationPath>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant">
           <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Text" String="Default"/>
             <PropertyValue Property="SortOrder">
               <Collection>
                 <Record Type="Common.SortOrderType">
@@ -476,57 +1172,87 @@
             </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="UI.PresentationVariant" Qualifier="WithChart">
-          <Record Type="UI.PresentationVariantType">
-            <PropertyValue Property="SortOrder">
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="Amount" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="ServiceCount" String="Edm.Int32"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="AvgAmount" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="AvgDailyAmount" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.ApplySupported">
+          <Record Type="Aggregation.ApplySupportedType">
+            <PropertyValue Property="Transformations">
               <Collection>
-                <Record Type="Common.SortOrderType">
-                  <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
-                  <PropertyValue Property="Descending" Bool="true"/>
-                </Record>
+                <String>aggregate</String>
+                <String>topcount</String>
+                <String>bottomcount</String>
+                <String>identity</String>
+                <String>concat</String>
+                <String>groupby</String>
+                <String>filter</String>
               </Collection>
             </PropertyValue>
-            <PropertyValue Property="Visualizations">
+            <PropertyValue Property="GroupableProperties">
               <Collection>
-                <AnnotationPath>@UI.LineItem</AnnotationPath>
-                <AnnotationPath>@UI.Chart#RevenueByDate</AnnotationPath>
+                <PropertyPath>Status</PropertyPath>
+                <PropertyPath>ServiceType</PropertyPath>
+                <PropertyPath>PaymentMethod</PropertyPath>
+                <PropertyPath>ServiceDate</PropertyPath>
+                <PropertyPath>CarModel</PropertyPath>
+                <PropertyPath>HandledBy</PropertyPath>
+                <PropertyPath>CustomerName</PropertyPath>
+                <PropertyPath>VehiclePlate</PropertyPath>
+                <PropertyPath>CompletedAt</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="AggregatableProperties">
+              <Collection>
+                <Record Type="Aggregation.AggregatablePropertyType">
+                  <PropertyValue Property="Property" PropertyPath="Amount"/>
+                  <PropertyValue Property="SupportedAggregationMethods">
+                    <Collection>
+                      <String>sum</String>
+                      <String>min</String>
+                      <String>max</String>
+                      <String>average</String>
+                    </Collection>
+                  </PropertyValue>
+                </Record>
+                <Record Type="Aggregation.AggregatablePropertyType">
+                  <PropertyValue Property="Property" PropertyPath="ServiceCount"/>
+                  <PropertyValue Property="SupportedAggregationMethods">
+                    <Collection>
+                      <String>sum</String>
+                    </Collection>
+                  </PropertyValue>
+                </Record>
+                <Record Type="Aggregation.AggregatablePropertyType">
+                  <PropertyValue Property="Property" PropertyPath="AvgAmount"/>
+                  <PropertyValue Property="SupportedAggregationMethods">
+                    <Collection>
+                      <String>average</String>
+                    </Collection>
+                  </PropertyValue>
+                </Record>
+                <Record Type="Aggregation.AggregatablePropertyType">
+                  <PropertyValue Property="Property" PropertyPath="AvgDailyAmount"/>
+                  <PropertyValue Property="SupportedAggregationMethods">
+                    <Collection>
+                      <String>average</String>
+                    </Collection>
+                  </PropertyValue>
+                </Record>
               </Collection>
             </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="UI.PresentationVariant" Qualifier="AnalyticsView">
-          <Record Type="UI.PresentationVariantType">
-            <PropertyValue Property="Text" String="Revenue Analytics"/>
-            <PropertyValue Property="SortOrder">
+        <Annotation Term="Common.SideEffects" Qualifier="ReactOnServiceTypeChange">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceProperties">
               <Collection>
-                <Record Type="Common.SortOrderType">
-                  <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
-                  <PropertyValue Property="Descending" Bool="true"/>
-                </Record>
+                <PropertyPath>ServiceType</PropertyPath>
               </Collection>
             </PropertyValue>
-            <PropertyValue Property="Visualizations">
+            <PropertyValue Property="TargetProperties">
               <Collection>
-                <AnnotationPath>@UI.LineItem</AnnotationPath>
-                <AnnotationPath>@UI.Chart#RevenueByDate</AnnotationPath>
-              </Collection>
-            </PropertyValue>
-          </Record>
-        </Annotation>
-        <Annotation Term="UI.PresentationVariant" Qualifier="CompletedRecords">
-          <Record Type="UI.PresentationVariantType">
-            <PropertyValue Property="Text" String="Completed Services"/>
-            <PropertyValue Property="SortOrder">
-              <Collection>
-                <Record Type="Common.SortOrderType">
-                  <PropertyValue Property="Property" PropertyPath="CompletedAt"/>
-                  <PropertyValue Property="Descending" Bool="true"/>
-                </Record>
-              </Collection>
-            </PropertyValue>
-            <PropertyValue Property="Visualizations">
-              <Collection>
-                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                <String>Amount</String>
               </Collection>
             </PropertyValue>
           </Record>
@@ -548,6 +1274,14 @@
         <Annotation Term="Common.Messages" Path="DraftMessages"/>
       </Annotations>
       <Annotations Target="WashWizardService.EntityContainer/ServiceTaskSet">
+        <Annotation Term="UI.SelectionVariant" Qualifier="All">
+          <Record Type="UI.SelectionVariantType">
+            <PropertyValue Property="Text" String="All Services"/>
+            <PropertyValue Property="SelectOptions">
+              <Collection/>
+            </PropertyValue>
+          </Record>
+        </Annotation>
         <Annotation Term="UI.SelectionVariant" Qualifier="Pending">
           <Record Type="UI.SelectionVariantType">
             <PropertyValue Property="Text" String="Pending Services"/>
@@ -592,6 +1326,7 @@
         </Annotation>
         <Annotation Term="UI.PresentationVariant" Qualifier="Default">
           <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Text" String="Default"/>
             <PropertyValue Property="SortOrder">
               <Collection>
                 <Record Type="Common.SortOrderType">
@@ -607,27 +1342,335 @@
             </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="UI.PresentationVariant" Qualifier="WithChart">
-          <Record Type="UI.PresentationVariantType">
-            <PropertyValue Property="SortOrder">
-              <Collection>
-                <Record Type="Common.SortOrderType">
-                  <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
-                  <PropertyValue Property="Descending" Bool="true"/>
-                </Record>
-              </Collection>
-            </PropertyValue>
-            <PropertyValue Property="Visualizations">
-              <Collection>
-                <AnnotationPath>@UI.LineItem</AnnotationPath>
-                <AnnotationPath>@UI.Chart#RevenueByDate</AnnotationPath>
-              </Collection>
-            </PropertyValue>
-          </Record>
-        </Annotation>
-        <Annotation Term="UI.PresentationVariant" Qualifier="AnalyticsView">
-          <Record Type="UI.PresentationVariantType">
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="RevenueAnalytics">
+          <Record Type="UI.SelectionPresentationVariantType">
             <PropertyValue Property="Text" String="Revenue Analytics"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="SortOrder">
+                  <Collection>
+                    <Record Type="Common.SortOrderType">
+                      <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                      <PropertyValue Property="Descending" Bool="true"/>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#RevenueByDate</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="ServiceAnalytics">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Service Distribution"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#ServiceDistribution</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="PaymentAnalytics">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Payment Analysis"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#PaymentBreakdown</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="PendingView">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Pending Services"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection>
+                    <Record Type="UI.SelectOptionType">
+                      <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                      <PropertyValue Property="Ranges">
+                        <Collection>
+                          <Record Type="UI.SelectionRangeType">
+                            <PropertyValue Property="Sign" EnumMember="UI.SelectionRangeSignType/I"/>
+                            <PropertyValue Property="Option" EnumMember="UI.SelectionRangeOptionType/EQ"/>
+                            <PropertyValue Property="Low" String="Pending"/>
+                          </Record>
+                        </Collection>
+                      </PropertyValue>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="SortOrder">
+                  <Collection>
+                    <Record Type="Common.SortOrderType">
+                      <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                      <PropertyValue Property="Descending" Bool="true"/>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="CompletedView">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Completed Services"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection>
+                    <Record Type="UI.SelectOptionType">
+                      <PropertyValue Property="PropertyName" PropertyPath="Status"/>
+                      <PropertyValue Property="Ranges">
+                        <Collection>
+                          <Record Type="UI.SelectionRangeType">
+                            <PropertyValue Property="Sign" EnumMember="UI.SelectionRangeSignType/I"/>
+                            <PropertyValue Property="Option" EnumMember="UI.SelectionRangeOptionType/EQ"/>
+                            <PropertyValue Property="Low" String="Completed"/>
+                          </Record>
+                        </Collection>
+                      </PropertyValue>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="SortOrder">
+                  <Collection>
+                    <Record Type="Common.SortOrderType">
+                      <PropertyValue Property="Property" PropertyPath="CompletedAt"/>
+                      <PropertyValue Property="Descending" Bool="true"/>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.KPI" Qualifier="TotalRevenue">
+          <Record Type="UI.KPIType">
+            <PropertyValue Property="ID" String="KPI_TotalRevenue"/>
+            <PropertyValue Property="DataPoint" Path="@UI.DataPoint#TotalRevenueValue"/>
+            <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#AllData"/>
+            <PropertyValue Property="Detail">
+              <Record Type="UI.KPIDetailType">
+                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#KPITotalRevenue"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.KPI" Qualifier="TotalServices">
+          <Record Type="UI.KPIType">
+            <PropertyValue Property="ID" String="KPI_TotalServices"/>
+            <PropertyValue Property="DataPoint" Path="@UI.DataPoint#TotalServicesValue"/>
+            <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#AllData"/>
+            <PropertyValue Property="Detail">
+              <Record Type="UI.KPIDetailType">
+                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#KPITotalServices"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.KPI" Qualifier="AvgDailyRevenue">
+          <Record Type="UI.KPIType">
+            <PropertyValue Property="ID" String="KPI_AvgDailyRevenue"/>
+            <PropertyValue Property="DataPoint" Path="@UI.DataPoint#AvgDailyRevenueValue"/>
+            <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#AllData"/>
+            <PropertyValue Property="Detail">
+              <Record Type="UI.KPIDetailType">
+                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#KPIAvgDailyRevenue"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.KPI" Qualifier="AvgServiceValue">
+          <Record Type="UI.KPIType">
+            <PropertyValue Property="ID" String="KPI_AvgServiceValue"/>
+            <PropertyValue Property="DataPoint" Path="@UI.DataPoint#AvgServiceValueValue"/>
+            <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#AllData"/>
+            <PropertyValue Property="Detail">
+              <Record Type="UI.KPIDetailType">
+                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#KPIAvgServiceValue"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionVariant" Qualifier="AllData">
+          <Record Type="UI.SelectionVariantType">
+            <PropertyValue Property="SelectOptions">
+              <Collection/>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPITotalRevenue">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.DataPoint#TotalRevenueValue</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPITotalServices">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.DataPoint#TotalServicesValue</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPIAvgDailyRevenue">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.DataPoint#AvgDailyRevenueValue</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPIAvgServiceValue">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.DataPoint#AvgServiceValueValue</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="RevenueTrends">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Daily Overview"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="SortOrder">
+                  <Collection>
+                    <Record Type="Common.SortOrderType">
+                      <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                      <PropertyValue Property="Descending" Bool="true"/>
+                    </Record>
+                  </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.Chart#RevenueTrend</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#ServiceCountTrend</AnnotationPath>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="ServiceDistribution">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Service Type Distribution"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.Chart#ServiceDistribution</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#ServiceVolumeByType</AnnotationPath>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="Performance">
+          <Record Type="UI.SelectionPresentationVariantType">
+            <PropertyValue Property="Text" String="Revenue by Staff Member"/>
+            <PropertyValue Property="SelectionVariant">
+              <Record Type="UI.SelectionVariantType">
+                <PropertyValue Property="SelectOptions">
+                  <Collection/>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="PresentationVariant">
+              <Record Type="UI.PresentationVariantType">
+                <PropertyValue Property="Visualizations">
+                  <Collection>
+                    <AnnotationPath>@UI.Chart#StaffRevenue</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#StaffVolume</AnnotationPath>
+                    <AnnotationPath>@UI.LineItem</AnnotationPath>
+                  </Collection>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Text" String="Default"/>
             <PropertyValue Property="SortOrder">
               <Collection>
                 <Record Type="Common.SortOrderType">
@@ -639,25 +1682,91 @@
             <PropertyValue Property="Visualizations">
               <Collection>
                 <AnnotationPath>@UI.LineItem</AnnotationPath>
-                <AnnotationPath>@UI.Chart#RevenueByDate</AnnotationPath>
               </Collection>
             </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="UI.PresentationVariant" Qualifier="CompletedRecords">
-          <Record Type="UI.PresentationVariantType">
-            <PropertyValue Property="Text" String="Completed Services"/>
-            <PropertyValue Property="SortOrder">
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="Amount" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="ServiceCount" String="Edm.Int32"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="AvgAmount" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="AvgDailyAmount" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.ApplySupported">
+          <Record Type="Aggregation.ApplySupportedType">
+            <PropertyValue Property="Transformations">
               <Collection>
-                <Record Type="Common.SortOrderType">
-                  <PropertyValue Property="Property" PropertyPath="CompletedAt"/>
-                  <PropertyValue Property="Descending" Bool="true"/>
+                <String>aggregate</String>
+                <String>topcount</String>
+                <String>bottomcount</String>
+                <String>identity</String>
+                <String>concat</String>
+                <String>groupby</String>
+                <String>filter</String>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupableProperties">
+              <Collection>
+                <PropertyPath>Status</PropertyPath>
+                <PropertyPath>ServiceType</PropertyPath>
+                <PropertyPath>PaymentMethod</PropertyPath>
+                <PropertyPath>ServiceDate</PropertyPath>
+                <PropertyPath>CarModel</PropertyPath>
+                <PropertyPath>HandledBy</PropertyPath>
+                <PropertyPath>CustomerName</PropertyPath>
+                <PropertyPath>VehiclePlate</PropertyPath>
+                <PropertyPath>CompletedAt</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="AggregatableProperties">
+              <Collection>
+                <Record Type="Aggregation.AggregatablePropertyType">
+                  <PropertyValue Property="Property" PropertyPath="Amount"/>
+                  <PropertyValue Property="SupportedAggregationMethods">
+                    <Collection>
+                      <String>sum</String>
+                      <String>min</String>
+                      <String>max</String>
+                      <String>average</String>
+                    </Collection>
+                  </PropertyValue>
+                </Record>
+                <Record Type="Aggregation.AggregatablePropertyType">
+                  <PropertyValue Property="Property" PropertyPath="ServiceCount"/>
+                  <PropertyValue Property="SupportedAggregationMethods">
+                    <Collection>
+                      <String>sum</String>
+                    </Collection>
+                  </PropertyValue>
+                </Record>
+                <Record Type="Aggregation.AggregatablePropertyType">
+                  <PropertyValue Property="Property" PropertyPath="AvgAmount"/>
+                  <PropertyValue Property="SupportedAggregationMethods">
+                    <Collection>
+                      <String>average</String>
+                    </Collection>
+                  </PropertyValue>
+                </Record>
+                <Record Type="Aggregation.AggregatablePropertyType">
+                  <PropertyValue Property="Property" PropertyPath="AvgDailyAmount"/>
+                  <PropertyValue Property="SupportedAggregationMethods">
+                    <Collection>
+                      <String>average</String>
+                    </Collection>
+                  </PropertyValue>
                 </Record>
               </Collection>
             </PropertyValue>
-            <PropertyValue Property="Visualizations">
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.SideEffects" Qualifier="ReactOnServiceTypeChange">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceProperties">
               <Collection>
-                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                <PropertyPath>ServiceType</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+              <Collection>
+                <String>Amount</String>
               </Collection>
             </PropertyValue>
           </Record>
@@ -724,6 +1833,22 @@
         <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
       </Annotations>
       <Annotations Target="WashWizardService.ServiceTaskSet/CarModel">
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="CollectionPath" String="CarModelMasterSet"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="CarModel"/>
+                  <PropertyValue Property="ValueListProperty" String="ModelName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="Brand"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
         <Annotation Term="Common.Label" String="Car Model"/>
         <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
       </Annotations>
@@ -732,10 +1857,30 @@
         <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
       </Annotations>
       <Annotations Target="WashWizardService.ServiceTaskSet/ServiceType">
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="CollectionPath" String="ServiceCatalogSet"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="ServiceType"/>
+                  <PropertyValue Property="ValueListProperty" String="ServiceName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="Category"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="Price"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
         <Annotation Term="Common.Label" String="Service Type"/>
         <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
       </Annotations>
       <Annotations Target="WashWizardService.ServiceTaskSet/Amount">
+        <Annotation Term="Analytics.Measure" Bool="true"/>
         <Annotation Term="Common.Label" String="Amount"/>
         <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
       </Annotations>
@@ -757,9 +1902,6 @@
         <Annotation Term="Common.Label" String="Payment Method"/>
       </Annotations>
       <Annotations Target="WashWizardService.ServiceTaskSet/Status">
-        <Annotation Term="Common.Text" Path="Status">
-          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
-        </Annotation>
         <Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
         <Annotation Term="Common.Label" String="Status"/>
       </Annotations>
@@ -771,6 +1913,16 @@
       </Annotations>
       <Annotations Target="WashWizardService.ServiceTaskSet/HandledBy">
         <Annotation Term="Common.Label" String="Handled By"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceTaskSet/ServiceCount">
+        <Annotation Term="Analytics.Measure" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceTaskSet/AvgAmount">
+        <Annotation Term="Analytics.Measure" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceTaskSet/AvgDailyAmount">
+        <Annotation Term="Analytics.Measure" Bool="true"/>
       </Annotations>
       <Annotations Target="WashWizardService.ServiceTaskSet/IsActiveEntity">
         <Annotation Term="UI.Hidden" Bool="true"/>
@@ -809,6 +1961,7 @@
             <Record Type="UI.DataField">
               <PropertyValue Property="Value" Path="Username"/>
               <PropertyValue Property="Label" String="Username"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
             </Record>
             <Record Type="UI.DataField">
               <PropertyValue Property="Value" Path="Role"/>
@@ -823,6 +1976,7 @@
                   <Int>3</Int>
                 </If>
               </PropertyValue>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
             </Record>
           </Collection>
         </Annotation>
@@ -867,46 +2021,148 @@
                 <PropertyValue Property="Value" Path="ModelName"/>
               </Record>
             </PropertyValue>
+            <PropertyValue Property="Description">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="Brand"/>
+              </Record>
+            </PropertyValue>
           </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>Brand</PropertyPath>
+            <PropertyPath>ModelName</PropertyPath>
+          </Collection>
         </Annotation>
         <Annotation Term="UI.LineItem">
           <Collection>
             <Record Type="UI.DataField">
               <PropertyValue Property="Value" Path="Brand"/>
               <PropertyValue Property="Label" String="Brand"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
             </Record>
             <Record Type="UI.DataField">
               <PropertyValue Property="Value" Path="ModelName"/>
               <PropertyValue Property="Label" String="Model Name"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
             </Record>
           </Collection>
         </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="ID" String="CarModelDetailsFacet"/>
+              <PropertyValue Property="Label" String="Car Model Details"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#CarModelDetails"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="CarModelDetails">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Brand"/>
+                  <PropertyValue Property="Label" String="Brand"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="ModelName"/>
+                  <PropertyValue Property="Label" String="Model Name"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceEntities">
+              <Collection>
+                <NavigationPropertyPath></NavigationPropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+              <Collection>
+                <String>DraftMessages</String>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.Messages" Path="DraftMessages"/>
       </Annotations>
       <Annotations Target="WashWizardService.EntityContainer/CarModelMasterSet">
-        <Annotation Term="Capabilities.DeleteRestrictions">
-          <Record Type="Capabilities.DeleteRestrictionsType">
-            <PropertyValue Property="Deletable" Bool="false"/>
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="WashWizardService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="WashWizardService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="WashWizardService.draftPrepare"/>
           </Record>
         </Annotation>
-        <Annotation Term="Capabilities.InsertRestrictions">
-          <Record Type="Capabilities.InsertRestrictionsType">
-            <PropertyValue Property="Insertable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Capabilities.UpdateRestrictions">
-          <Record Type="Capabilities.UpdateRestrictionsType">
-            <PropertyValue Property="Updatable" Bool="false"/>
+        <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceEntities">
+              <Collection>
+                <NavigationPropertyPath></NavigationPropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+              <Collection>
+                <String>DraftMessages</String>
+              </Collection>
+            </PropertyValue>
           </Record>
         </Annotation>
       </Annotations>
       <Annotations Target="WashWizardService.CarModelMasterSet/ID">
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
       </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/createdAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/createdBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/modifiedAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/modifiedBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+        <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+      </Annotations>
       <Annotations Target="WashWizardService.CarModelMasterSet/Brand">
         <Annotation Term="Common.Label" String="Brand"/>
       </Annotations>
       <Annotations Target="WashWizardService.CarModelMasterSet/ModelName">
         <Annotation Term="Common.Label" String="Model Name"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.CarModelMasterSet/DraftMessages">
+        <Annotation Term="Core.Computed" Bool="true"/>
       </Annotations>
       <Annotations Target="WashWizardService.ServiceCatalogSet">
         <Annotation Term="UI.HeaderInfo">
@@ -918,46 +2174,152 @@
                 <PropertyValue Property="Value" Path="ServiceName"/>
               </Record>
             </PropertyValue>
+            <PropertyValue Property="Description">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="Category"/>
+              </Record>
+            </PropertyValue>
           </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>Category</PropertyPath>
+            <PropertyPath>ServiceName</PropertyPath>
+          </Collection>
         </Annotation>
         <Annotation Term="UI.LineItem">
           <Collection>
             <Record Type="UI.DataField">
               <PropertyValue Property="Value" Path="Category"/>
               <PropertyValue Property="Label" String="Category"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
             </Record>
             <Record Type="UI.DataField">
               <PropertyValue Property="Value" Path="ServiceName"/>
               <PropertyValue Property="Label" String="Service Name"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
             </Record>
             <Record Type="UI.DataField">
               <PropertyValue Property="Value" Path="Price"/>
               <PropertyValue Property="Label" String="Price (₹)"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
             </Record>
           </Collection>
         </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="ID" String="ServiceDetailsFacet"/>
+              <PropertyValue Property="Label" String="Service Details"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#ServiceDetails"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="ServiceDetails">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Category"/>
+                  <PropertyValue Property="Label" String="Category"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="ServiceName"/>
+                  <PropertyValue Property="Label" String="Service Name"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Price"/>
+                  <PropertyValue Property="Label" String="Price (₹)"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceEntities">
+              <Collection>
+                <NavigationPropertyPath></NavigationPropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+              <Collection>
+                <String>DraftMessages</String>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.Messages" Path="DraftMessages"/>
       </Annotations>
       <Annotations Target="WashWizardService.EntityContainer/ServiceCatalogSet">
-        <Annotation Term="Capabilities.DeleteRestrictions">
-          <Record Type="Capabilities.DeleteRestrictionsType">
-            <PropertyValue Property="Deletable" Bool="false"/>
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="WashWizardService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="WashWizardService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="WashWizardService.draftPrepare"/>
           </Record>
         </Annotation>
-        <Annotation Term="Capabilities.InsertRestrictions">
-          <Record Type="Capabilities.InsertRestrictionsType">
-            <PropertyValue Property="Insertable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Capabilities.UpdateRestrictions">
-          <Record Type="Capabilities.UpdateRestrictionsType">
-            <PropertyValue Property="Updatable" Bool="false"/>
+        <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceEntities">
+              <Collection>
+                <NavigationPropertyPath></NavigationPropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+              <Collection>
+                <String>DraftMessages</String>
+              </Collection>
+            </PropertyValue>
           </Record>
         </Annotation>
       </Annotations>
       <Annotations Target="WashWizardService.ServiceCatalogSet/ID">
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
       </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/createdAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/createdBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/modifiedAt">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/modifiedBy">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+        <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+      </Annotations>
       <Annotations Target="WashWizardService.ServiceCatalogSet/Category">
+        <Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="CollectionPath" String="ServiceCatalogSet"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="Category"/>
+                  <PropertyValue Property="ValueListProperty" String="Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
         <Annotation Term="Common.Label" String="Category"/>
       </Annotations>
       <Annotations Target="WashWizardService.ServiceCatalogSet/ServiceName">
@@ -965,6 +2327,21 @@
       </Annotations>
       <Annotations Target="WashWizardService.ServiceCatalogSet/Price">
         <Annotation Term="Common.Label" String="Price"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="WashWizardService.ServiceCatalogSet/DraftMessages">
+        <Annotation Term="Core.Computed" Bool="true"/>
       </Annotations>
       <Annotations Target="WashWizardService.DraftAdministrativeData">
         <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>

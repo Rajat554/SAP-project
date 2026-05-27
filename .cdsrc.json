@@ -1,0 +1,70 @@
+{
+  "sql": {
+    "native_typer": true
+  },
+  "requires": {
+    "db": {
+      "kind": "sqlite",
+      "credentials": {
+        "database": "db.sqlite"
+      }
+    },
+    "auth": {
+      "kind": "mocked",
+      "users": {
+        "admin": {
+          "password": "admin123",
+          "roles": [
+            "Admin"
+          ]
+        },
+        "staff": {
+          "password": "staff123",
+          "roles": [
+            "Staff"
+          ]
+        }
+      }
+    }
+  },
+  "[development]": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": "db.sqlite"
+        },
+        "mock": {
+          "folders": [
+            "db/mock"
+          ]
+        }
+      }
+    }
+  },
+  "[testing]": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": "db.sqlite"
+        },
+        "mock": {
+          "folders": [
+            "db/mock"
+          ]
+        }
+      }
+    }
+  },
+  "[production]": {
+    "requires": {
+      "db": {
+        "kind": "hana"
+      },
+      "auth": {
+        "kind": "xsuaa"
+      }
+    }
+  }
+}

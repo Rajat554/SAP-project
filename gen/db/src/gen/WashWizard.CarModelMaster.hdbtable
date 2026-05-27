@@ -1,0 +1,10 @@
+COLUMN TABLE WashWizard_CarModelMaster (
+  ID NVARCHAR(36) NOT NULL,
+  createdAt TIMESTAMP,
+  createdBy NVARCHAR(255),
+  modifiedAt TIMESTAMP,
+  modifiedBy NVARCHAR(255),
+  Brand NVARCHAR(100),
+  ModelName NVARCHAR(100),
+  PRIMARY KEY(ID)
+)

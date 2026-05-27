@@ -154,12 +154,65 @@
     "WashWizard.CarModelMaster": {
       "kind": "entity",
       "includes": [
-        "cuid"
+        "cuid",
+        "managed"
       ],
       "elements": {
         "ID": {
           "key": true,
           "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
         },
         "Brand": {
           "@title": "Brand",
@@ -176,12 +229,65 @@
     "WashWizard.ServiceCatalog": {
       "kind": "entity",
       "includes": [
-        "cuid"
+        "cuid",
+        "managed"
       ],
       "elements": {
         "ID": {
           "key": true,
           "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
         },
         "Category": {
           "@title": "Category",
@@ -358,6 +464,23 @@
             "=": "CompletedAt"
           },
           "Label": "Completed On"
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "HandledBy"
+          },
+          "Label": "Handled By"
+        }
+      ],
+      "@UI.HeaderFacets": [
+        {
+          "$Type": "UI.ReferenceFacet",
+          "Target": "@UI.DataPoint#Status"
+        },
+        {
+          "$Type": "UI.ReferenceFacet",
+          "Target": "@UI.DataPoint#Amount"
         }
       ],
       "@UI.Facets": [
@@ -434,7 +557,7 @@
           "Value": {
             "=": "Amount"
           },
-          "Label": "Amount"
+          "Label": "Amount (₹)"
         },
         {
           "$Type": "UI.DataField",
@@ -475,6 +598,41 @@
           "Label": "Handled By"
         }
       ],
+      "@UI.DataPoint#Status.Value": {
+        "=": "Status"
+      },
+      "@UI.DataPoint#Status.Title": "Status",
+      "@UI.DataPoint#Status.Criticality.$edmJson.$If": [
+        {
+          "$Eq": [
+            {
+              "$Path": "Status"
+            },
+            "Completed"
+          ]
+        },
+        3,
+        {
+          "$If": [
+            {
+              "$Eq": [
+                {
+                  "$Path": "Status"
+                },
+                "Pending"
+              ]
+            },
+            2,
+            0
+          ]
+        }
+      ],
+      "@UI.DataPoint#Amount.Value": {
+        "=": "Amount"
+      },
+      "@UI.DataPoint#Amount.Title": "Amount (₹)",
+      "@UI.SelectionVariant#All.Text": "All Services",
+      "@UI.SelectionVariant#All.SelectOptions": [],
       "@UI.SelectionVariant#Pending.Text": "Pending Services",
       "@UI.SelectionVariant#Pending.SelectOptions": [
         {
@@ -512,6 +670,18 @@
             }
           ]
         }
+      ],
+      "@UI.PresentationVariant#Default.Text": "Default",
+      "@UI.PresentationVariant#Default.SortOrder": [
+        {
+          "Property": {
+            "=": "ServiceDate"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.PresentationVariant#Default.Visualizations": [
+        "@UI.LineItem"
       ],
       "@UI.Chart#RevenueByDate.$Type": "UI.ChartDefinitionType",
       "@UI.Chart#RevenueByDate.ChartType": {
@@ -552,7 +722,7 @@
       "@UI.Chart#ServiceDistribution.ChartType": {
         "#": "Donut"
       },
-      "@UI.Chart#ServiceDistribution.Title": "Revenue by Service Type",
+      "@UI.Chart#ServiceDistribution.Title": "Service Type Distribution",
       "@UI.Chart#ServiceDistribution.Dimensions": [
         {
           "=": "ServiceType"
@@ -585,7 +755,7 @@
       ],
       "@UI.Chart#PaymentBreakdown.$Type": "UI.ChartDefinitionType",
       "@UI.Chart#PaymentBreakdown.ChartType": {
-        "#": "Column"
+        "#": "Bar"
       },
       "@UI.Chart#PaymentBreakdown.Title": "Revenue by Payment Method",
       "@UI.Chart#PaymentBreakdown.Dimensions": [
@@ -618,11 +788,44 @@
           }
         }
       ],
-      "@UI.DataPoint#Revenue.Value": {
-        "=": "Amount"
+      "@UI.Chart#StatusOverview.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#StatusOverview.ChartType": {
+        "#": "Column"
       },
-      "@UI.DataPoint#Revenue.Title": "Revenue",
-      "@UI.PresentationVariant#Default.SortOrder": [
+      "@UI.Chart#StatusOverview.Title": "Services by Status",
+      "@UI.Chart#StatusOverview.Dimensions": [
+        {
+          "=": "Status"
+        }
+      ],
+      "@UI.Chart#StatusOverview.Measures": [
+        {
+          "=": "Amount"
+        }
+      ],
+      "@UI.Chart#StatusOverview.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "Status"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#StatusOverview.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "Amount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.SelectionPresentationVariant#RevenueAnalytics.Text": "Revenue Analytics",
+      "@UI.SelectionPresentationVariant#RevenueAnalytics.SelectionVariant.SelectOptions": [],
+      "@UI.SelectionPresentationVariant#RevenueAnalytics.PresentationVariant.SortOrder": [
         {
           "Property": {
             "=": "ServiceDate"
@@ -630,36 +833,72 @@
           "Descending": true
         }
       ],
-      "@UI.PresentationVariant#Default.Visualizations": [
+      "@UI.SelectionPresentationVariant#RevenueAnalytics.PresentationVariant.Visualizations": [
+        "@UI.LineItem",
+        "@UI.Chart#RevenueByDate"
+      ],
+      "@UI.SelectionPresentationVariant#ServiceAnalytics.Text": "Service Distribution",
+      "@UI.SelectionPresentationVariant#ServiceAnalytics.SelectionVariant.SelectOptions": [],
+      "@UI.SelectionPresentationVariant#ServiceAnalytics.PresentationVariant.Visualizations": [
+        "@UI.LineItem",
+        "@UI.Chart#ServiceDistribution"
+      ],
+      "@UI.SelectionPresentationVariant#PaymentAnalytics.Text": "Payment Analysis",
+      "@UI.SelectionPresentationVariant#PaymentAnalytics.SelectionVariant.SelectOptions": [],
+      "@UI.SelectionPresentationVariant#PaymentAnalytics.PresentationVariant.Visualizations": [
+        "@UI.LineItem",
+        "@UI.Chart#PaymentBreakdown"
+      ],
+      "@UI.SelectionPresentationVariant#PendingView.Text": "Pending Services",
+      "@UI.SelectionPresentationVariant#PendingView.SelectionVariant.SelectOptions": [
+        {
+          "PropertyName": {
+            "=": "Status"
+          },
+          "Ranges": [
+            {
+              "Sign": {
+                "#": "I"
+              },
+              "Option": {
+                "#": "EQ"
+              },
+              "Low": "Pending"
+            }
+          ]
+        }
+      ],
+      "@UI.SelectionPresentationVariant#PendingView.PresentationVariant.SortOrder": [
+        {
+          "Property": {
+            "=": "ServiceDate"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.SelectionPresentationVariant#PendingView.PresentationVariant.Visualizations": [
         "@UI.LineItem"
       ],
-      "@UI.PresentationVariant#WithChart.SortOrder": [
+      "@UI.SelectionPresentationVariant#CompletedView.Text": "Completed Services",
+      "@UI.SelectionPresentationVariant#CompletedView.SelectionVariant.SelectOptions": [
         {
-          "Property": {
-            "=": "ServiceDate"
+          "PropertyName": {
+            "=": "Status"
           },
-          "Descending": true
+          "Ranges": [
+            {
+              "Sign": {
+                "#": "I"
+              },
+              "Option": {
+                "#": "EQ"
+              },
+              "Low": "Completed"
+            }
+          ]
         }
       ],
-      "@UI.PresentationVariant#WithChart.Visualizations": [
-        "@UI.LineItem",
-        "@UI.Chart#RevenueByDate"
-      ],
-      "@UI.PresentationVariant#AnalyticsView.Text": "Revenue Analytics",
-      "@UI.PresentationVariant#AnalyticsView.SortOrder": [
-        {
-          "Property": {
-            "=": "ServiceDate"
-          },
-          "Descending": true
-        }
-      ],
-      "@UI.PresentationVariant#AnalyticsView.Visualizations": [
-        "@UI.LineItem",
-        "@UI.Chart#RevenueByDate"
-      ],
-      "@UI.PresentationVariant#CompletedRecords.Text": "Completed Services",
-      "@UI.PresentationVariant#CompletedRecords.SortOrder": [
+      "@UI.SelectionPresentationVariant#CompletedView.PresentationVariant.SortOrder": [
         {
           "Property": {
             "=": "CompletedAt"
@@ -667,7 +906,397 @@
           "Descending": true
         }
       ],
-      "@UI.PresentationVariant#CompletedRecords.Visualizations": [
+      "@UI.SelectionPresentationVariant#CompletedView.PresentationVariant.Visualizations": [
+        "@UI.LineItem"
+      ],
+      "@Aggregation.CustomAggregate#Amount": "Edm.Decimal",
+      "@Aggregation.CustomAggregate#ServiceCount": "Edm.Int32",
+      "@Aggregation.CustomAggregate#AvgAmount": "Edm.Decimal",
+      "@Aggregation.CustomAggregate#AvgDailyAmount": "Edm.Decimal",
+      "@Aggregation.ApplySupported.Transformations": [
+        "aggregate",
+        "topcount",
+        "bottomcount",
+        "identity",
+        "concat",
+        "groupby",
+        "filter"
+      ],
+      "@Aggregation.ApplySupported.GroupableProperties": [
+        {
+          "=": "Status"
+        },
+        {
+          "=": "ServiceType"
+        },
+        {
+          "=": "PaymentMethod"
+        },
+        {
+          "=": "ServiceDate"
+        },
+        {
+          "=": "CarModel"
+        },
+        {
+          "=": "HandledBy"
+        },
+        {
+          "=": "CustomerName"
+        },
+        {
+          "=": "VehiclePlate"
+        },
+        {
+          "=": "CompletedAt"
+        }
+      ],
+      "@Aggregation.ApplySupported.AggregatableProperties": [
+        {
+          "Property": {
+            "=": "Amount"
+          },
+          "SupportedAggregationMethods": [
+            "sum",
+            "min",
+            "max",
+            "average"
+          ]
+        },
+        {
+          "Property": {
+            "=": "ServiceCount"
+          },
+          "SupportedAggregationMethods": [
+            "sum"
+          ]
+        },
+        {
+          "Property": {
+            "=": "AvgAmount"
+          },
+          "SupportedAggregationMethods": [
+            "average"
+          ]
+        },
+        {
+          "Property": {
+            "=": "AvgDailyAmount"
+          },
+          "SupportedAggregationMethods": [
+            "average"
+          ]
+        }
+      ],
+      "@UI.KPI#TotalRevenue.ID": "KPI_TotalRevenue",
+      "@UI.KPI#TotalRevenue.DataPoint": {
+        "=": "@UI.DataPoint#TotalRevenueValue"
+      },
+      "@UI.KPI#TotalRevenue.SelectionVariant": {
+        "=": "@UI.SelectionVariant#AllData"
+      },
+      "@UI.KPI#TotalRevenue.Detail.$Type": "UI.KPIDetailType",
+      "@UI.KPI#TotalRevenue.Detail.DefaultPresentationVariant": {
+        "=": "@UI.PresentationVariant#KPITotalRevenue"
+      },
+      "@UI.KPI#TotalServices.ID": "KPI_TotalServices",
+      "@UI.KPI#TotalServices.DataPoint": {
+        "=": "@UI.DataPoint#TotalServicesValue"
+      },
+      "@UI.KPI#TotalServices.SelectionVariant": {
+        "=": "@UI.SelectionVariant#AllData"
+      },
+      "@UI.KPI#TotalServices.Detail.$Type": "UI.KPIDetailType",
+      "@UI.KPI#TotalServices.Detail.DefaultPresentationVariant": {
+        "=": "@UI.PresentationVariant#KPITotalServices"
+      },
+      "@UI.KPI#AvgDailyRevenue.ID": "KPI_AvgDailyRevenue",
+      "@UI.KPI#AvgDailyRevenue.DataPoint": {
+        "=": "@UI.DataPoint#AvgDailyRevenueValue"
+      },
+      "@UI.KPI#AvgDailyRevenue.SelectionVariant": {
+        "=": "@UI.SelectionVariant#AllData"
+      },
+      "@UI.KPI#AvgDailyRevenue.Detail.$Type": "UI.KPIDetailType",
+      "@UI.KPI#AvgDailyRevenue.Detail.DefaultPresentationVariant": {
+        "=": "@UI.PresentationVariant#KPIAvgDailyRevenue"
+      },
+      "@UI.KPI#AvgServiceValue.ID": "KPI_AvgServiceValue",
+      "@UI.KPI#AvgServiceValue.DataPoint": {
+        "=": "@UI.DataPoint#AvgServiceValueValue"
+      },
+      "@UI.KPI#AvgServiceValue.SelectionVariant": {
+        "=": "@UI.SelectionVariant#AllData"
+      },
+      "@UI.KPI#AvgServiceValue.Detail.$Type": "UI.KPIDetailType",
+      "@UI.KPI#AvgServiceValue.Detail.DefaultPresentationVariant": {
+        "=": "@UI.PresentationVariant#KPIAvgServiceValue"
+      },
+      "@UI.SelectionVariant#AllData.SelectOptions": [],
+      "@UI.PresentationVariant#KPITotalRevenue.Visualizations": [
+        "@UI.DataPoint#TotalRevenueValue"
+      ],
+      "@UI.PresentationVariant#KPITotalServices.Visualizations": [
+        "@UI.DataPoint#TotalServicesValue"
+      ],
+      "@UI.PresentationVariant#KPIAvgDailyRevenue.Visualizations": [
+        "@UI.DataPoint#AvgDailyRevenueValue"
+      ],
+      "@UI.PresentationVariant#KPIAvgServiceValue.Visualizations": [
+        "@UI.DataPoint#AvgServiceValueValue"
+      ],
+      "@UI.DataPoint#TotalRevenueValue.Value": {
+        "=": "Amount"
+      },
+      "@UI.DataPoint#TotalRevenueValue.Title": "Total Revenue",
+      "@UI.DataPoint#TotalRevenueValue.Description": "This month's total",
+      "@UI.DataPoint#TotalRevenueValue.ValueFormat.NumberOfFractionalDigits": 2,
+      "@UI.DataPoint#TotalServicesValue.Value": {
+        "=": "ServiceCount"
+      },
+      "@UI.DataPoint#TotalServicesValue.Title": "Total Services",
+      "@UI.DataPoint#TotalServicesValue.Description": "Services completed",
+      "@UI.DataPoint#TotalServicesValue.ValueFormat.NumberOfFractionalDigits": 0,
+      "@UI.DataPoint#AvgDailyRevenueValue.Value": {
+        "=": "AvgDailyAmount"
+      },
+      "@UI.DataPoint#AvgDailyRevenueValue.Title": "Avg Daily Revenue",
+      "@UI.DataPoint#AvgDailyRevenueValue.Description": "Per working day",
+      "@UI.DataPoint#AvgDailyRevenueValue.ValueFormat.NumberOfFractionalDigits": 2,
+      "@UI.DataPoint#AvgServiceValueValue.Value": {
+        "=": "AvgAmount"
+      },
+      "@UI.DataPoint#AvgServiceValueValue.Title": "Avg Service Value",
+      "@UI.DataPoint#AvgServiceValueValue.Description": "Revenue per service",
+      "@UI.DataPoint#AvgServiceValueValue.ValueFormat.NumberOfFractionalDigits": 2,
+      "@UI.Chart#RevenueTrend.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#RevenueTrend.ChartType": {
+        "#": "Line"
+      },
+      "@UI.Chart#RevenueTrend.Title": "Daily Revenue Overview",
+      "@UI.Chart#RevenueTrend.Description": "Revenue breakdown for selected month",
+      "@UI.Chart#RevenueTrend.Dimensions": [
+        {
+          "=": "ServiceDate"
+        }
+      ],
+      "@UI.Chart#RevenueTrend.Measures": [
+        {
+          "=": "Amount"
+        }
+      ],
+      "@UI.Chart#RevenueTrend.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "ServiceDate"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#RevenueTrend.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "Amount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.Chart#ServiceCountTrend.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#ServiceCountTrend.ChartType": {
+        "#": "Column"
+      },
+      "@UI.Chart#ServiceCountTrend.Title": "Services Count Trend",
+      "@UI.Chart#ServiceCountTrend.Description": "Daily service count for selected month",
+      "@UI.Chart#ServiceCountTrend.Dimensions": [
+        {
+          "=": "ServiceDate"
+        }
+      ],
+      "@UI.Chart#ServiceCountTrend.Measures": [
+        {
+          "=": "ServiceCount"
+        }
+      ],
+      "@UI.Chart#ServiceCountTrend.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "ServiceDate"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#ServiceCountTrend.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "ServiceCount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.Chart#ServiceDistribution.Description": "Revenue breakdown by service type",
+      "@UI.Chart#ServiceVolumeByType.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#ServiceVolumeByType.ChartType": {
+        "#": "Column"
+      },
+      "@UI.Chart#ServiceVolumeByType.Title": "Service Volume by Type",
+      "@UI.Chart#ServiceVolumeByType.Description": "Number of services by type",
+      "@UI.Chart#ServiceVolumeByType.Dimensions": [
+        {
+          "=": "ServiceType"
+        }
+      ],
+      "@UI.Chart#ServiceVolumeByType.Measures": [
+        {
+          "=": "ServiceCount"
+        }
+      ],
+      "@UI.Chart#ServiceVolumeByType.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "ServiceType"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#ServiceVolumeByType.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "ServiceCount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.Chart#StaffRevenue.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#StaffRevenue.ChartType": {
+        "#": "Bar"
+      },
+      "@UI.Chart#StaffRevenue.Title": "Revenue by Staff Member",
+      "@UI.Chart#StaffRevenue.Description": "Staff-wise revenue contribution",
+      "@UI.Chart#StaffRevenue.Dimensions": [
+        {
+          "=": "HandledBy"
+        }
+      ],
+      "@UI.Chart#StaffRevenue.Measures": [
+        {
+          "=": "Amount"
+        }
+      ],
+      "@UI.Chart#StaffRevenue.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "HandledBy"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#StaffRevenue.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "Amount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.Chart#StaffVolume.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#StaffVolume.ChartType": {
+        "#": "Column"
+      },
+      "@UI.Chart#StaffVolume.Title": "Services by Staff Member",
+      "@UI.Chart#StaffVolume.Description": "Staff-wise service volume",
+      "@UI.Chart#StaffVolume.Dimensions": [
+        {
+          "=": "HandledBy"
+        }
+      ],
+      "@UI.Chart#StaffVolume.Measures": [
+        {
+          "=": "ServiceCount"
+        }
+      ],
+      "@UI.Chart#StaffVolume.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "HandledBy"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#StaffVolume.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "ServiceCount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
+      "@UI.SelectionPresentationVariant#RevenueTrends.Text": "Daily Overview",
+      "@UI.SelectionPresentationVariant#RevenueTrends.SelectionVariant.SelectOptions": [],
+      "@UI.SelectionPresentationVariant#RevenueTrends.PresentationVariant.SortOrder": [
+        {
+          "Property": {
+            "=": "ServiceDate"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.SelectionPresentationVariant#RevenueTrends.PresentationVariant.Visualizations": [
+        "@UI.Chart#RevenueTrend",
+        "@UI.Chart#ServiceCountTrend",
+        "@UI.LineItem"
+      ],
+      "@UI.SelectionPresentationVariant#ServiceDistribution.Text": "Service Type Distribution",
+      "@UI.SelectionPresentationVariant#ServiceDistribution.SelectionVariant.SelectOptions": [],
+      "@UI.SelectionPresentationVariant#ServiceDistribution.PresentationVariant.Visualizations": [
+        "@UI.Chart#ServiceDistribution",
+        "@UI.Chart#ServiceVolumeByType",
+        "@UI.LineItem"
+      ],
+      "@UI.SelectionPresentationVariant#Performance.Text": "Revenue by Staff Member",
+      "@UI.SelectionPresentationVariant#Performance.SelectionVariant.SelectOptions": [],
+      "@UI.SelectionPresentationVariant#Performance.PresentationVariant.Visualizations": [
+        "@UI.Chart#StaffRevenue",
+        "@UI.Chart#StaffVolume",
+        "@UI.LineItem"
+      ],
+      "@Common.SideEffects#ReactOnServiceTypeChange.SourceProperties": [
+        {
+          "=": "ServiceType"
+        }
+      ],
+      "@Common.SideEffects#ReactOnServiceTypeChange.TargetProperties": [
+        "Amount"
+      ],
+      "@UI.PresentationVariant.Text": "Default",
+      "@UI.PresentationVariant.SortOrder": [
+        {
+          "Property": {
+            "=": "ServiceDate"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.PresentationVariant.Visualizations": [
         "@UI.LineItem"
       ],
       "projection": {
@@ -675,7 +1304,39 @@
           "ref": [
             "WashWizard.ServiceTask"
           ]
-        }
+        },
+        "columns": [
+          "*",
+          {
+            "val": 1,
+            "as": "ServiceCount",
+            "cast": {
+              "type": "cds.Integer"
+            }
+          },
+          {
+            "ref": [
+              "Amount"
+            ],
+            "as": "AvgAmount",
+            "cast": {
+              "type": "cds.Decimal",
+              "precision": 10,
+              "scale": 2
+            }
+          },
+          {
+            "ref": [
+              "Amount"
+            ],
+            "as": "AvgDailyAmount",
+            "cast": {
+              "type": "cds.Decimal",
+              "precision": 10,
+              "scale": 2
+            }
+          }
+        ]
       },
       "elements": {
         "ID": {
@@ -747,6 +1408,20 @@
           "length": 10
         },
         "CarModel": {
+          "@Common.ValueList.CollectionPath": "CarModelMasterSet",
+          "@Common.ValueList.Parameters": [
+            {
+              "$Type": "Common.ValueListParameterOut",
+              "LocalDataProperty": {
+                "=": "CarModel"
+              },
+              "ValueListProperty": "ModelName"
+            },
+            {
+              "$Type": "Common.ValueListParameterDisplayOnly",
+              "ValueListProperty": "Brand"
+            }
+          ],
           "@title": "Car Model",
           "@mandatory": true,
           "type": "cds.String",
@@ -759,12 +1434,34 @@
           "length": 20
         },
         "ServiceType": {
+          "@Common.ValueList.CollectionPath": "ServiceCatalogSet",
+          "@Common.ValueList.Parameters": [
+            {
+              "$Type": "Common.ValueListParameterOut",
+              "LocalDataProperty": {
+                "=": "ServiceType"
+              },
+              "ValueListProperty": "ServiceName"
+            },
+            {
+              "$Type": "Common.ValueListParameterDisplayOnly",
+              "ValueListProperty": "Category"
+            },
+            {
+              "$Type": "Common.ValueListParameterDisplayOnly",
+              "ValueListProperty": "Price"
+            }
+          ],
           "@title": "Service Type",
           "@mandatory": true,
           "type": "cds.String",
           "length": 500
         },
         "Amount": {
+          "@Analytics.Measure": true,
+          "@Aggregation.default": {
+            "#": "SUM"
+          },
           "@title": "Amount",
           "@mandatory": true,
           "type": "cds.Decimal",
@@ -791,12 +1488,6 @@
           }
         },
         "Status": {
-          "@Common.Text": {
-            "=": "Status"
-          },
-          "@Common.TextArrangement": {
-            "#": "TextOnly"
-          },
           "@Common.ValueListWithFixedValues": true,
           "@title": "Status",
           "type": "cds.String",
@@ -817,6 +1508,35 @@
           "@title": "Handled By",
           "type": "cds.String",
           "length": 50
+        },
+        "ServiceCount": {
+          "@Analytics.Measure": true,
+          "@Aggregation.default": {
+            "#": "SUM"
+          },
+          "@Core.Computed": true,
+          "type": "cds.Integer",
+          "$calc": {
+            "val": 1
+          }
+        },
+        "AvgAmount": {
+          "@Analytics.Measure": true,
+          "@Aggregation.default": {
+            "#": "AVERAGE"
+          },
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "AvgDailyAmount": {
+          "@Analytics.Measure": true,
+          "@Aggregation.default": {
+            "#": "AVERAGE"
+          },
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
         }
       },
       "actions": {
@@ -849,7 +1569,10 @@
           "Value": {
             "=": "Username"
           },
-          "Label": "Username"
+          "Label": "Username",
+          "@UI.Importance": {
+            "#": "High"
+          }
         },
         {
           "$Type": "UI.DataField",
@@ -872,6 +1595,9 @@
                 3
               ]
             }
+          },
+          "@UI.Importance": {
+            "#": "High"
           }
         }
       ],
@@ -925,7 +1651,7 @@
     },
     "WashWizardService.CarModelMasterSet": {
       "kind": "entity",
-      "@readonly": true,
+      "@odata.draft.enabled": true,
       "@restrict": [
         {
           "grant": "*",
@@ -942,7 +1668,50 @@
       "@UI.HeaderInfo.Title.Value": {
         "=": "ModelName"
       },
+      "@UI.HeaderInfo.Description.$Type": "UI.DataField",
+      "@UI.HeaderInfo.Description.Value": {
+        "=": "Brand"
+      },
+      "@UI.SelectionFields": [
+        {
+          "=": "Brand"
+        },
+        {
+          "=": "ModelName"
+        }
+      ],
       "@UI.LineItem": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Brand"
+          },
+          "Label": "Brand",
+          "@UI.Importance": {
+            "#": "High"
+          }
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "ModelName"
+          },
+          "Label": "Model Name",
+          "@UI.Importance": {
+            "#": "High"
+          }
+        }
+      ],
+      "@UI.Facets": [
+        {
+          "$Type": "UI.ReferenceFacet",
+          "ID": "CarModelDetailsFacet",
+          "Label": "Car Model Details",
+          "Target": "@UI.FieldGroup#CarModelDetails"
+        }
+      ],
+      "@UI.FieldGroup#CarModelDetails.$Type": "UI.FieldGroupType",
+      "@UI.FieldGroup#CarModelDetails.Data": [
         {
           "$Type": "UI.DataField",
           "Value": {
@@ -970,6 +1739,58 @@
           "key": true,
           "type": "cds.UUID"
         },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
         "Brand": {
           "@title": "Brand",
           "type": "cds.String",
@@ -984,7 +1805,7 @@
     },
     "WashWizardService.ServiceCatalogSet": {
       "kind": "entity",
-      "@readonly": true,
+      "@odata.draft.enabled": true,
       "@restrict": [
         {
           "grant": "*",
@@ -1001,7 +1822,60 @@
       "@UI.HeaderInfo.Title.Value": {
         "=": "ServiceName"
       },
+      "@UI.HeaderInfo.Description.$Type": "UI.DataField",
+      "@UI.HeaderInfo.Description.Value": {
+        "=": "Category"
+      },
+      "@UI.SelectionFields": [
+        {
+          "=": "Category"
+        },
+        {
+          "=": "ServiceName"
+        }
+      ],
       "@UI.LineItem": [
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Category"
+          },
+          "Label": "Category",
+          "@UI.Importance": {
+            "#": "High"
+          }
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "ServiceName"
+          },
+          "Label": "Service Name",
+          "@UI.Importance": {
+            "#": "High"
+          }
+        },
+        {
+          "$Type": "UI.DataField",
+          "Value": {
+            "=": "Price"
+          },
+          "Label": "Price (₹)",
+          "@UI.Importance": {
+            "#": "High"
+          }
+        }
+      ],
+      "@UI.Facets": [
+        {
+          "$Type": "UI.ReferenceFacet",
+          "ID": "ServiceDetailsFacet",
+          "Label": "Service Details",
+          "Target": "@UI.FieldGroup#ServiceDetails"
+        }
+      ],
+      "@UI.FieldGroup#ServiceDetails.$Type": "UI.FieldGroupType",
+      "@UI.FieldGroup#ServiceDetails.Data": [
         {
           "$Type": "UI.DataField",
           "Value": {
@@ -1036,7 +1910,70 @@
           "key": true,
           "type": "cds.UUID"
         },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
         "Category": {
+          "@Common.ValueListWithFixedValues": true,
+          "@Common.ValueList.CollectionPath": "ServiceCatalogSet",
+          "@Common.ValueList.Parameters": [
+            {
+              "$Type": "Common.ValueListParameterOut",
+              "LocalDataProperty": {
+                "=": "Category"
+              },
+              "ValueListProperty": "Category"
+            }
+          ],
           "@title": "Category",
           "type": "cds.String",
           "length": 50

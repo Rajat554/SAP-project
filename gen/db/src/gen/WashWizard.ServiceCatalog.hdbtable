@@ -1,0 +1,11 @@
+COLUMN TABLE WashWizard_ServiceCatalog (
+  ID NVARCHAR(36) NOT NULL,
+  createdAt TIMESTAMP,
+  createdBy NVARCHAR(255),
+  modifiedAt TIMESTAMP,
+  modifiedBy NVARCHAR(255),
+  Category NVARCHAR(50),
+  ServiceName NVARCHAR(100),
+  Price DECIMAL(10, 2),
+  PRIMARY KEY(ID)
+)
