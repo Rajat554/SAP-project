@@ -20,13 +20,13 @@
   "dependencies": {
     "@cap-js/hana": "^2.8.0",
     "@sap/cds": "^9",
-    "better-sqlite3": "^12.10.0",
     "express": "^5"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2.4.0",
     "@sap/cds-dk": "^9",
-    "@sap/ux-specification": "^1.120.16"
+    "@sap/ux-specification": "^1.120.16",
+    "better-sqlite3": "^12.10.0"
   },
   "workspaces": [
     "app/*"
