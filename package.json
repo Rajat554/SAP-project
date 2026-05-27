@@ -20,7 +20,9 @@
   "dependencies": {
     "@cap-js/hana": "^2.8.0",
     "@sap/cds": "^9",
-    "express": "^5"
+    "@sap/xssec": "^4.13.0",
+    "express": "^5",
+    "passport": "^0.7.0"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2.4.0",
