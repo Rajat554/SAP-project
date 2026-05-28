@@ -141,5 +141,8 @@ vite.config.ts.timestamp-*
 # SAP CAP / BTP
 *.sqlite
 *.mtar
+*.zip
 mta_archives/
 dist.zip
+*_mta_build_tmp/
+.SAP-project_mta_build_tmp/
