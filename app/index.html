@@ -55,6 +55,11 @@
                 var activeComponent = null;
                 var activeKey = null;
 
+                var isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+                function getAppUrl(appName) {
+                    return isLocal ? "/" + appName + "/webapp" : "/" + appName;
+                }
+
                 function loadApp(appName, appUrl, navKey) {
                     if (activeKey === navKey) return; // already loaded
                     activeKey = navKey;
@@ -118,7 +123,7 @@
                                 icon: "sap-icon://grid",
                                 key: "service-entries",
                                 select: function () {
-                                    loadApp("service-entries", "/service-entries/webapp", "service-entries");
+                                    loadApp("service-entries", getAppUrl("service-entries"), "service-entries");
                                 }
                             }),
                             new NavigationListItem({
@@ -126,7 +131,7 @@
                                 icon: "sap-icon://list",
                                 key: "service-records",
                                 select: function () {
-                                    loadApp("service-records", "/service-records/webapp", "service-records");
+                                    loadApp("service-records", getAppUrl("service-records"), "service-records");
                                 }
                             }),
                             new NavigationListItem({
@@ -134,7 +139,7 @@
                                 icon: "sap-icon://line-chart",
                                 key: "analytics",
                                 select: function () {
-                                    loadApp("analytics", "/analytics/webapp", "analytics");
+                                    loadApp("analytics", getAppUrl("analytics"), "analytics");
                                 }
                             }),
                             new NavigationListItem({
@@ -142,7 +147,7 @@
                                 icon: "sap-icon://product",
                                 key: "catalog",
                                 select: function () {
-                                    loadApp("catalog", "/catalog/webapp", "catalog");
+                                    loadApp("catalog", getAppUrl("catalog"), "catalog");
                                 }
                             }),
                             new NavigationListItem({
@@ -150,7 +155,7 @@
                                 icon: "sap-icon://action-settings",
                                 key: "admin",
                                 select: function () {
-                                    loadApp("admin", "/admin/webapp", "admin");
+                                    loadApp("admin", getAppUrl("admin"), "admin");
                                 }
                             })
                         ]
@@ -166,7 +171,7 @@
                 });
 
                 // Load default app (Dashboard / Service Entries)
-                loadApp("service-entries", "/service-entries/webapp", "service-entries");
+                loadApp("service-entries", getAppUrl("service-entries"), "service-entries");
 
                 // Place into DOM
                 oToolPage.placeAt("content");
