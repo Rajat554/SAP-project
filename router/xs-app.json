@@ -15,6 +15,18 @@
       "authenticationType": "xsuaa"
     },
     {
+      "source": "^/service_entries/(.*)$",
+      "target": "/service-entries/$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/service_records/(.*)$",
+      "target": "/service-records/$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    },
+    {
       "source": "^/(.*)$",
       "target": "/$1",
       "service": "html5-apps-repo-rt",

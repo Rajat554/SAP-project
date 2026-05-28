@@ -5,6 +5,7 @@
     {
       "source": "^(.*)$",
       "target": "$1",
+      "localDir": ".",
       "authenticationType": "xsuaa"
     }
   ]
