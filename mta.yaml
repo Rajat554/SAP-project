@@ -102,7 +102,7 @@ modules:
       build-result: .
       builder: custom
       commands:
-        - cd webapp && zip -r ../service-entries.zip *
+        - sh -c "cd webapp && zip -r ../service-entries.zip *"
 
   - name: service-records
     type: html5
@@ -112,7 +112,7 @@ modules:
       build-result: .
       builder: custom
       commands:
-        - cd webapp && zip -r ../service-records.zip *
+        - sh -c "cd webapp && zip -r ../service-records.zip *"
 
   - name: analytics
     type: html5
@@ -122,7 +122,7 @@ modules:
       build-result: .
       builder: custom
       commands:
-        - cd webapp && zip -r ../analytics.zip *
+        - sh -c "cd webapp && zip -r ../analytics.zip *"
 
   - name: admin
     type: html5
@@ -132,7 +132,7 @@ modules:
       build-result: .
       builder: custom
       commands:
-        - cd webapp && zip -r ../admin.zip *
+        - sh -c "cd webapp && zip -r ../admin.zip *"
 
   - name: catalog
     type: html5
@@ -142,7 +142,7 @@ modules:
       build-result: .
       builder: custom
       commands:
-        - cd webapp && zip -r ../catalog.zip *
+        - sh -c "cd webapp && zip -r ../catalog.zip *"
 
 
 resources:
