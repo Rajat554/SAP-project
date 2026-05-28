@@ -60,6 +60,17 @@
                     return isLocal ? "/" + appName + "/webapp" : "/" + appName;
                 }
 
+                // Register UI5 loader paths to map normalized namespaces (underscores) to physical paths (hyphens)
+                sap.ui.loader.config({
+                    paths: {
+                        "service_entries": getAppUrl("service-entries"),
+                        "service_records": getAppUrl("service-records"),
+                        "analytics": getAppUrl("analytics"),
+                        "catalog": getAppUrl("catalog"),
+                        "admin": getAppUrl("admin")
+                    }
+                });
+
                 function loadApp(appName, appUrl, navKey) {
                     if (activeKey === navKey) return; // already loaded
                     activeKey = navKey;
