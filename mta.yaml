@@ -99,45 +99,50 @@ modules:
     path: app/service-entries
     build-parameters:
       supported-platforms: []
-      build-result: webapp
+      build-result: .
       builder: custom
-      commands: []
+      commands:
+        - cd webapp && zip -r ../service-entries.zip *
 
   - name: service-records
     type: html5
     path: app/service-records
     build-parameters:
       supported-platforms: []
-      build-result: webapp
+      build-result: .
       builder: custom
-      commands: []
+      commands:
+        - cd webapp && zip -r ../service-records.zip *
 
   - name: analytics
     type: html5
     path: app/analytics
     build-parameters:
       supported-platforms: []
-      build-result: webapp
+      build-result: .
       builder: custom
-      commands: []
+      commands:
+        - cd webapp && zip -r ../analytics.zip *
 
   - name: admin
     type: html5
     path: app/admin
     build-parameters:
       supported-platforms: []
-      build-result: webapp
+      build-result: .
       builder: custom
-      commands: []
+      commands:
+        - cd webapp && zip -r ../admin.zip *
 
   - name: catalog
     type: html5
     path: app/catalog
     build-parameters:
       supported-platforms: []
-      build-result: webapp
+      build-result: .
       builder: custom
-      commands: []
+      commands:
+        - cd webapp && zip -r ../catalog.zip *
 
 
 resources:
