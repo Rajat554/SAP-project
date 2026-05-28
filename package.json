@@ -6,7 +6,8 @@
   "author": "Rajat Patel",
   "scripts": {
     "start": "cds-serve",
-    "watch": "cds watch"
+    "watch": "cds watch",
+    "build": "mbt build"
   },
   "overrides": {
     "ajv": "^8.16.0",
