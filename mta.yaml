@@ -74,6 +74,11 @@ modules:
         - name: washwizard-portal
           artifacts:
             - portal.zip
+            - admin.zip
+            - analytics.zip
+            - catalog.zip
+            - service-entries.zip
+            - service-records.zip
           target-path: resources/
 
   # ── 5. Single Unified HTML5 Module ────────────────────────────

@@ -1,7 +1,7 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "service-records",
+    "id": "washwizard.servicerecords",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": { "version": "1.0.0" },
@@ -24,6 +24,10 @@
       "icon": "sap-icon://list"
     },
     "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "washwizardservice"
   },
   "sap.ui5": {
     "flexEnabled": true,

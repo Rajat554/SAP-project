@@ -26,13 +26,18 @@ sap.ui.define([
             UIComponent.prototype.init.apply(this, arguments);
             // Configure module paths for the dynamic sub-apps
             var sRootPath = sap.ui.require.toUrl("washwizard/portal");
+            var isCloud = window.location.hostname.includes("ondemand.com");
+            var getPath = function(appName, localPath) {
+                return isCloud ? "/" + appName : sRootPath + "/" + localPath;
+            };
+
             sap.ui.loader.config({
                 paths: {
-                    "service-entries": sRootPath + "/service-entries",
-                    "service-records": sRootPath + "/service-records",
-                    "analytics": sRootPath + "/analytics",
-                    "catalog": sRootPath + "/catalog",
-                    "admin": sRootPath + "/admin"
+                    "service-entries": getPath("washwizard.serviceentries", "service-entries"),
+                    "service-records": getPath("washwizard.servicerecords", "service-records"),
+                    "analytics": getPath("washwizard.analytics", "analytics"),
+                    "catalog": getPath("washwizard.catalog", "catalog"),
+                    "admin": getPath("washwizard.admin", "admin")
                 }
             });
         },
@@ -48,9 +53,13 @@ sap.ui.define([
                 if (activeComponent) { activeComponent.destroy(); activeComponent = null; }
                 oComponentContainer.setComponent(null);
 
+                var isCloud = window.location.hostname.includes("ondemand.com");
+                var appId = "washwizard." + navKey.replace("-", "");
+                var componentUrl = isCloud ? "/" + appId : sap.ui.require.toUrl("washwizard/portal") + "/" + navKey;
+
                 ComponentFactory.create({
                     name: appName,
-                    url: sap.ui.require.toUrl("washwizard/portal") + "/" + navKey,
+                    url: componentUrl,
                     settings: { id: appName }
                 }).then(function (oComponent) {
                     activeComponent = oComponent;
