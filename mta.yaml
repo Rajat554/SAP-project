@@ -146,7 +146,7 @@ resources:
                 Authentication: OAuth2UserTokenExchange
                 ServiceInstanceName: sap-project-xsuaa
                 ServiceKeyName: sap-project-xsuaa-key
-                URL: ~{srv-api/srv-url}
+                URL: ~{srv_api/srv-url}
                 Type: HTTP
                 ProxyType: Internet
                 HTML5.DynamicDestination: true
