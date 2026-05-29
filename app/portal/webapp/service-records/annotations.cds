@@ -1,4 +1,4 @@
-using WashWizardService as service from '../../srv/service';
+using WashWizardService as service from '../../../../srv/service';
 
 // ── Service Records: dedicated LineItem for the records view ──────────
 

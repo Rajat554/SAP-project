@@ -1,4 +1,4 @@
-using WashWizardService as service from '../../srv/service';
+using WashWizardService as service from '../../../../srv/service';
 
 // ═══════════════════════════════════════════════════════════════
 //  AGGREGATION SUPPORT — Required for analytical charts/KPIs
@@ -191,7 +191,7 @@ annotate service.ServiceTaskSet with @(
     },
 
     // ── 3. Service Type Distribution (Donut Chart) ──────────
-    UI.Chart#ServiceDistribution: {
+    UI.Chart#ServiceDistributionDonut: {
         $Type            : 'UI.ChartDefinitionType',
         ChartType        : #Donut,
         Title            : 'Service Type Distribution',
@@ -288,7 +288,7 @@ annotate service.ServiceTaskSet with @(
             SelectOptions : []
         },
         PresentationVariant: {
-            Visualizations : ['@UI.Chart#ServiceDistribution', '@UI.Chart#ServiceVolumeByType', '@UI.LineItem']
+            Visualizations : ['@UI.Chart#ServiceDistributionDonut', '@UI.Chart#ServiceVolumeByType', '@UI.LineItem']
         }
     },
 
