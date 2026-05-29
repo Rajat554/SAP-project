@@ -68,13 +68,6 @@ modules:
       - name: sap-project-repo-host
         parameters:
           content-target: true
-      - name: sap-project-dest-service
-        parameters:
-          content-target: true
-      - name: sap-project-xsuaa
-        parameters:
-          service-key:
-            name: sap-project-xsuaa-key
     build-parameters:
       build-result: resources
       requires:
