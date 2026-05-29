@@ -10,9 +10,9 @@
       "csrfProtection": true
     },
     {
-      "source": "^/(.*)$",
-      "target": "/$1",
-      "service": "html5-apps-repo-rt",
+      "source": "^(.*)$",
+      "target": "$1",
+      "localDir": ".",
       "authenticationType": "xsuaa"
     }
   ]

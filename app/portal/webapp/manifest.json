@@ -1,0 +1,49 @@
+{
+  "_schema-version": "1.12.0",
+  "sap.app": {
+    "id": "washwizard-portal",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "title": "WashWizard Portal",
+    "description": "Unified WashWizard Management Portal",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "manage-services": {
+          "semanticObject": "WashWizard",
+          "action": "manage",
+          "title": "WashWizard Manager",
+          "icon": "sap-icon://car-wash",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "resources": {
+      "js": [],
+      "css": []
+    },
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.tnt": {}
+      }
+    }
+  }
+}

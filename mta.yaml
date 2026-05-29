@@ -52,6 +52,7 @@ modules:
     requires:
       - name: sap-project-xsuaa
       - name: sap-project-dest-service
+      - name: sap-project-repo-runtime
       - name: srv_api
         group: destinations
         properties:
@@ -59,7 +60,32 @@ modules:
           url: ~{srv-url}
           forwardAuthToken: true
 
+  # ── 4. HTML5 App Content Deployer (0 MB CF Runtime Memory) ────
+  - name: sap-project-ui-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: sap-project-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: washwizard-portal
+          artifacts:
+            - portal.zip
+          target-path: resources/
 
+  # ── 5. Single Unified HTML5 Module ────────────────────────────
+  - name: washwizard-portal
+    type: html5
+    path: app/portal
+    build-parameters:
+      supported-platforms: []
+      build-result: .
+      builder: custom
+      commands:
+        - node ../../zip.js portal
 
 resources:
   # HANA HDI Container (production database)
@@ -82,7 +108,19 @@ resources:
         xsappname: sap-project
         tenant-mode: dedicated
 
+  # HTML5 App Host (stores static resources)
+  - name: sap-project-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
 
+  # HTML5 App Runtime (allows Approuter to fetch resources)
+  - name: sap-project-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
 
   # Destination Service
   - name: sap-project-dest-service

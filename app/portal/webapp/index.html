@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WashWizard Manager</title>
+    <link rel="icon" href="https://sapui5.hana.ondemand.com/1.120.0/resources/sap/tnt/themes/base/img/Icon.ico">
+    <style>
+        html, body, #content {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <!-- SAPUI5 Bootstrap -->
+    <script
+        id="sap-ui-bootstrap"
+        src="https://sapui5.hana.ondemand.com/1.120.0/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-libs="sap.m,sap.tnt,sap.ui.core"
+        data-sap-ui-async="true"
+        data-sap-ui-compat-version="edge"
+        data-sap-ui-frame-options="trusted"
+    ></script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ui.require([
+                "sap/tnt/ToolPage",
+                "sap/tnt/SideNavigation",
+                "sap/tnt/NavigationList",
+                "sap/tnt/NavigationListItem",
+                "sap/m/OverflowToolbar",
+                "sap/m/Button",
+                "sap/m/Title",
+                "sap/m/ToolbarSpacer",
+                "sap/m/Avatar",
+                "sap/m/Text",
+                "sap/ui/core/ComponentContainer",
+                "sap/ui/core/Component"
+            ], function (
+                ToolPage, SideNavigation, NavigationList, NavigationListItem,
+                OverflowToolbar, Button, Title, ToolbarSpacer, Avatar, Text,
+                ComponentContainer, Component
+            ) {
+                "use strict";
+
+                // Register UI5 loader paths to load sub-directories relatively
+                sap.ui.loader.config({
+                    paths: {
+                        "service-entries": "./service-entries",
+                        "service_entries": "./service-entries",
+                        "service-records": "./service-records",
+                        "service_records": "./service-records",
+                        "analytics": "./analytics",
+                        "catalog": "./catalog",
+                        "admin": "./admin"
+                    }
+                });
+                
+                // Dynamic ComponentContainer for main content
+                var oComponentContainer = new ComponentContainer({
+                    height: "100%",
+                    width: "100%"
+                });
+
+                var activeComponent = null;
+                var activeKey = null;
+
+                function loadApp(appName, appUrl, navKey) {
+                    if (activeKey === navKey) return; // already loaded
+                    activeKey = navKey;
+
+                    if (activeComponent) {
+                        activeComponent.destroy();
+                        activeComponent = null;
+                    }
+                    oComponentContainer.setComponent(null);
+
+                    Component.create({
+                        name: appName,
+                        url: "./" + navKey,
+                        settings: { id: appName }
+                    }).then(function (oComponent) {
+                        activeComponent = oComponent;
+                        oComponentContainer.setComponent(oComponent);
+                    }).catch(function (err) {
+                        console.error("Error loading component:", err);
+                        sap.m.MessageToast.show("Error loading: " + appName);
+                    });
+                }
+
+                // Header Bar
+                var oHeader = new OverflowToolbar({
+                    height: "56px",
+                    content: [
+                        new Button({
+                            icon: "sap-icon://menu",
+                            type: "Transparent",
+                            tooltip: "Toggle Navigation",
+                            press: function () {
+                                oToolPage.setSideExpanded(!oToolPage.getSideExpanded());
+                            }
+                        }),
+                        new Button({
+                            icon: "sap-icon://car-wash",
+                            type: "Transparent",
+                            enabled: false
+                        }),
+                        new Title({
+                            text: "WashWizard Manager",
+                            level: "H1"
+                        }),
+                        new ToolbarSpacer(),
+                        new Text({ text: "Employee Portal" }),
+                        new Avatar({
+                            initials: "WW",
+                            displaySize: "XS",
+                            backgroundColor: "Accent6"
+                        })
+                    ]
+                });
+
+                // Left Sidebar Navigation
+                var oSideNavigation = new SideNavigation({
+                    item: new NavigationList({
+                        items: [
+                            new NavigationListItem({
+                                text: "Dashboard",
+                                icon: "sap-icon://grid",
+                                key: "service-entries",
+                                select: function () {
+                                    loadApp("service-entries", "./service-entries", "service-entries");
+                                }
+                            }),
+                            new NavigationListItem({
+                                text: "Service Records",
+                                icon: "sap-icon://list",
+                                key: "service-records",
+                                select: function () {
+                                    loadApp("service-records", "./service-records", "service-records");
+                                }
+                            }),
+                            new NavigationListItem({
+                                text: "Revenue Analytics",
+                                icon: "sap-icon://line-chart",
+                                key: "analytics",
+                                select: function () {
+                                    loadApp("analytics", "./analytics", "analytics");
+                                }
+                            }),
+                            new NavigationListItem({
+                                text: "Service Catalog",
+                                icon: "sap-icon://product",
+                                key: "catalog",
+                                select: function () {
+                                    loadApp("catalog", "./catalog", "catalog");
+                                }
+                            }),
+                            new NavigationListItem({
+                                text: "Settings",
+                                icon: "sap-icon://action-settings",
+                                key: "admin",
+                                select: function () {
+                                    loadApp("admin", "./admin", "admin");
+                                }
+                            })
+                        ]
+                    })
+                });
+
+                // Main ToolPage Layout
+                var oToolPage = new ToolPage({
+                    header: oHeader,
+                    sideContent: oSideNavigation,
+                    mainContents: [oComponentContainer],
+                    sideExpanded: true
+                });
+
+                // Load default app (Dashboard / Service Entries)
+                loadApp("service-entries", "./service-entries", "service-entries");
+
+                // Place into DOM
+                oToolPage.placeAt("content");
+            });
+        });
+    </script>
+</head>
+<body class="sapUiBody sapUiSizeCompact" id="content">
+</body>
+</html>
