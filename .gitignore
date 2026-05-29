@@ -147,9 +147,4 @@ dist.zip
 *_mta_build_tmp/
 .SAP-project_mta_build_tmp/
 
-# Portal Sub-apps (Generated at build/run time)
-app/portal/webapp/service-entries/
-app/portal/webapp/service-records/
-app/portal/webapp/analytics/
-app/portal/webapp/catalog/
-app/portal/webapp/admin/
+

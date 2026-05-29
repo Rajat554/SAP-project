@@ -1,7 +1,0 @@
-{
-  "name": "catalog",
-  "version": "1.0.0",
-  "description": "Fiori Elements - Service Catalog",
-  "private": true,
-  "sapux": true
-}

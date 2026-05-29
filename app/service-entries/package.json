@@ -1,7 +1,0 @@
-{
-  "name": "service-entries",
-  "version": "1.0.0",
-  "description": "Fiori Elements - Service Entries",
-  "private": true,
-  "sapux": true
-}
