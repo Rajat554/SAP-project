@@ -68,6 +68,13 @@ modules:
       - name: sap-project-repo-host
         parameters:
           content-target: true
+      - name: sap-project-dest-service
+        parameters:
+          content-target: true
+      - name: sap-project-xsuaa
+        parameters:
+          service-key:
+            name: sap-project-xsuaa-key
     build-parameters:
       build-result: resources
       requires:
@@ -128,3 +135,25 @@ resources:
     parameters:
       service: destination
       service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: srv_target
+                Description: WashWizard Backend Service
+                Authentication: OAuth2UserTokenExchange
+                ServiceInstanceName: sap-project-xsuaa
+                ServiceKeyName: sap-project-xsuaa-key
+                URL: ~{srv-api/srv-url}
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.DynamicDestination: true
+                HTML5.Timeout: 60000
+    requires:
+      - name: srv_api
+      - name: sap-project-xsuaa
+        parameters:
+          service-key:
+            name: sap-project-xsuaa-key

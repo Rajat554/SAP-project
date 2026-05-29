@@ -24,6 +24,10 @@
       }
     }
   },
+  "sap.cloud": {
+    "public": true,
+    "service": "washwizard_service"
+  },
   "sap.ui": {
     "technology": "UI5",
     "deviceTypes": {
