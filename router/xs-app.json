@@ -10,26 +10,39 @@
       "csrfProtection": true
     },
     {
-      "source": "^/index.html$",
-      "localDir": "resources",
+      "source": "^/service-entries/(.*)$",
+      "target": "$1",
+      "localDir": "resources/service-entries",
       "authenticationType": "xsuaa"
     },
     {
-      "source": "^/service_entries/(.*)$",
-      "target": "/service-entries/$1",
-      "service": "html5-apps-repo-rt",
+      "source": "^/service-records/(.*)$",
+      "target": "$1",
+      "localDir": "resources/service-records",
       "authenticationType": "xsuaa"
     },
     {
-      "source": "^/service_records/(.*)$",
-      "target": "/service-records/$1",
-      "service": "html5-apps-repo-rt",
+      "source": "^/analytics/(.*)$",
+      "target": "$1",
+      "localDir": "resources/analytics",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/catalog/(.*)$",
+      "target": "$1",
+      "localDir": "resources/catalog",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/admin/(.*)$",
+      "target": "$1",
+      "localDir": "resources/admin",
       "authenticationType": "xsuaa"
     },
     {
       "source": "^/(.*)$",
-      "target": "/$1",
-      "service": "html5-apps-repo-rt",
+      "target": "$1",
+      "localDir": "resources",
       "authenticationType": "xsuaa"
     }
   ]

@@ -1,0 +1,119 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "service-entries",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": { "version": "1.0.0" },
+    "title": "Service Entries",
+    "description": "Manage car wash service entries",
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/wash-wizard/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://grid"
+    },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "service-entries.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "ServiceTaskSetList",
+          "target": "ServiceTaskSetList"
+        },
+        {
+          "pattern": "ServiceTaskSet({key}):?query:",
+          "name": "ServiceTaskSetObjectPage",
+          "target": "ServiceTaskSetObjectPage"
+        }
+      ],
+      "targets": {
+        "ServiceTaskSetList": {
+          "type": "Component",
+          "id": "ServiceTaskSetList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/ServiceTaskSet",
+              "variantManagement": "Page",
+              "initialLoad": "Enabled",
+              "navigation": {
+                "ServiceTaskSet": {
+                  "detail": {
+                    "route": "ServiceTaskSetObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable",
+                    "enableExport": true,
+                    "personalization": true,
+                    "condensedTableLayout": true,
+                    "growing": true,
+                    "growingThreshold": 25
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ServiceTaskSetObjectPage": {
+          "type": "Component",
+          "id": "ServiceTaskSetObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/ServiceTaskSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

@@ -52,7 +52,6 @@ modules:
     requires:
       - name: sap-project-xsuaa
       - name: sap-project-dest-service
-      - name: sap-project-repo-runtime
       - name: srv_api
         group: destinations
         properties:
@@ -60,89 +59,6 @@ modules:
           url: ~{srv-url}
           forwardAuthToken: true
 
-  # ── 4. HTML5 App Content Deployer (0 MB CF Runtime Memory) ────
-  - name: sap-project-ui-deployer
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: sap-project-repo-host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - name: service-entries
-          artifacts:
-            - service-entries.zip
-          target-path: resources/
-        - name: service-records
-          artifacts:
-            - service-records.zip
-          target-path: resources/
-        - name: analytics
-          artifacts:
-            - analytics.zip
-          target-path: resources/
-        - name: admin
-          artifacts:
-            - admin.zip
-          target-path: resources/
-        - name: catalog
-          artifacts:
-            - catalog.zip
-          target-path: resources/
-
-
-  # ── 5. HTML5 Modules (Static App Builds) ──────────────────────
-  - name: service-entries
-    type: html5
-    path: app/service-entries
-    build-parameters:
-      supported-platforms: []
-      build-result: .
-      builder: custom
-      commands:
-        - node ../../zip.js service-entries
-
-  - name: service-records
-    type: html5
-    path: app/service-records
-    build-parameters:
-      supported-platforms: []
-      build-result: .
-      builder: custom
-      commands:
-        - node ../../zip.js service-records
-
-  - name: analytics
-    type: html5
-    path: app/analytics
-    build-parameters:
-      supported-platforms: []
-      build-result: .
-      builder: custom
-      commands:
-        - node ../../zip.js analytics
-
-  - name: admin
-    type: html5
-    path: app/admin
-    build-parameters:
-      supported-platforms: []
-      build-result: .
-      builder: custom
-      commands:
-        - node ../../zip.js admin
-
-  - name: catalog
-    type: html5
-    path: app/catalog
-    build-parameters:
-      supported-platforms: []
-      build-result: .
-      builder: custom
-      commands:
-        - node ../../zip.js catalog
 
 
 resources:
@@ -166,19 +82,7 @@ resources:
         xsappname: sap-project
         tenant-mode: dedicated
 
-  # HTML5 App Host (stores static resources)
-  - name: sap-project-repo-host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
 
-  # HTML5 App Runtime (allows Approuter to fetch resources)
-  - name: sap-project-repo-runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
 
   # Destination Service
   - name: sap-project-dest-service

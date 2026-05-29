@@ -45,6 +45,19 @@
                 ComponentContainer, Component
             ) {
                 "use strict";
+
+                // Register UI5 loader paths for production
+                sap.ui.loader.config({
+                    paths: {
+                        "service-entries": "/service-entries",
+                        "service_entries": "/service-entries",
+                        "service-records": "/service-records",
+                        "service_records": "/service-records",
+                        "analytics": "/analytics",
+                        "catalog": "/catalog",
+                        "admin": "/admin"
+                    }
+                });
                 
                 // ── Dynamic ComponentContainer for main content ──
                 var oComponentContainer = new ComponentContainer({
