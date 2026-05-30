@@ -6,7 +6,17 @@
     "i18n": "i18n/i18n.properties",
     "applicationVersion": { "version": "1.0.0" },
     "title": "Service Catalog",
-    "description": "Manage predefined services and pricing",
+    "description": "Manage wash packages and prices",
+    "crossNavigation": {
+      "inbounds": {
+        "manage-catalog": {
+          "semanticObject": "Catalog",
+          "action": "manage",
+          "title": "Service Catalog",
+          "icon": "sap-icon://list"
+        }
+      }
+    },
     "dataSources": {
       "mainService": {
         "uri": "/odata/v4/wash-wizard/",

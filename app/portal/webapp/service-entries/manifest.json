@@ -6,7 +6,17 @@
     "i18n": "i18n/i18n.properties",
     "applicationVersion": { "version": "1.0.0" },
     "title": "Service Entries",
-    "description": "Manage car wash service entries",
+    "description": "Log new services or assign tasks",
+    "crossNavigation": {
+      "inbounds": {
+        "manage-entries": {
+          "semanticObject": "ServiceEntries",
+          "action": "manage",
+          "title": "Service Entry",
+          "icon": "sap-icon://add-document"
+        }
+      }
+    },
     "dataSources": {
       "mainService": {
         "uri": "/odata/v4/wash-wizard/",

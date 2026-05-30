@@ -6,7 +6,17 @@
     "i18n": "i18n/i18n.properties",
     "applicationVersion": { "version": "1.0.0" },
     "title": "User Management",
-    "description": "Manage user accounts (Admin only)",
+    "description": "Manage users and roles",
+    "crossNavigation": {
+      "inbounds": {
+        "manage-users": {
+          "semanticObject": "Users",
+          "action": "manage",
+          "title": "User Management",
+          "icon": "sap-icon://group"
+        }
+      }
+    },
     "dataSources": {
       "mainService": {
         "uri": "/odata/v4/wash-wizard/",

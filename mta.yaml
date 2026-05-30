@@ -47,7 +47,7 @@ modules:
     type: approuter.nodejs
     path: router
     parameters:
-      memory: 256M
+      memory: 512M
       disk-quota: 256M
     requires:
       - name: sap-project-xsuaa

@@ -6,7 +6,17 @@
     "i18n": "i18n/i18n.properties",
     "applicationVersion": { "version": "1.0.0" },
     "title": "Service Records",
-    "description": "View completed service records",
+    "description": "View historical records of services performed",
+    "crossNavigation": {
+      "inbounds": {
+        "view-records": {
+          "semanticObject": "ServiceRecords",
+          "action": "view",
+          "title": "Service Records",
+          "icon": "sap-icon://history"
+        }
+      }
+    },
     "dataSources": {
       "mainService": {
         "uri": "/odata/v4/wash-wizard/",

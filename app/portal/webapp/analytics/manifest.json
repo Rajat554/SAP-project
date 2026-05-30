@@ -7,6 +7,16 @@
     "applicationVersion": { "version": "1.0.0" },
     "title": "Revenue Analytics",
     "description": "Analyze revenue trends, service distribution, and staff performance",
+    "crossNavigation": {
+      "inbounds": {
+        "view-analytics": {
+          "semanticObject": "Analytics",
+          "action": "view",
+          "title": "Revenue Analytics",
+          "icon": "sap-icon://line-chart"
+        }
+      }
+    },
     "dataSources": {
       "mainService": {
         "uri": "/odata/v4/wash-wizard/",
