@@ -62,17 +62,14 @@ modules:
 
   # ── 4. HTML5 App Content Deployer ─────────────────────────────
   - name: sap-project-ui-deployer
-    type: nodejs
-    path: ui-deployer
-    parameters:
-      buildpack: nodejs_buildpack
-      memory: 256M
-      disk-quota: 256M
+    type: com.sap.application.content
+    path: .
     requires:
       - name: sap-project-repo-host
         parameters:
           content-target: true
     build-parameters:
+      build-result: resources
       requires:
         - name: washwizard-portal
           artifacts:
