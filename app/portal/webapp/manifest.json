@@ -1,5 +1,5 @@
 {
-  "_schema-version": "1.12.0",
+  "_version": "1.65.0",
   "sap.app": {
     "id": "washwizard.portal",
     "type": "application",
@@ -26,7 +26,7 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "washwizardservice"
+    "service": "washwizard"
   },
   "sap.ui": {
     "technology": "UI5",

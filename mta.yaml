@@ -48,7 +48,7 @@ modules:
     path: router
     parameters:
       memory: 512M
-      disk-quota: 256M
+      disk-quota: 512M
     requires:
       - name: sap-project-xsuaa
       - name: sap-project-dest-service

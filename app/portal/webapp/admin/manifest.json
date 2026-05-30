@@ -37,7 +37,7 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "washwizardservice"
+    "service": "washwizard"
   },
   "sap.ui5": {
     "flexEnabled": true,
