@@ -1,0 +1,12 @@
+{
+  "name": "sap-project-ui-deployer",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@sap/html5-app-deployer": "^3.3.0"
+  },
+  "scripts": {
+    "start": "node node_modules/@sap/html5-app-deployer/index.js"
+  }
+}
