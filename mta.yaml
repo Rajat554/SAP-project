@@ -73,7 +73,6 @@ modules:
         parameters:
           content-target: true
     build-parameters:
-      build-result: resources
       requires:
         - name: washwizard-portal
           artifacts:
