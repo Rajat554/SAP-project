@@ -1,6 +1,6 @@
 _schema-version: "3.2"
 ID: sap-project
-version: 2.0.5
+version: 2.0.6
 description: A Fiori application for WashWizard with optimized memory.
 
 parameters:
@@ -60,6 +60,7 @@ modules:
       - name: sap-project-xsuaa
       - name: sap-project-dest-service
       - name: sap-project-repo-runtime
+      - name: sap-project-repo-host
       - name: srv_api
         group: destinations
         properties:
