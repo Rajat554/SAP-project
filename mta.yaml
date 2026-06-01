@@ -1,6 +1,6 @@
 _schema-version: "3.2"
 ID: sap-project
-version: 2.0.0
+version: 2.0.1
 description: A Fiori application for WashWizard with optimized memory.
 
 parameters:
@@ -39,7 +39,8 @@ modules:
       buildpack: nodejs_buildpack
       memory: 256M
       disk-quota: 512M
-      health-check-type: process
+      health-check-type: none
+      no-route: true
     requires:
       - name: sap-project-hdi-container
 
