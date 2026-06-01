@@ -1,6 +1,6 @@
 _schema-version: "3.2"
 ID: sap-project
-version: 2.0.4
+version: 2.0.5
 description: A Fiori application for WashWizard with optimized memory.
 
 parameters:
@@ -40,12 +40,12 @@ modules:
       disk-quota: 512M
       no-route: true
       command: npm start 
-      health-check-type: process              # ◄── FIX 2: Tells Cloud Foundry how to run the migration script
+      health-check-type: process
     build-parameters:
       builder: custom
       commands:
         - npm install --production
-      build-result: .                   # ◄── FIX 1: Ensures all compiled files get packaged into the MTAR
+      build-result: .
     requires:
       - name: sap-project-hdi-container
 
@@ -78,7 +78,7 @@ modules:
     build-parameters:
       build-result: resources
       requires:
-        - name: washwizard-portal
+        - name: portal
           artifacts:
             - portal.zip
             - admin.zip
@@ -89,7 +89,7 @@ modules:
           target-path: resources/
 
   # ── 5. Single Unified HTML5 Module ────────────────────────────
-  - name: washwizard-portal
+  - name: portal
     type: html5
     path: app/portal
     build-parameters:

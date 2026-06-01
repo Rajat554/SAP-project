@@ -1,10 +1,10 @@
 {
-  "welcomeFile": "washwizard.portal/index.html",
+  "welcomeFile": "portal/index.html",
   "authenticationMethod": "route",
   "routes": [
     {
       "source": "^/index.html(.*)$",
-      "target": "/washwizard.portal/index.html$1",
+      "target": "/portal/index.html$1",
       "service": "html5-apps-repo-rt",
       "authenticationType": "xsuaa"
     },
