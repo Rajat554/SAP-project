@@ -39,6 +39,7 @@ modules:
       buildpack: nodejs_buildpack
       memory: 256M
       disk-quota: 512M
+      health-check-type: process
     requires:
       - name: sap-project-hdi-container
 
