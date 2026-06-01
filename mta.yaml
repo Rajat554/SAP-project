@@ -25,25 +25,27 @@ modules:
     requires:
       - name: sap-project-hdi-container
       - name: sap-project-xsuaa
-      # - name: sap-project-db-deployer
     provides:
       - name: srv_api
         properties:
           srv-url: ${default-url}
 
-  # ── 2. Database Deployer (HANA Cloud) ─────────────────────────
+  # ── 2. Database Deployer (HANA Cloud Task Wrapper) ───────────
   - name: sap-project-db-deployer
     type: custom
-    path: gen/db
+    path: db
     parameters:
       buildpack: nodejs_buildpack
       memory: 256M
       disk-quota: 512M
       no-route: true
+      command: npm start                # ◄── FIX 2: Tells Cloud Foundry how to run the migration script
     build-parameters:
       builder: custom
       commands:
-        - npm ci
+        - npm install --production
+        - npx cds compile srv/csn.json --to hana > src/gen/csn.json
+      build-result: .                   # ◄── FIX 1: Ensures all compiled files get packaged into the MTAR
     requires:
       - name: sap-project-hdi-container
 
