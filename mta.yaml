@@ -63,7 +63,7 @@ modules:
       - name: srv_api
         group: destinations
         properties:
-          name: srv_target
+          name: washwizard_backend
           url: ~{srv-url}
           forwardAuthToken: true
 
@@ -124,7 +124,7 @@ modules:
         subaccount:
           existing_destinations_policy: update
           destinations:
-            - Name: srv_target
+            - Name: washwizard_backend
               Description: WashWizard Backend Service
               Authentication: OAuth2UserTokenExchange
               ServiceInstanceName: sap-project-xsuaa
@@ -135,7 +135,7 @@ modules:
               HTML5.DynamicDestination: true
               HTML5.Timeout: 60000
               sap.cloud.service: washwizard
-            - Name: sap-project_html5_repo_host
+            - Name: washwizard_html5_repo_host
               ServiceInstanceName: sap-project-repo-host
               ServiceKeyName: sap-project-repo-host-key
               sap.cloud.service: washwizard
