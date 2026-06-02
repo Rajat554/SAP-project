@@ -1,10 +1,10 @@
-version: 2.0.8
 _schema-version: "3.2"
 ID: sap-project
-description: A Fiori application for WashWizard with optimized memory.
+version: 3.0.0
+description: WashWizard — SAP BTP Gold Standard (Managed Approuter + Work Zone)
 
 parameters:
-  enable-parallel-executions: true
+  enable-parallel-deployments: true
 
 build-parameters:
   before-all:
@@ -30,7 +30,7 @@ modules:
         properties:
           srv-url: ${default-url}
 
-  # ── 2. Database Deployer (HANA Cloud Task Wrapper) ───────────
+  # ── 2. Database Deployer ──────────────────────────────────────
   - name: sap-project-db-deployer
     type: custom
     path: gen/db
@@ -39,7 +39,7 @@ modules:
       memory: 256M
       disk-quota: 512M
       no-route: true
-      command: npm start 
+      command: npm start
       health-check-type: process
     build-parameters:
       builder: custom
@@ -49,62 +49,41 @@ modules:
     requires:
       - name: sap-project-hdi-container
 
-  # ── 3. Standalone Approuter (Enforces Security & Routing) ─────
-  - name: sap-project-router
-    type: approuter.nodejs
-    path: router
-    parameters:
-      memory: 512M
-      disk-quota: 512M
-    requires:
-      - name: sap-project-xsuaa
-      - name: sap-project-dest-service
-      - name: sap-project-repo-runtime
-      - name: srv_api
-        group: destinations
-        properties:
-          name: washwizard_backend
-          url: ~{srv-url}
-          forwardAuthToken: true
-          sap.cloud.service: washwizard
-
-  # ── 4. HTML5 App Content Deployer ─────────────────────────────
+  # ── 3. HTML5 App Content Deployer ─────────────────────────────
+  #    Uploads the 5 micro-app zip files to the HTML5 App Repository
   - name: sap-project-ui-deployer
-    type: nodejs
+    type: com.sap.application.content
     path: ui-deployer
-    parameters:
-      buildpack: nodejs_buildpack
-      memory: 256M
-      disk-quota: 256M
     requires:
       - name: sap-project-repo-host
         parameters:
           content-target: true
     build-parameters:
-      build-result: .
+      build-result: resources
       requires:
-        - name: portal
+        - name: washwizard-app-admin
           artifacts:
-            - portal.zip
             - admin.zip
+          target-path: resources/
+        - name: washwizard-app-analytics
+          artifacts:
             - analytics.zip
+          target-path: resources/
+        - name: washwizard-app-catalog
+          artifacts:
             - catalog.zip
+          target-path: resources/
+        - name: washwizard-app-service-entries
+          artifacts:
             - service-entries.zip
+          target-path: resources/
+        - name: washwizard-app-service-records
+          artifacts:
             - service-records.zip
           target-path: resources/
 
-  # ── 5. Single Unified HTML5 Module ────────────────────────────
-  - name: portal
-    type: html5
-    path: app/portal
-    build-parameters:
-      supported-platforms: []
-      build-result: .
-      builder: custom
-      commands:
-        - node ../../zip.js portal
-
-  # ── 6. Subaccount Destination Deployer ──────────────────────────
+  # ── 4. Subaccount Destination Content Deployer ────────────────
+  #    Registers destinations at Subaccount level for Work Zone
   - name: sap-project-dest-content
     type: com.sap.application.content
     requires:
@@ -126,13 +105,12 @@ modules:
           existing_destinations_policy: update
           destinations:
             - Name: washwizard_backend
-              Description: WashWizard Backend Service
+              Description: WashWizard CAP Backend OData Service
+              URL: ~{srv_api/srv-url}
+              Type: HTTP
               Authentication: OAuth2UserTokenExchange
               ServiceInstanceName: sap-project-xsuaa
               ServiceKeyName: sap-project-xsuaa-key
-              URL: ~{srv_api/srv-url}
-              Type: HTTP
-              ProxyType: Internet
               HTML5.DynamicDestination: true
               HTML5.Timeout: 60000
               sap.cloud.service: washwizard
@@ -143,8 +121,59 @@ modules:
     build-parameters:
       no-source: true
 
+  # ── 5. Individual HTML5 Micro-App Modules ─────────────────────
+  - name: washwizard-app-admin
+    type: html5
+    path: app/portal/webapp/admin
+    build-parameters:
+      supported-platforms: []
+      build-result: .
+      builder: custom
+      commands:
+        - node ../../../../zip.js admin
+
+  - name: washwizard-app-analytics
+    type: html5
+    path: app/portal/webapp/analytics
+    build-parameters:
+      supported-platforms: []
+      build-result: .
+      builder: custom
+      commands:
+        - node ../../../../zip.js analytics
+
+  - name: washwizard-app-catalog
+    type: html5
+    path: app/portal/webapp/catalog
+    build-parameters:
+      supported-platforms: []
+      build-result: .
+      builder: custom
+      commands:
+        - node ../../../../zip.js catalog
+
+  - name: washwizard-app-service-entries
+    type: html5
+    path: app/portal/webapp/service-entries
+    build-parameters:
+      supported-platforms: []
+      build-result: .
+      builder: custom
+      commands:
+        - node ../../../../zip.js service-entries
+
+  - name: washwizard-app-service-records
+    type: html5
+    path: app/portal/webapp/service-records
+    build-parameters:
+      supported-platforms: []
+      build-result: .
+      builder: custom
+      commands:
+        - node ../../../../zip.js service-records
+
 resources:
-  # HANA HDI Container (production database)
+  # HANA HDI Container
   - name: sap-project-hdi-container
     type: com.sap.xs.hdi-container
     parameters:
@@ -164,21 +193,14 @@ resources:
         xsappname: sap-project
         tenant-mode: dedicated
 
-  # HTML5 App Host (stores static resources)
+  # HTML5 App Host (stores the micro-app zip files)
   - name: sap-project-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
       service-plan: app-host
 
-  # HTML5 App Runtime (allows Approuter to fetch resources)
-  - name: sap-project-repo-runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
-
-  # Destination Service
+  # Destination Service (manages routing table)
   - name: sap-project-dest-service
     type: org.cloudfoundry.managed-service
     parameters:

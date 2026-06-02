@@ -1,0 +1,18 @@
+_schema-version: "3.2"
+ID: sap-project-prod
+extends: sap-project
+
+# Production environment overrides
+# Usage: cf deploy sap-project.mtar -e prod.mtaext
+
+modules:
+  - name: sap-project-srv
+    parameters:
+      memory: 1024M
+      disk-quota: 1024M
+      instances: 2
+
+  - name: sap-project-db-deployer
+    parameters:
+      memory: 512M
+      disk-quota: 1024M

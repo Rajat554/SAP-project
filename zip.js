@@ -2,56 +2,40 @@ const path = require('path');
 const fs = require('fs');
 const AdmZip = require('adm-zip');
 
+// Zip a single micro-app folder into a .zip file
+// Usage: node zip.js <appName>
+// Example: node zip.js admin
+//          -> zips app/portal/webapp/admin/ into app/portal/webapp/admin/admin.zip
+
 const appName = process.argv[2];
 if (!appName) {
-  console.error("Please specify the app name");
+  console.error("Usage: node zip.js <appName>");
+  console.error("Available apps: admin, analytics, catalog, service-entries, service-records");
   process.exit(1);
 }
 
-const appDir = path.join(__dirname, 'app', appName);
-const webappDir = path.join(appDir, 'webapp');
+const appDir = path.join(__dirname, 'app', 'portal', 'webapp', appName);
 
-if (!fs.existsSync(webappDir)) {
-  console.error(`Folder not found: ${webappDir}`);
+if (!fs.existsSync(appDir)) {
+  console.error(`App folder not found: ${appDir}`);
   process.exit(1);
 }
 
-if (appName === 'portal') {
-  const subApps = ['admin', 'analytics', 'catalog', 'service-entries', 'service-records'];
-  
-  // 1. Zip sub-apps
-  subApps.forEach(sub => {
-    const subDir = path.join(webappDir, sub);
-    const subZip = path.join(appDir, `${sub}.zip`);
-    if (fs.existsSync(subDir)) {
-      console.log(`Zipping ${subDir} to ${subZip}...`);
-      const zip = new AdmZip();
-      zip.addLocalFolder(subDir);
-      zip.writeZip(subZip);
-    }
-  });
+const outputZip = path.join(appDir, `${appName}.zip`);
+console.log(`Zipping ${appDir} -> ${outputZip} ...`);
 
-  // 2. Zip portal root (excluding sub-apps)
-  const portalZipFile = path.join(appDir, 'portal.zip');
-  console.log(`Zipping portal root to ${portalZipFile}...`);
-  const portalZip = new AdmZip();
-  fs.readdirSync(webappDir).forEach(file => {
-    if (!subApps.includes(file)) {
-      const filePath = path.join(webappDir, file);
-      if (fs.statSync(filePath).isDirectory()) {
-        portalZip.addLocalFolder(filePath, file);
-      } else {
-        portalZip.addLocalFile(filePath);
-      }
-    }
-  });
-  portalZip.writeZip(portalZipFile);
-  console.log('Zipped portal successfully!');
-} else {
-  const outputZip = path.join(appDir, `${appName}.zip`);
-  console.log(`Zipping ${webappDir} to ${outputZip}...`);
-  const zip = new AdmZip();
-  zip.addLocalFolder(webappDir);
-  zip.writeZip(outputZip);
-  console.log('Zipped successfully!');
-}
+const zip = new AdmZip();
+
+// Add all files/folders in the app directory, excluding any existing .zip files
+fs.readdirSync(appDir).forEach(file => {
+  if (file.endsWith('.zip')) return; // skip existing zips
+  const filePath = path.join(appDir, file);
+  if (fs.statSync(filePath).isDirectory()) {
+    zip.addLocalFolder(filePath, file);
+  } else {
+    zip.addLocalFile(filePath);
+  }
+});
+
+zip.writeZip(outputZip);
+console.log(`Successfully zipped ${appName}!`);

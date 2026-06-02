@@ -1,0 +1,17 @@
+_schema-version: "3.2"
+ID: sap-project-dev
+extends: sap-project
+
+# Development environment overrides
+# Usage: cf deploy sap-project.mtar -e dev.mtaext
+
+modules:
+  - name: sap-project-srv
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+
+  - name: sap-project-db-deployer
+    parameters:
+      memory: 256M
+      disk-quota: 512M
