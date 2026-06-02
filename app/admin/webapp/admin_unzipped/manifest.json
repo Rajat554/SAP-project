@@ -1,25 +1,19 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "washwizard.app.catalog",
+    "id": "washwizard.admin",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": {
-      "version": "1.0.0"
-    },
-    "title": "Service Catalog",
-    "description": "Manage wash packages and prices",
+    "applicationVersion": { "version": "1.0.0" },
+    "title": "User Management",
+    "description": "Manage users and roles",
     "crossNavigation": {
       "inbounds": {
-        "manage-catalog": {
-          "semanticObject": "Catalog",
+        "manage-users": {
+          "semanticObject": "Users",
           "action": "manage",
-          "title": "Service Catalog",
-          "icon": "sap-icon://list",
-          "signature": {
-            "parameters": {},
-            "additionalParameters": "allowed"
-          }
+          "title": "User Management",
+          "icon": "sap-icon://group"
         }
       }
     },
@@ -37,13 +31,9 @@
   "sap.ui": {
     "technology": "UI5",
     "icons": {
-      "icon": "sap-icon://product"
+      "icon": "sap-icon://action-settings"
     },
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
   },
   "sap.cloud": {
     "public": true,
@@ -62,9 +52,7 @@
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "catalog.i18n.i18n"
-        }
+        "settings": { "bundleName": "admin.i18n.i18n" }
       },
       "": {
         "dataSource": "mainService",
@@ -81,37 +69,34 @@
       "routes": [
         {
           "pattern": ":?query:",
-          "name": "ServiceCatalogList",
-          "target": "ServiceCatalogList"
+          "name": "UsersSetList",
+          "target": "UsersSetList"
         },
         {
-          "pattern": "ServiceCatalogSet({key}):?query:",
-          "name": "ServiceCatalogDetail",
-          "target": "ServiceCatalogDetail"
+          "pattern": "UsersSet({key}):?query:",
+          "name": "UsersSetObjectPage",
+          "target": "UsersSetObjectPage"
         }
       ],
       "targets": {
-        "ServiceCatalogList": {
+        "UsersSetList": {
           "type": "Component",
-          "id": "ServiceCatalogList",
+          "id": "UsersSetList",
           "name": "sap.fe.templates.ListReport",
           "options": {
             "settings": {
-              "contextPath": "/ServiceCatalogSet",
+              "contextPath": "/UsersSet",
               "variantManagement": "Page",
               "initialLoad": "Enabled",
               "navigation": {
-                "ServiceCatalogSet": {
-                  "detail": {
-                    "route": "ServiceCatalogDetail"
-                  }
+                "UsersSet": {
+                  "detail": { "route": "UsersSetObjectPage" }
                 }
               },
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable",
-                    "enableExport": true,
                     "personalization": true
                   }
                 }
@@ -119,14 +104,14 @@
             }
           }
         },
-        "ServiceCatalogDetail": {
+        "UsersSetObjectPage": {
           "type": "Component",
-          "id": "ServiceCatalogDetail",
+          "id": "UsersSetObjectPage",
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/ServiceCatalogSet"
+              "contextPath": "/UsersSet"
             }
           }
         }

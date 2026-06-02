@@ -1,10 +1,12 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "washwizard.servicerecords",
+    "id": "washwizard.app.service-records",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": { "version": "1.0.0" },
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
     "title": "Service Records",
     "description": "View historical records of services performed",
     "crossNavigation": {
@@ -13,7 +15,11 @@
           "semanticObject": "ServiceRecords",
           "action": "view",
           "title": "Service Records",
-          "icon": "sap-icon://history"
+          "icon": "sap-icon://history",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     },
@@ -33,7 +39,11 @@
     "icons": {
       "icon": "sap-icon://list"
     },
-    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
   },
   "sap.cloud": {
     "public": true,
@@ -52,7 +62,9 @@
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "service-records.i18n.i18n" }
+        "settings": {
+          "bundleName": "service-records.i18n.i18n"
+        }
       },
       "": {
         "dataSource": "mainService",
@@ -90,7 +102,9 @@
               "initialLoad": "Enabled",
               "navigation": {
                 "ServiceTaskSet": {
-                  "detail": { "route": "ServiceRecordDetail" }
+                  "detail": {
+                    "route": "ServiceRecordDetail"
+                  }
                 }
               },
               "controlConfiguration": {

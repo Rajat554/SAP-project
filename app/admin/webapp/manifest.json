@@ -1,10 +1,12 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "washwizard.admin",
+    "id": "washwizard.app.admin",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": { "version": "1.0.0" },
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
     "title": "User Management",
     "description": "Manage users and roles",
     "crossNavigation": {
@@ -13,7 +15,11 @@
           "semanticObject": "Users",
           "action": "manage",
           "title": "User Management",
-          "icon": "sap-icon://group"
+          "icon": "sap-icon://group",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     },
@@ -33,7 +39,11 @@
     "icons": {
       "icon": "sap-icon://action-settings"
     },
-    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
   },
   "sap.cloud": {
     "public": true,
@@ -52,7 +62,9 @@
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "admin.i18n.i18n" }
+        "settings": {
+          "bundleName": "admin.i18n.i18n"
+        }
       },
       "": {
         "dataSource": "mainService",
@@ -90,7 +102,9 @@
               "initialLoad": "Enabled",
               "navigation": {
                 "UsersSet": {
-                  "detail": { "route": "UsersSetObjectPage" }
+                  "detail": {
+                    "route": "UsersSetObjectPage"
+                  }
                 }
               },
               "controlConfiguration": {

@@ -1,10 +1,12 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "washwizard.serviceentries",
+    "id": "washwizard.app.service-entries",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": { "version": "1.0.0" },
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
     "title": "Service Entries",
     "description": "Log new services or assign tasks",
     "crossNavigation": {
@@ -13,7 +15,11 @@
           "semanticObject": "ServiceEntries",
           "action": "manage",
           "title": "Service Entry",
-          "icon": "sap-icon://add-document"
+          "icon": "sap-icon://add-document",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     },
@@ -33,7 +39,11 @@
     "icons": {
       "icon": "sap-icon://grid"
     },
-    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
   },
   "sap.cloud": {
     "public": true,

@@ -1,10 +1,12 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "washwizard.analytics",
+    "id": "washwizard.app.analytics",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": { "version": "1.0.0" },
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
     "title": "Revenue Analytics",
     "description": "Analyze revenue trends, service distribution, and staff performance",
     "crossNavigation": {
@@ -13,7 +15,11 @@
           "semanticObject": "Analytics",
           "action": "view",
           "title": "Revenue Analytics",
-          "icon": "sap-icon://line-chart"
+          "icon": "sap-icon://line-chart",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     },
@@ -33,7 +39,11 @@
     "icons": {
       "icon": "sap-icon://line-chart"
     },
-    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
   },
   "sap.cloud": {
     "public": true,
@@ -53,7 +63,9 @@
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "analytics.i18n.i18n" }
+        "settings": {
+          "bundleName": "analytics.i18n.i18n"
+        }
       },
       "": {
         "dataSource": "mainService",
@@ -128,7 +140,9 @@
               },
               "navigation": {
                 "ServiceTaskSet": {
-                  "detail": { "route": "AnalyticsDetail" }
+                  "detail": {
+                    "route": "AnalyticsDetail"
+                  }
                 }
               },
               "controlConfiguration": {
