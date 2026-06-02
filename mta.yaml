@@ -66,6 +66,7 @@ modules:
           name: washwizard_backend
           url: ~{srv-url}
           forwardAuthToken: true
+          sap.cloud.service: washwizard
 
   # ── 4. HTML5 App Content Deployer ─────────────────────────────
   - name: sap-project-ui-deployer
