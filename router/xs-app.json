@@ -3,12 +3,6 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/index.html(.*)$",
-      "target": "/portal/index.html$1",
-      "service": "html5-apps-repo-rt",
-      "authenticationType": "xsuaa"
-    },
-    {
       "source": "^/odata/v4/wash-wizard/(.*)$",
       "target": "/odata/v4/wash-wizard/$1",
       "destination": "srv_target",
@@ -16,8 +10,8 @@
       "csrfProtection": true
     },
     {
-      "source": "^/(.*)$",
-      "target": "/$1",
+      "source": "^(.*)$",
+      "target": "$1",
       "service": "html5-apps-repo-rt",
       "authenticationType": "xsuaa"
     }
