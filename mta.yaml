@@ -102,7 +102,7 @@ modules:
     parameters:
       content:
         subaccount:
-          existing_destinations_policy: update
+          existing_destinations_policy: ignore
           destinations:
             - Name: washwizard_api
               Description: WashWizard CAP Backend OData Service
