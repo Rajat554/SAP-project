@@ -104,17 +104,18 @@ modules:
         subaccount:
           existing_destinations_policy: update
           destinations:
-            - Name: washwizard_backend
+            - Name: washwizard_api
               Description: WashWizard CAP Backend OData Service
               URL: ~{srv_api/srv-url}
               Type: HTTP
+              ProxyType: Internet
               Authentication: OAuth2UserTokenExchange
               ServiceInstanceName: sap-project-xsuaa
               ServiceKeyName: sap-project-xsuaa-key
               HTML5.DynamicDestination: true
               HTML5.Timeout: 60000
               sap.cloud.service: washwizard
-            - Name: washwizard_html5_repo_host
+            - Name: washwizard_ui_repo
               ServiceInstanceName: sap-project-repo-host
               ServiceKeyName: sap-project-repo-host-key
               sap.cloud.service: washwizard
