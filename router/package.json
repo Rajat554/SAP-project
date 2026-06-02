@@ -2,8 +2,11 @@
   "name": "sap-project-router",
   "version": "1.0.0",
   "description": "Approuter for sap-project",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
-    "@sap/approuter": "^11.5.0"
+    "@sap/approuter": "^16.0.0"
   },
   "scripts": {
     "start": "node node_modules/@sap/approuter/approuter.js"
