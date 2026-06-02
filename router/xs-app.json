@@ -1,5 +1,5 @@
 {
-  "welcomeFile": "portal/index.html",
+  "welcomeFile": "/washwizard.portal/index.html",
   "authenticationMethod": "route",
   "routes": [
     {
@@ -10,8 +10,8 @@
       "csrfProtection": true
     },
     {
-      "source": "^(.*)$",
-      "target": "$1",
+      "source": "^/(.*)$",
+      "target": "/$1",
       "service": "html5-apps-repo-rt",
       "authenticationType": "xsuaa"
     }
