@@ -119,53 +119,53 @@ modules:
   # ── 5. Individual HTML5 Micro-App Modules ─────────────────────
   - name: washwizard-app-admin
     type: html5
-    path: app/portal/webapp/admin
+    path: app/admin/webapp
     build-parameters:
       supported-platforms: []
       build-result: .
       builder: custom
       commands:
-        - node ../../../../zip.js admin
+        - node ../../../zip.js admin
 
   - name: washwizard-app-analytics
     type: html5
-    path: app/portal/webapp/analytics
+    path: app/analytics/webapp
     build-parameters:
       supported-platforms: []
       build-result: .
       builder: custom
       commands:
-        - node ../../../../zip.js analytics
+        - node ../../../zip.js analytics
 
   - name: washwizard-app-catalog
     type: html5
-    path: app/portal/webapp/catalog
+    path: app/catalog/webapp
     build-parameters:
       supported-platforms: []
       build-result: .
       builder: custom
       commands:
-        - node ../../../../zip.js catalog
+        - node ../../../zip.js catalog
 
   - name: washwizard-app-service-entries
     type: html5
-    path: app/portal/webapp/service-entries
+    path: app/service-entries/webapp
     build-parameters:
       supported-platforms: []
       build-result: .
       builder: custom
       commands:
-        - node ../../../../zip.js service-entries
+        - node ../../../zip.js service-entries
 
   - name: washwizard-app-service-records
     type: html5
-    path: app/portal/webapp/service-records
+    path: app/service-records/webapp
     build-parameters:
       supported-platforms: []
       build-result: .
       builder: custom
       commands:
-        - node ../../../../zip.js service-records
+        - node ../../../zip.js service-records
 
 resources:
   # HANA HDI Container
