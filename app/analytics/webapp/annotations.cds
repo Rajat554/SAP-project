@@ -1,4 +1,4 @@
-using WashWizardService as service from '../../../../srv/service';
+using WashWizardService as service from '../../../srv/service';
 
 // ═══════════════════════════════════════════════════════════════
 //  AGGREGATION SUPPORT — Required for analytical charts/KPIs

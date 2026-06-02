@@ -1,12 +1,13 @@
 {
   "name": "sap-project",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "WashWizard — Fiori Elements Edition",
   "license": "ISC",
   "author": "Rajat Patel",
   "scripts": {
     "start": "cds-serve",
-    "watch": "cds watch"
+    "watch": "cds watch",
+    "build": "mbt build"
   },
   "overrides": {
     "ajv": "^8.16.0",
@@ -28,14 +29,15 @@
     "@cap-js/sqlite": "^2.4.0",
     "@sap/cds-dk": "^9",
     "@sap/ux-specification": "^1.120.16",
+    "adm-zip": "^0.5.12",
     "better-sqlite3": "^12.10.0"
   },
   "sapux": [
     "app/service-entries",
     "app/service-records",
     "app/analytics",
-    "app/admin",
-    "app/catalog"
+    "app/catalog",
+    "app/admin"
   ],
   "engines": {
     "node": ">=20"

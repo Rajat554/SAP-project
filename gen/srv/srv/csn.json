@@ -722,7 +722,7 @@
       "@UI.Chart#ServiceDistribution.ChartType": {
         "#": "Donut"
       },
-      "@UI.Chart#ServiceDistribution.Title": "Service Type Distribution",
+      "@UI.Chart#ServiceDistribution.Title": "Revenue by Service Type",
       "@UI.Chart#ServiceDistribution.Dimensions": [
         {
           "=": "ServiceType"
@@ -907,6 +907,26 @@
         }
       ],
       "@UI.SelectionPresentationVariant#CompletedView.PresentationVariant.Visualizations": [
+        "@UI.LineItem"
+      ],
+      "@Common.SideEffects#ReactOnServiceTypeChange.SourceProperties": [
+        {
+          "=": "ServiceType"
+        }
+      ],
+      "@Common.SideEffects#ReactOnServiceTypeChange.TargetProperties": [
+        "Amount"
+      ],
+      "@UI.PresentationVariant.Text": "Default",
+      "@UI.PresentationVariant.SortOrder": [
+        {
+          "Property": {
+            "=": "ServiceDate"
+          },
+          "Descending": true
+        }
+      ],
+      "@UI.PresentationVariant.Visualizations": [
         "@UI.LineItem"
       ],
       "@Aggregation.CustomAggregate#Amount": "Edm.Decimal",
@@ -1141,7 +1161,42 @@
           }
         }
       ],
-      "@UI.Chart#ServiceDistribution.Description": "Revenue breakdown by service type",
+      "@UI.Chart#ServiceDistributionDonut.$Type": "UI.ChartDefinitionType",
+      "@UI.Chart#ServiceDistributionDonut.ChartType": {
+        "#": "Donut"
+      },
+      "@UI.Chart#ServiceDistributionDonut.Title": "Service Type Distribution",
+      "@UI.Chart#ServiceDistributionDonut.Description": "Revenue breakdown by service type",
+      "@UI.Chart#ServiceDistributionDonut.Dimensions": [
+        {
+          "=": "ServiceType"
+        }
+      ],
+      "@UI.Chart#ServiceDistributionDonut.Measures": [
+        {
+          "=": "Amount"
+        }
+      ],
+      "@UI.Chart#ServiceDistributionDonut.DimensionAttributes": [
+        {
+          "Dimension": {
+            "=": "ServiceType"
+          },
+          "Role": {
+            "#": "Category"
+          }
+        }
+      ],
+      "@UI.Chart#ServiceDistributionDonut.MeasureAttributes": [
+        {
+          "Measure": {
+            "=": "Amount"
+          },
+          "Role": {
+            "#": "Axis1"
+          }
+        }
+      ],
       "@UI.Chart#ServiceVolumeByType.$Type": "UI.ChartDefinitionType",
       "@UI.Chart#ServiceVolumeByType.ChartType": {
         "#": "Column"
@@ -1268,7 +1323,7 @@
       "@UI.SelectionPresentationVariant#ServiceDistribution.Text": "Service Type Distribution",
       "@UI.SelectionPresentationVariant#ServiceDistribution.SelectionVariant.SelectOptions": [],
       "@UI.SelectionPresentationVariant#ServiceDistribution.PresentationVariant.Visualizations": [
-        "@UI.Chart#ServiceDistribution",
+        "@UI.Chart#ServiceDistributionDonut",
         "@UI.Chart#ServiceVolumeByType",
         "@UI.LineItem"
       ],
@@ -1277,26 +1332,6 @@
       "@UI.SelectionPresentationVariant#Performance.PresentationVariant.Visualizations": [
         "@UI.Chart#StaffRevenue",
         "@UI.Chart#StaffVolume",
-        "@UI.LineItem"
-      ],
-      "@Common.SideEffects#ReactOnServiceTypeChange.SourceProperties": [
-        {
-          "=": "ServiceType"
-        }
-      ],
-      "@Common.SideEffects#ReactOnServiceTypeChange.TargetProperties": [
-        "Amount"
-      ],
-      "@UI.PresentationVariant.Text": "Default",
-      "@UI.PresentationVariant.SortOrder": [
-        {
-          "Property": {
-            "=": "ServiceDate"
-          },
-          "Descending": true
-        }
-      ],
-      "@UI.PresentationVariant.Visualizations": [
         "@UI.LineItem"
       ],
       "projection": {

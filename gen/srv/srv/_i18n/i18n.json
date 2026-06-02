@@ -28,7 +28,9 @@
     "Draft_LastChangeDateTime": "Draft Last Changed On",
     "Draft_LastChangedByUser": "Draft Last Changed By",
     "Draft_InProcessByUser": "Draft In Process By",
-    "Draft_DraftIsProcessedByMe": "Draft In Process By Me"
+    "Draft_DraftIsProcessedByMe": "Draft In Process By Me",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "ar": {
     "CreatedBy": "تم الإنشاء بواسطة",
@@ -59,7 +61,9 @@
     "Draft_LastChangeDateTime": "تاريخ آخر تغيير للمسودة",
     "Draft_LastChangedByUser": "آخر تغيير للمسودة بواسطة",
     "Draft_InProcessByUser": "المسودة قيد المعالجة بواسطة",
-    "Draft_DraftIsProcessedByMe": "المسودة قيد المعالجة بواسطتي"
+    "Draft_DraftIsProcessedByMe": "المسودة قيد المعالجة بواسطتي",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "bg": {
     "CreatedBy": "Създадено от",
@@ -90,7 +94,9 @@
     "Draft_LastChangeDateTime": "Дата на последна промяна на чернова",
     "Draft_LastChangedByUser": "Автор на последна промяна на чернова",
     "Draft_InProcessByUser": "Черновата се обработва от",
-    "Draft_DraftIsProcessedByMe": "Черновата се обработва от мен"
+    "Draft_DraftIsProcessedByMe": "Черновата се обработва от мен",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "cs": {
     "CreatedBy": "Vytvořil",
@@ -121,7 +127,9 @@
     "Draft_LastChangeDateTime": "Návrh naposledy změněn",
     "Draft_LastChangedByUser": "Návrh naposledy změnil",
     "Draft_InProcessByUser": "Návrh zpracovává",
-    "Draft_DraftIsProcessedByMe": "Návrh zpracovávaný mnou"
+    "Draft_DraftIsProcessedByMe": "Návrh zpracovávaný mnou",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "da": {
     "CreatedBy": "Oprettet af",
@@ -152,7 +160,9 @@
     "Draft_LastChangeDateTime": "Udkast senest ændret den",
     "Draft_LastChangedByUser": "Udkast senest ændret af",
     "Draft_InProcessByUser": "Udkast behandles af",
-    "Draft_DraftIsProcessedByMe": "Udkast behandles af mig"
+    "Draft_DraftIsProcessedByMe": "Udkast behandles af mig",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "de": {
     "CreatedBy": "Angelegt von",
@@ -183,7 +193,9 @@
     "Draft_LastChangeDateTime": "Entwurf zuletzt geändert am",
     "Draft_LastChangedByUser": "Entwurf zuletzt geändert von",
     "Draft_InProcessByUser": "Entwurf in Bearbeitung durch",
-    "Draft_DraftIsProcessedByMe": "Entwurf in Bearbeitung durch mich"
+    "Draft_DraftIsProcessedByMe": "Entwurf in Bearbeitung durch mich",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "el": {
     "CreatedBy": "Δημιουργήθηκε Από",
@@ -214,7 +226,9 @@
     "Draft_LastChangeDateTime": "Ημ/νία Τελευταίας Αλλαγής Πρόχειρου",
     "Draft_LastChangedByUser": "Τελευταία Αλλαγή Πρόχειρου Από",
     "Draft_InProcessByUser": "Πρόχειρο Σε Επεξεργασία Από",
-    "Draft_DraftIsProcessedByMe": "Πρόχειρο Σε Επεξεργασία Από Εμένα"
+    "Draft_DraftIsProcessedByMe": "Πρόχειρο Σε Επεξεργασία Από Εμένα",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "en": {
     "CreatedBy": "Created By",
@@ -245,7 +259,9 @@
     "Draft_LastChangeDateTime": "Draft Last Changed On",
     "Draft_LastChangedByUser": "Draft Last Changed By",
     "Draft_InProcessByUser": "Draft In Process By",
-    "Draft_DraftIsProcessedByMe": "Draft In Process By Me"
+    "Draft_DraftIsProcessedByMe": "Draft In Process By Me",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "en_US_saptrc": {
     "CreatedBy": "Bx7yxWg0AHyeOti1YDOOXw_Created By",
@@ -276,7 +292,9 @@
     "Draft_LastChangeDateTime": "3ZVPB34hJDc38V1GIGr6cw_Draft Last Changed On",
     "Draft_LastChangedByUser": "X7I4n0+rc50bDozET507FA_Draft Last Changed By",
     "Draft_InProcessByUser": "/MEKNHLAPlLRsGiFC1PeOA_Draft In Process By",
-    "Draft_DraftIsProcessedByMe": "zZGCPf/2uR37cfpgf1znGA_Draft In Process By Me"
+    "Draft_DraftIsProcessedByMe": "zZGCPf/2uR37cfpgf1znGA_Draft In Process By Me",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "es": {
     "CreatedBy": "Autor",
@@ -307,7 +325,9 @@
     "Draft_LastChangeDateTime": "Fecha del último cambio en borrador",
     "Draft_LastChangedByUser": "Autor del último cambio en borrador",
     "Draft_InProcessByUser": "Borrador en proceso por",
-    "Draft_DraftIsProcessedByMe": "Borrador en proceso por mí"
+    "Draft_DraftIsProcessedByMe": "Borrador en proceso por mí",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "es_MX": {
     "CreatedBy": "Autor",
@@ -338,7 +358,9 @@
     "Draft_LastChangeDateTime": "Fecha del último cambio en borrador",
     "Draft_LastChangedByUser": "Autor del último cambio en borrador",
     "Draft_InProcessByUser": "Borrador en proceso por",
-    "Draft_DraftIsProcessedByMe": "Borrador en proceso por mí"
+    "Draft_DraftIsProcessedByMe": "Borrador en proceso por mí",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "fi": {
     "CreatedBy": "Tekijä",
@@ -369,7 +391,9 @@
     "Draft_LastChangeDateTime": "Luonnosta muutettu viimeksi",
     "Draft_LastChangedByUser": "Luonnoksen viimeisin muuttaja",
     "Draft_InProcessByUser": "Luonnos käsiteltävänä -",
-    "Draft_DraftIsProcessedByMe": "Luonnos minun käsiteltävänäni"
+    "Draft_DraftIsProcessedByMe": "Luonnos minun käsiteltävänäni",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "fr": {
     "CreatedBy": "Auteur de la création",
@@ -400,7 +424,9 @@
     "Draft_LastChangeDateTime": "Dernière modification de la version préliminaire le",
     "Draft_LastChangedByUser": "Dernière modification de la version préliminaire par",
     "Draft_InProcessByUser": "Version préliminaire en cours de traitement par",
-    "Draft_DraftIsProcessedByMe": "Version préliminaire en cours de traitement par moi"
+    "Draft_DraftIsProcessedByMe": "Version préliminaire en cours de traitement par moi",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "he": {
     "CreatedBy": "נוצר על-ידי",
@@ -431,7 +457,9 @@
     "Draft_LastChangeDateTime": "טיוטה שונתה לאחרונה בתאריך",
     "Draft_LastChangedByUser": "טיוטה שונתה לאחרונה על-ידי",
     "Draft_InProcessByUser": "טיוטה בתהליך על-ידי",
-    "Draft_DraftIsProcessedByMe": "טיוטה בתהליך על-ידי"
+    "Draft_DraftIsProcessedByMe": "טיוטה בתהליך על-ידי",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "hr": {
     "CreatedBy": "Stvorio",
@@ -462,7 +490,9 @@
     "Draft_LastChangeDateTime": "Nacrt zadnji put promijenjen",
     "Draft_LastChangedByUser": "Nacrt zadnji promijenio",
     "Draft_InProcessByUser": "Nacrt obrađuje",
-    "Draft_DraftIsProcessedByMe": "Ja obrađujem nacrt"
+    "Draft_DraftIsProcessedByMe": "Ja obrađujem nacrt",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "hu": {
     "CreatedBy": "Létrehozó:",
@@ -493,7 +523,9 @@
     "Draft_LastChangeDateTime": "Tervezet utolsó módosításának dátuma",
     "Draft_LastChangedByUser": "Tervezet utolsó módosítója",
     "Draft_InProcessByUser": "Tervezet feldolgozás alatt, feldolgozó neve",
-    "Draft_DraftIsProcessedByMe": "Tervezet feldolgozás alatt általam"
+    "Draft_DraftIsProcessedByMe": "Tervezet feldolgozás alatt általam",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "it": {
     "CreatedBy": "Autore creazione",
@@ -524,7 +556,9 @@
     "Draft_LastChangeDateTime": "Ultima modifica bozza",
     "Draft_LastChangedByUser": "Autore dell'ultima modifica bozza",
     "Draft_InProcessByUser": "Bozza attualmente elaborata da",
-    "Draft_DraftIsProcessedByMe": "Bozza attualmente elaborata da me"
+    "Draft_DraftIsProcessedByMe": "Bozza attualmente elaborata da me",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "ja": {
     "CreatedBy": "登録者",
@@ -555,7 +589,9 @@
     "Draft_LastChangeDateTime": "ドラフト最終変更日付",
     "Draft_LastChangedByUser": "ドラフト最終変更者",
     "Draft_InProcessByUser": "処理中ドラフトの処理者",
-    "Draft_DraftIsProcessedByMe": "自分が処理しているドラフト"
+    "Draft_DraftIsProcessedByMe": "自分が処理しているドラフト",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "kk": {
     "CreatedBy": "Жасаған",
@@ -586,7 +622,9 @@
     "Draft_LastChangeDateTime": "Нобайдың соңғы өзгертілген күні",
     "Draft_LastChangedByUser": "Нобайды соңғы өзгерткен",
     "Draft_InProcessByUser": "Нобайды орындаушы",
-    "Draft_DraftIsProcessedByMe": "Мен орындап жатқан нобай"
+    "Draft_DraftIsProcessedByMe": "Мен орындап жатқан нобай",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "ko": {
     "CreatedBy": "생성자",
@@ -617,7 +655,9 @@
     "Draft_LastChangeDateTime": "드래프트 최종 변경일",
     "Draft_LastChangedByUser": "드래프트 최종 변경자",
     "Draft_InProcessByUser": "드래프트 처리 중인 사용자",
-    "Draft_DraftIsProcessedByMe": "내가 처리 중인 드래프트"
+    "Draft_DraftIsProcessedByMe": "내가 처리 중인 드래프트",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "ms": {
     "CreatedBy": "Dicipta oleh",
@@ -648,7 +688,9 @@
     "Draft_LastChangeDateTime": "Draf Terakhir Diubah pada",
     "Draft_LastChangedByUser": "Draf Terakhir Diubah oleh",
     "Draft_InProcessByUser": "Draf Sedang Diproses oleh",
-    "Draft_DraftIsProcessedByMe": "Draf Sedang Diproses oleh Saya"
+    "Draft_DraftIsProcessedByMe": "Draf Sedang Diproses oleh Saya",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "nl": {
     "CreatedBy": "Gecreëerd door",
@@ -679,7 +721,9 @@
     "Draft_LastChangeDateTime": "Concept laatst gewijzigd op",
     "Draft_LastChangedByUser": "Concept laatst gewijzigd door",
     "Draft_InProcessByUser": "Concept wordt bewerkt door",
-    "Draft_DraftIsProcessedByMe": "Concept wordt bewerkt door mij"
+    "Draft_DraftIsProcessedByMe": "Concept wordt bewerkt door mij",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "no": {
     "CreatedBy": "Opprettet av",
@@ -710,7 +754,9 @@
     "Draft_LastChangeDateTime": "Utkast sist endret den",
     "Draft_LastChangedByUser": "Utkast sist endret av",
     "Draft_InProcessByUser": "Utkast under behandling av",
-    "Draft_DraftIsProcessedByMe": "Utkast under behandling av meg"
+    "Draft_DraftIsProcessedByMe": "Utkast under behandling av meg",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "pl": {
     "CreatedBy": "Utworzone przez",
@@ -741,7 +787,9 @@
     "Draft_LastChangeDateTime": "Data ostatniej zmiany wersji roboczej",
     "Draft_LastChangedByUser": "Wersja robocza ostatnio zmieniona przez",
     "Draft_InProcessByUser": "Wersja robocza w przetwarzaniu przez",
-    "Draft_DraftIsProcessedByMe": "Wersja robocza w przetwarzaniu przeze mnie"
+    "Draft_DraftIsProcessedByMe": "Wersja robocza w przetwarzaniu przeze mnie",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "pt": {
     "CreatedBy": "Criado por",
@@ -772,7 +820,9 @@
     "Draft_LastChangeDateTime": "Última modificação do rascunho em",
     "Draft_LastChangedByUser": "Última modificação do rascunho por",
     "Draft_InProcessByUser": "Rascunho sendo processado por",
-    "Draft_DraftIsProcessedByMe": "Rascunho sendo processado por mim"
+    "Draft_DraftIsProcessedByMe": "Rascunho sendo processado por mim",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "ro": {
     "CreatedBy": "Creat de",
@@ -803,7 +853,9 @@
     "Draft_LastChangeDateTime": "Versiune preliminară modificată ultima dată pe",
     "Draft_LastChangedByUser": "Versiune preliminară modificată ultima dată de",
     "Draft_InProcessByUser": "Versiune preliminară în prelucrare de",
-    "Draft_DraftIsProcessedByMe": "Versiune preliminară în prelucrare de mine"
+    "Draft_DraftIsProcessedByMe": "Versiune preliminară în prelucrare de mine",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "ru": {
     "CreatedBy": "Создал",
@@ -834,7 +886,9 @@
     "Draft_LastChangeDateTime": "Дата последнего изменения черновика",
     "Draft_LastChangedByUser": "Изменил черновик",
     "Draft_InProcessByUser": "Обрабатывает черновик",
-    "Draft_DraftIsProcessedByMe": "Черновик обрабатывается мной"
+    "Draft_DraftIsProcessedByMe": "Черновик обрабатывается мной",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "sh": {
     "CreatedBy": "Kreirao",
@@ -865,7 +919,9 @@
     "Draft_LastChangeDateTime": "Nacrt poslednji put promenjen",
     "Draft_LastChangedByUser": "Nacrt poslednji put promenio",
     "Draft_InProcessByUser": "Nacrt koji obrađuje",
-    "Draft_DraftIsProcessedByMe": "Nacrt koji obrađujem"
+    "Draft_DraftIsProcessedByMe": "Nacrt koji obrađujem",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "sk": {
     "CreatedBy": "Vytvoril",
@@ -896,7 +952,9 @@
     "Draft_LastChangeDateTime": "Návrh naposledy zmenený dňa",
     "Draft_LastChangedByUser": "Návrh naposledy zmenil",
     "Draft_InProcessByUser": "Návrh v spracovaní od (meno)",
-    "Draft_DraftIsProcessedByMe": "Návrh v spracovaní od (ja)"
+    "Draft_DraftIsProcessedByMe": "Návrh v spracovaní od (ja)",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "sl": {
     "CreatedBy": "Ustvaril uporabnik",
@@ -927,7 +985,9 @@
     "Draft_LastChangeDateTime": "Osnutek, ki je bil nazadnje spremenjen dne",
     "Draft_LastChangedByUser": "Osnutek, ki ga je nazadnje spremenil",
     "Draft_InProcessByUser": "Osnutek obdeluje",
-    "Draft_DraftIsProcessedByMe": "Osnutek, ki ga obdelujem"
+    "Draft_DraftIsProcessedByMe": "Osnutek, ki ga obdelujem",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "sv": {
     "CreatedBy": "Uppläggning av",
@@ -958,7 +1018,9 @@
     "Draft_LastChangeDateTime": "Senaste utkaständring den",
     "Draft_LastChangedByUser": "Senaste utkaständring av",
     "Draft_InProcessByUser": "Utkast under bearbetning av",
-    "Draft_DraftIsProcessedByMe": "Utkast under bearbetning av mig"
+    "Draft_DraftIsProcessedByMe": "Utkast under bearbetning av mig",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "th": {
     "CreatedBy": "สร้างโดย",
@@ -989,7 +1051,9 @@
     "Draft_LastChangeDateTime": "เปลี่ยนแปลงแบบร่างครั้งล่าสุดเมื่อ",
     "Draft_LastChangedByUser": "เปลี่ยนแปลงแบบร่างครั้งล่าสุดโดย",
     "Draft_InProcessByUser": "แบบร่างอยู่ระหว่างดำเนินการโดย",
-    "Draft_DraftIsProcessedByMe": "แบบร่างที่ฉันกำลังดำเนินการ"
+    "Draft_DraftIsProcessedByMe": "แบบร่างที่ฉันกำลังดำเนินการ",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "tr": {
     "CreatedBy": "Oluşturan",
@@ -1020,7 +1084,9 @@
     "Draft_LastChangeDateTime": "Taslağın son değişiklik tarihi",
     "Draft_LastChangedByUser": "Taslağı son değiştiren",
     "Draft_InProcessByUser": "Taslağı işleyen",
-    "Draft_DraftIsProcessedByMe": "Tarafımdan işlenen taslak"
+    "Draft_DraftIsProcessedByMe": "Tarafımdan işlenen taslak",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "uk": {
     "CreatedBy": "Автор створення",
@@ -1051,7 +1117,9 @@
     "Draft_LastChangeDateTime": "Дата останньої зміни чернетки",
     "Draft_LastChangedByUser": "Автор останньої зміни чернетки",
     "Draft_InProcessByUser": "Поточний автор обробки чернетки",
-    "Draft_DraftIsProcessedByMe": "Чернетка, яку наразі обробляю я"
+    "Draft_DraftIsProcessedByMe": "Чернетка, яку наразі обробляю я",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "vi": {
     "CreatedBy": "Tạo bởi",
@@ -1082,7 +1150,9 @@
     "Draft_LastChangeDateTime": "Ngày thay đổi lần cuối bản nháp",
     "Draft_LastChangedByUser": "Người thay đổi lần cuối bản nháp",
     "Draft_InProcessByUser": "Người đang xử lý bản nháp",
-    "Draft_DraftIsProcessedByMe": "Bản nháp đang do tôi xử lý"
+    "Draft_DraftIsProcessedByMe": "Bản nháp đang do tôi xử lý",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "zh_CN": {
     "CreatedBy": "创建人",
@@ -1113,7 +1183,9 @@
     "Draft_LastChangeDateTime": "草稿上次更改日期",
     "Draft_LastChangedByUser": "草稿上次更改人",
     "Draft_InProcessByUser": "正在处理草稿人",
-    "Draft_DraftIsProcessedByMe": "草稿正在由我处理"
+    "Draft_DraftIsProcessedByMe": "草稿正在由我处理",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   },
   "zh_TW": {
     "CreatedBy": "建立者",
@@ -1144,6 +1216,8 @@
     "Draft_LastChangeDateTime": "草稿的上次更改日期",
     "Draft_LastChangedByUser": "草稿的上次更改者",
     "Draft_InProcessByUser": "正在處理草稿的人員",
-    "Draft_DraftIsProcessedByMe": "我正在處理的草稿"
+    "Draft_DraftIsProcessedByMe": "我正在處理的草稿",
+    "appTitle": "Service Records",
+    "appDescription": "View completed service records"
   }
 }

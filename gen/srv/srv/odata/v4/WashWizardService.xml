@@ -521,7 +521,7 @@
         <Annotation Term="UI.Chart" Qualifier="ServiceDistribution">
           <Record Type="UI.ChartDefinitionType">
             <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut"/>
-            <PropertyValue Property="Title" String="Service Type Distribution"/>
+            <PropertyValue Property="Title" String="Revenue by Service Type"/>
             <PropertyValue Property="Dimensions">
               <Collection>
                 <PropertyPath>ServiceType</PropertyPath>
@@ -548,7 +548,6 @@
                 </Record>
               </Collection>
             </PropertyValue>
-            <PropertyValue Property="Description" String="Revenue breakdown by service type"/>
           </Record>
         </Annotation>
         <Annotation Term="UI.Chart" Qualifier="PaymentBreakdown">
@@ -773,6 +772,24 @@
             </PropertyValue>
           </Record>
         </Annotation>
+        <Annotation Term="UI.PresentationVariant">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Text" String="Default"/>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.LineItem</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
         <Annotation Term="UI.KPI" Qualifier="TotalRevenue">
           <Record Type="UI.KPIType">
             <PropertyValue Property="ID" String="KPI_TotalRevenue"/>
@@ -978,6 +995,39 @@
             </PropertyValue>
           </Record>
         </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="ServiceDistributionDonut">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut"/>
+            <PropertyValue Property="Title" String="Service Type Distribution"/>
+            <PropertyValue Property="Description" String="Revenue breakdown by service type"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>ServiceType</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>Amount</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="ServiceType"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="Amount"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
         <Annotation Term="UI.Chart" Qualifier="ServiceVolumeByType">
           <Record Type="UI.ChartDefinitionType">
             <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
@@ -1122,7 +1172,7 @@
               <Record Type="UI.PresentationVariantType">
                 <PropertyValue Property="Visualizations">
                   <Collection>
-                    <AnnotationPath>@UI.Chart#ServiceDistribution</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#ServiceDistributionDonut</AnnotationPath>
                     <AnnotationPath>@UI.Chart#ServiceVolumeByType</AnnotationPath>
                     <AnnotationPath>@UI.LineItem</AnnotationPath>
                   </Collection>
@@ -1154,24 +1204,35 @@
             </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="UI.PresentationVariant">
-          <Record Type="UI.PresentationVariantType">
-            <PropertyValue Property="Text" String="Default"/>
-            <PropertyValue Property="SortOrder">
+        <Annotation Term="Common.SideEffects" Qualifier="ReactOnServiceTypeChange">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceProperties">
               <Collection>
-                <Record Type="Common.SortOrderType">
-                  <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
-                  <PropertyValue Property="Descending" Bool="true"/>
-                </Record>
+                <PropertyPath>ServiceType</PropertyPath>
               </Collection>
             </PropertyValue>
-            <PropertyValue Property="Visualizations">
+            <PropertyValue Property="TargetProperties">
               <Collection>
-                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                <String>Amount</String>
               </Collection>
             </PropertyValue>
           </Record>
         </Annotation>
+        <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceEntities">
+              <Collection>
+                <NavigationPropertyPath></NavigationPropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+              <Collection>
+                <String>DraftMessages</String>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.Messages" Path="DraftMessages"/>
         <Annotation Term="Aggregation.CustomAggregate" Qualifier="Amount" String="Edm.Decimal"/>
         <Annotation Term="Aggregation.CustomAggregate" Qualifier="ServiceCount" String="Edm.Int32"/>
         <Annotation Term="Aggregation.CustomAggregate" Qualifier="AvgAmount" String="Edm.Decimal"/>
@@ -1243,35 +1304,6 @@
             </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="Common.SideEffects" Qualifier="ReactOnServiceTypeChange">
-          <Record Type="Common.SideEffectsType">
-            <PropertyValue Property="SourceProperties">
-              <Collection>
-                <PropertyPath>ServiceType</PropertyPath>
-              </Collection>
-            </PropertyValue>
-            <PropertyValue Property="TargetProperties">
-              <Collection>
-                <String>Amount</String>
-              </Collection>
-            </PropertyValue>
-          </Record>
-        </Annotation>
-        <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
-          <Record Type="Common.SideEffectsType">
-            <PropertyValue Property="SourceEntities">
-              <Collection>
-                <NavigationPropertyPath></NavigationPropertyPath>
-              </Collection>
-            </PropertyValue>
-            <PropertyValue Property="TargetProperties">
-              <Collection>
-                <String>DraftMessages</String>
-              </Collection>
-            </PropertyValue>
-          </Record>
-        </Annotation>
-        <Annotation Term="Common.Messages" Path="DraftMessages"/>
       </Annotations>
       <Annotations Target="WashWizardService.EntityContainer/ServiceTaskSet">
         <Annotation Term="UI.SelectionVariant" Qualifier="All">
@@ -1500,6 +1532,24 @@
             </PropertyValue>
           </Record>
         </Annotation>
+        <Annotation Term="UI.PresentationVariant">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Text" String="Default"/>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.LineItem</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
         <Annotation Term="UI.KPI" Qualifier="TotalRevenue">
           <Record Type="UI.KPIType">
             <PropertyValue Property="ID" String="KPI_TotalRevenue"/>
@@ -1636,7 +1686,7 @@
               <Record Type="UI.PresentationVariantType">
                 <PropertyValue Property="Visualizations">
                   <Collection>
-                    <AnnotationPath>@UI.Chart#ServiceDistribution</AnnotationPath>
+                    <AnnotationPath>@UI.Chart#ServiceDistributionDonut</AnnotationPath>
                     <AnnotationPath>@UI.Chart#ServiceVolumeByType</AnnotationPath>
                     <AnnotationPath>@UI.LineItem</AnnotationPath>
                   </Collection>
@@ -1668,20 +1718,37 @@
             </PropertyValue>
           </Record>
         </Annotation>
-        <Annotation Term="UI.PresentationVariant">
-          <Record Type="UI.PresentationVariantType">
-            <PropertyValue Property="Text" String="Default"/>
-            <PropertyValue Property="SortOrder">
+        <Annotation Term="Common.SideEffects" Qualifier="ReactOnServiceTypeChange">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceProperties">
               <Collection>
-                <Record Type="Common.SortOrderType">
-                  <PropertyValue Property="Property" PropertyPath="ServiceDate"/>
-                  <PropertyValue Property="Descending" Bool="true"/>
-                </Record>
+                <PropertyPath>ServiceType</PropertyPath>
               </Collection>
             </PropertyValue>
-            <PropertyValue Property="Visualizations">
+            <PropertyValue Property="TargetProperties">
               <Collection>
-                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                <String>Amount</String>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="WashWizardService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="WashWizardService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="WashWizardService.draftPrepare"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
+          <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceEntities">
+              <Collection>
+                <NavigationPropertyPath></NavigationPropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+              <Collection>
+                <String>DraftMessages</String>
               </Collection>
             </PropertyValue>
           </Record>
@@ -1753,41 +1820,6 @@
                     </Collection>
                   </PropertyValue>
                 </Record>
-              </Collection>
-            </PropertyValue>
-          </Record>
-        </Annotation>
-        <Annotation Term="Common.SideEffects" Qualifier="ReactOnServiceTypeChange">
-          <Record Type="Common.SideEffectsType">
-            <PropertyValue Property="SourceProperties">
-              <Collection>
-                <PropertyPath>ServiceType</PropertyPath>
-              </Collection>
-            </PropertyValue>
-            <PropertyValue Property="TargetProperties">
-              <Collection>
-                <String>Amount</String>
-              </Collection>
-            </PropertyValue>
-          </Record>
-        </Annotation>
-        <Annotation Term="Common.DraftRoot">
-          <Record Type="Common.DraftRootType">
-            <PropertyValue Property="ActivationAction" String="WashWizardService.draftActivate"/>
-            <PropertyValue Property="EditAction" String="WashWizardService.draftEdit"/>
-            <PropertyValue Property="PreparationAction" String="WashWizardService.draftPrepare"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Common.SideEffects" Qualifier="alwaysFetchMessages">
-          <Record Type="Common.SideEffectsType">
-            <PropertyValue Property="SourceEntities">
-              <Collection>
-                <NavigationPropertyPath></NavigationPropertyPath>
-              </Collection>
-            </PropertyValue>
-            <PropertyValue Property="TargetProperties">
-              <Collection>
-                <String>DraftMessages</String>
               </Collection>
             </PropertyValue>
           </Record>
