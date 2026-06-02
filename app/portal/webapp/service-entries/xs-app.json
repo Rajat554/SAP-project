@@ -5,7 +5,7 @@
     {
       "source": "^/odata/v4/wash-wizard/(.*)$",
       "target": "/odata/v4/wash-wizard/$1",
-      "destination": "washwizard_api",
+      "destination": "washwizard_backend_api",
       "authenticationType": "xsuaa",
       "csrfProtection": true
     },
