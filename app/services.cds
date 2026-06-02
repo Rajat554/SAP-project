@@ -1,5 +1,5 @@
-using from './portal/webapp/service-entries/annotations';
-using from './portal/webapp/service-records/annotations';
-using from './portal/webapp/analytics/annotations';
-using from './portal/webapp/admin/annotations';
-using from './portal/webapp/catalog/annotations';
+using from './service-entries/webapp/annotations';
+using from './service-records/webapp/annotations';
+using from './analytics/webapp/annotations';
+using from './admin/webapp/annotations';
+using from './catalog/webapp/annotations';

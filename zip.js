@@ -14,7 +14,7 @@ if (!appName) {
   process.exit(1);
 }
 
-const appDir = path.join(__dirname, 'app', 'portal', 'webapp', appName);
+const appDir = path.join(__dirname, 'app', appName, 'webapp');
 
 if (!fs.existsSync(appDir)) {
   console.error(`App folder not found: ${appDir}`);

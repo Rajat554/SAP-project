@@ -32,14 +32,11 @@
     "adm-zip": "^0.5.12",
     "better-sqlite3": "^12.10.0"
   },
-  "workspaces": [
-    "app/portal"
-  ],
   "sapux": [
-    "app/portal/webapp/service-entries",
-    "app/portal/webapp/service-records",
-    "app/portal/webapp/analytics",
-    "app/portal/webapp/catalog",
-    "app/portal/webapp/admin"
+    "app/service-entries",
+    "app/service-records",
+    "app/analytics",
+    "app/catalog",
+    "app/admin"
   ]
 }

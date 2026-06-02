@@ -1,7 +1,0 @@
-{
-  "name": "portal",
-  "version": "1.0.0",
-  "description": "Unified WashWizard Portal",
-  "private": true,
-  "sapux": true
-}
