@@ -69,14 +69,18 @@ modules:
 
   # ── 4. HTML5 App Content Deployer ─────────────────────────────
   - name: sap-project-ui-deployer
-    type: com.sap.application.content
-    path: .
+    type: nodejs
+    path: ui-deployer
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+      disk-quota: 256M
     requires:
       - name: sap-project-repo-host
         parameters:
           content-target: true
     build-parameters:
-      build-result: resources
+      build-result: .
       requires:
         - name: portal
           artifacts:
