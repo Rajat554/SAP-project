@@ -60,7 +60,6 @@ modules:
       - name: sap-project-xsuaa
       - name: sap-project-dest-service
       - name: sap-project-repo-runtime
-      - name: sap-project-repo-host
       - name: srv_api
         group: destinations
         properties:
