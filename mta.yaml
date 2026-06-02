@@ -107,8 +107,6 @@ modules:
             - Name: washwizard_backend_api
               Description: WashWizard CAP Backend OData Service
               URL: ~{srv_api/srv-url}
-              Type: HTTP
-              ProxyType: Internet
               Authentication: OAuth2UserTokenExchange
               ServiceInstanceName: sap-project-xsuaa
               ServiceKeyName: sap-project-xsuaa-key
