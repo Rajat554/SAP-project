@@ -22,20 +22,36 @@ if (!fs.existsSync(appDir)) {
 }
 
 const outputZip = path.join(appDir, `${appName}.zip`);
-console.log(`Zipping ${appDir} -> ${outputZip} ...`);
 
-const zip = new AdmZip();
+// 1. Create manifest-bundle.zip (Required by SAP Build Work Zone)
+const bundleZip = new AdmZip();
+const manifestPath = path.join(appDir, 'manifest.json');
+if (fs.existsSync(manifestPath)) {
+  bundleZip.addLocalFile(manifestPath);
+}
+const i18nPath = path.join(appDir, 'i18n');
+if (fs.existsSync(i18nPath) && fs.statSync(i18nPath).isDirectory()) {
+  bundleZip.addLocalFolder(i18nPath, 'i18n');
+}
+const bundleBuffer = bundleZip.toBuffer();
 
-// Add all files/folders in the app directory, excluding any existing .zip files
+// 2. Create the main app zip
+const mainZip = new AdmZip();
+
+// Add the generated manifest-bundle.zip to the root of the main zip
+mainZip.addFile('manifest-bundle.zip', bundleBuffer);
+
+// Add all other files to the main zip
 fs.readdirSync(appDir).forEach(file => {
-  if (file.endsWith('.zip')) return; // skip existing zips
+  if (file.endsWith('.zip')) return;
   const filePath = path.join(appDir, file);
   if (fs.statSync(filePath).isDirectory()) {
-    zip.addLocalFolder(filePath, file);
+    mainZip.addLocalFolder(filePath, file);
   } else {
-    zip.addLocalFile(filePath);
+    mainZip.addLocalFile(filePath);
   }
 });
 
-zip.writeZip(outputZip);
+console.log(`Zipping ${appDir} -> ${outputZip} (with manifest-bundle.zip) ...`);
+mainZip.writeZip(outputZip);
 console.log(`Successfully zipped ${appName}!`);
