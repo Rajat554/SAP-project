@@ -160,6 +160,7 @@ resources:
                 ProxyType: Internet
                 HTML5.DynamicDestination: true
                 HTML5.Timeout: 60000
+                sap.cloud.service: washwizard
     requires:
       - name: srv_api
       - name: sap-project-xsuaa

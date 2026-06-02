@@ -36,7 +36,8 @@
     "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
   },
   "sap.cloud": {
-    "public": true
+    "public": true,
+    "service": "washwizard"
   },
   "sap.ui5": {
     "flexEnabled": true,

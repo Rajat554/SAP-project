@@ -25,7 +25,8 @@
     }
   },
   "sap.cloud": {
-    "public": true
+    "public": true,
+    "service": "washwizard"
   },
   "sap.ui": {
     "technology": "UI5",
