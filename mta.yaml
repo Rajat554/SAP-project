@@ -103,6 +103,45 @@ modules:
       commands:
         - node ../../zip.js portal
 
+  # ── 6. Subaccount Destination Deployer ──────────────────────────
+  - name: sap-project-dest-content
+    type: com.sap.application.content
+    requires:
+      - name: sap-project-dest-service
+        parameters:
+          content-target: true
+      - name: sap-project-repo-host
+        parameters:
+          service-key:
+            name: sap-project-repo-host-key
+      - name: sap-project-xsuaa
+        parameters:
+          service-key:
+            name: sap-project-xsuaa-key
+      - name: srv_api
+    parameters:
+      content:
+        subaccount:
+          existing_destinations_policy: update
+          destinations:
+            - Name: srv_target
+              Description: WashWizard Backend Service
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: sap-project-xsuaa
+              ServiceKeyName: sap-project-xsuaa-key
+              URL: ~{srv_api/srv-url}
+              Type: HTTP
+              ProxyType: Internet
+              HTML5.DynamicDestination: true
+              HTML5.Timeout: 60000
+              sap.cloud.service: washwizard
+            - Name: sap-project_html5_repo_host
+              ServiceInstanceName: sap-project-repo-host
+              ServiceKeyName: sap-project-repo-host-key
+              sap.cloud.service: washwizard
+    build-parameters:
+      no-source: true
+
 resources:
   # HANA HDI Container (production database)
   - name: sap-project-hdi-container
@@ -146,24 +185,4 @@ resources:
       service-plan: lite
       config:
         HTML5Runtime_enabled: true
-        init_data:
-          instance:
-            existing_destinations_policy: update
-            destinations:
-              - Name: srv_target
-                Description: WashWizard Backend Service
-                Authentication: OAuth2UserTokenExchange
-                ServiceInstanceName: sap-project-xsuaa
-                ServiceKeyName: sap-project-xsuaa-key
-                URL: ~{srv_api/srv-url}
-                Type: HTTP
-                ProxyType: Internet
-                HTML5.DynamicDestination: true
-                HTML5.Timeout: 60000
-                sap.cloud.service: washwizard
-    requires:
-      - name: srv_api
-      - name: sap-project-xsuaa
-        parameters:
-          service-key:
-            name: sap-project-xsuaa-key
+        version: 1.0.0
