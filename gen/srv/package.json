@@ -37,7 +37,8 @@
     "app/service-records",
     "app/analytics",
     "app/catalog",
-    "app/admin"
+    "app/admin",
+    "app/shell"
   ],
   "engines": {
     "node": ">=20"
