@@ -1,0 +1,58 @@
+<mvc:View
+    controllerName="washwizard.app.shell.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+    height="100%">
+    <App id="app">
+        <pages>
+            <Page id="page" showHeader="false">
+                <tnt:ToolPage id="toolPage">
+                    <tnt:header>
+                        <tnt:ToolHeader>
+                            <Button id="sideNavigationToggleButton"
+                                    icon="sap-icon://menu2"
+                                    type="Transparent"
+                                    press=".onCollapseExpandPress">
+                                <layoutData>
+                                    <OverflowToolbarLayoutData priority="NeverOverflow" />
+                                </layoutData>
+                            </Button>
+                            <ToolbarSpacer width="20px" />
+                            <Title text="WashWizard" level="H1" />
+                            <tnt:ToolHeaderUtilitySeparator />
+                            <ToolbarSpacer />
+                            <SearchField width="200px" placeholder="Search..." />
+                            <ToolbarSpacer width="20px" />
+                            <Button icon="sap-icon://bell" type="Transparent" />
+                            <Button icon="sap-icon://sys-help" type="Transparent" />
+                            <Avatar displaySize="XS" src="sap-icon://customer" />
+                        </tnt:ToolHeader>
+                    </tnt:header>
+                    <tnt:sideContent>
+                        <tnt:SideNavigation selectedKey="dashboard">
+                            <tnt:NavigationList itemSelect=".onItemSelect">
+                                <tnt:NavigationListItem text="Service Records" icon="sap-icon://request" key="service-records" />
+                                <tnt:NavigationListItem text="Service Entries" icon="sap-icon://add-document" key="service-entries" />
+                                <tnt:NavigationListItem text="Analytics" icon="sap-icon://pie-chart" key="analytics" />
+                                <tnt:NavigationListItem text="Catalog" icon="sap-icon://list" key="catalog" />
+                                <tnt:NavigationListItem text="Admin" icon="sap-icon://action-settings" key="admin" />
+                            </tnt:NavigationList>
+                        </tnt:SideNavigation>
+                    </tnt:sideContent>
+                    <tnt:mainContents>
+                        <NavContainer id="pageContainer">
+                            <pages>
+                                <Page id="iframePage" showHeader="false">
+                                    <core:HTML content='&lt;iframe id="appIframe" class="fullHeightIFrame"&gt;&lt;/iframe&gt;'></core:HTML>
+                                </Page>
+                            </pages>
+                        </NavContainer>
+                    </tnt:mainContents>
+                </tnt:ToolPage>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>
