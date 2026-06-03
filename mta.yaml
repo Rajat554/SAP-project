@@ -131,9 +131,7 @@ modules:
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
-        - cp webapp/xs-app.json dist/
-        - mv dist/resources/washwizard/app/admin/* dist/
-        - rm -rf dist/resources
+        - npx shx cp webapp/xs-app.json dist/xs-app.json
 
   - name: washwizard-app-analytics
     type: html5
@@ -145,9 +143,7 @@ modules:
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
-        - cp webapp/xs-app.json dist/
-        - mv dist/resources/washwizard/app/analytics/* dist/
-        - rm -rf dist/resources
+        - npx shx cp webapp/xs-app.json dist/xs-app.json
 
   - name: washwizard-app-catalog
     type: html5
@@ -159,9 +155,7 @@ modules:
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
-        - cp webapp/xs-app.json dist/
-        - mv dist/resources/washwizard/app/catalog/* dist/
-        - rm -rf dist/resources
+        - npx shx cp webapp/xs-app.json dist/xs-app.json
 
   - name: washwizard-app-service-entries
     type: html5
@@ -173,9 +167,7 @@ modules:
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
-        - cp webapp/xs-app.json dist/
-        - mv dist/resources/washwizard/app/service-entries/* dist/
-        - rm -rf dist/resources
+        - npx shx cp webapp/xs-app.json dist/xs-app.json
 
   - name: washwizard-app-service-records
     type: html5
@@ -187,9 +179,7 @@ modules:
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
-        - cp webapp/xs-app.json dist/
-        - mv dist/resources/washwizard/app/service-records/* dist/
-        - rm -rf dist/resources
+        - npx shx cp webapp/xs-app.json dist/xs-app.json
 
   - name: washwizard-app-shell
     type: html5
@@ -201,9 +191,7 @@ modules:
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
-        - cp webapp/xs-app.json dist/
-        - mv dist/resources/washwizard/app/shell/* dist/
-        - rm -rf dist/resources
+        - npx shx cp webapp/xs-app.json dist/xs-app.json
 
 resources:
   # HANA HDI Container
