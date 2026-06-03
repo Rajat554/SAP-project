@@ -63,27 +63,27 @@ modules:
       requires:
         - name: washwizard-app-admin
           artifacts:
-            - admin.zip
+            - washwizard-app-admin.zip
           target-path: resources/
         - name: washwizard-app-analytics
           artifacts:
-            - analytics.zip
+            - washwizard-app-analytics.zip
           target-path: resources/
         - name: washwizard-app-catalog
           artifacts:
-            - catalog.zip
+            - washwizard-app-catalog.zip
           target-path: resources/
         - name: washwizard-app-service-entries
           artifacts:
-            - service-entries.zip
+            - washwizard-app-service-entries.zip
           target-path: resources/
         - name: washwizard-app-service-records
           artifacts:
-            - service-records.zip
+            - washwizard-app-service-records.zip
           target-path: resources/
         - name: washwizard-app-shell
           artifacts:
-            - shell.zip
+            - washwizard-app-shell.zip
           target-path: resources/
 
   # ── 4. Subaccount Destination Content Deployer ────────────────
@@ -129,7 +129,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npx ui5 build --dest dist
+        - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-analytics
     type: html5
@@ -139,7 +139,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npx ui5 build --dest dist
+        - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-catalog
     type: html5
@@ -149,7 +149,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npx ui5 build --dest dist
+        - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-service-entries
     type: html5
@@ -159,7 +159,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npx ui5 build --dest dist
+        - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-service-records
     type: html5
@@ -169,7 +169,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npx ui5 build --dest dist
+        - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-shell
     type: html5
@@ -179,7 +179,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npx ui5 build --dest dist
+        - npx @ui5/cli build --dest dist
 
 resources:
   # HANA HDI Container
