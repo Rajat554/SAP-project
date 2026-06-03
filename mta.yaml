@@ -53,7 +53,7 @@ modules:
   #    Uploads the 5 micro-app zip files to the HTML5 App Repository
   - name: sap-project-ui-deployer
     type: com.sap.application.content
-    path: ui-deployer
+    path: .
     requires:
       - name: sap-project-repo-host
         parameters:

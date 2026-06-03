@@ -13,12 +13,14 @@ if (!distDir || !zipName) {
 
 const zipPath = path.join(distDir, zipName);
 
-// CRITICAL FIX: If the zip file already exists in the dist folder, 
-// we MUST delete it first. Otherwise, AdmZip will include the old zip 
-// file inside the new zip file, creating a "nested zip" that breaks BTP deployment.
-if (fs.existsSync(zipPath)) {
-    console.log(`[ZIP] Deleting existing archive: ${zipPath}`);
-    fs.unlinkSync(zipPath);
+// Delete ANY existing .zip files in the dist folder to avoid nested zips
+const files = fs.readdirSync(distDir);
+for (const file of files) {
+    if (file.endsWith('.zip')) {
+        const oldZip = path.join(distDir, file);
+        console.log(`[ZIP] Deleting existing archive: ${oldZip}`);
+        fs.unlinkSync(oldZip);
+    }
 }
 
 console.log(`[ZIP] Archiving directory: ${distDir} into ${zipPath}`);

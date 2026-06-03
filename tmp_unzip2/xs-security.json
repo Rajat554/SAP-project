@@ -1,0 +1,49 @@
+{
+  "xsappname": "sap-project",
+  "tenant-mode": "dedicated",
+  "description": "WashWizard Security Descriptor",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Staff",
+      "description": "Staff role — view dashboard and create/update service tasks"
+    },
+    {
+      "name": "$XSAPPNAME.Admin",
+      "description": "Admin role — full access including delete and analytics"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "Staff",
+      "description": "Staff member with read/write access to service tasks",
+      "scope-references": [
+        "$XSAPPNAME.Staff"
+      ]
+    },
+    {
+      "name": "Admin",
+      "description": "Administrator with full access",
+      "scope-references": [
+        "$XSAPPNAME.Staff",
+        "$XSAPPNAME.Admin"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "WashWizard_Staff",
+      "description": "WashWizard Staff Role Collection",
+      "role-template-references": [
+        "$XSAPPNAME.Staff"
+      ]
+    },
+    {
+      "name": "WashWizard_Admin",
+      "description": "WashWizard Administrator Role Collection",
+      "role-template-references": [
+        "$XSAPPNAME.Admin"
+      ]
+    }
+  ]
+}
