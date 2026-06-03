@@ -125,67 +125,79 @@ modules:
     type: html5
     path: app/admin
     build-parameters:
+      supported-platforms: []
       build-result: dist
       builder: custom
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
+        - node ../../zip-app.js dist washwizard-app-admin.zip
 
   - name: washwizard-app-analytics
     type: html5
     path: app/analytics
     build-parameters:
+      supported-platforms: []
       build-result: dist
       builder: custom
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
+        - node ../../zip-app.js dist washwizard-app-analytics.zip
 
   - name: washwizard-app-catalog
     type: html5
     path: app/catalog
     build-parameters:
+      supported-platforms: []
       build-result: dist
       builder: custom
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
+        - node ../../zip-app.js dist washwizard-app-catalog.zip
 
   - name: washwizard-app-service-entries
     type: html5
     path: app/service-entries
     build-parameters:
+      supported-platforms: []
       build-result: dist
       builder: custom
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
+        - node ../../zip-app.js dist washwizard-app-service-entries.zip
 
   - name: washwizard-app-service-records
     type: html5
     path: app/service-records
     build-parameters:
+      supported-platforms: []
       build-result: dist
       builder: custom
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
+        - node ../../zip-app.js dist washwizard-app-service-records.zip
 
   - name: washwizard-app-shell
     type: html5
     path: app/shell
     build-parameters:
+      supported-platforms: []
       build-result: dist
       builder: custom
       commands:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
+        - node ../../zip-app.js dist washwizard-app-shell.zip
 
 resources:
   # HANA HDI Container
