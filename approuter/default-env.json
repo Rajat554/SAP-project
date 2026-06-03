@@ -1,0 +1,9 @@
+{
+  "destinations": [
+    {
+      "name": "washwizard_backend_api",
+      "url": "http://localhost:4004",
+      "forwardAuthToken": true
+    }
+  ]
+}

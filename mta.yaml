@@ -132,7 +132,6 @@ modules:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js washwizard-app-admin
 
   - name: washwizard-app-analytics
     type: html5
@@ -145,7 +144,6 @@ modules:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js washwizard-app-analytics
 
   - name: washwizard-app-catalog
     type: html5
@@ -158,7 +156,6 @@ modules:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js washwizard-app-catalog
 
   - name: washwizard-app-service-entries
     type: html5
@@ -171,7 +168,6 @@ modules:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js washwizard-app-service-entries
 
   - name: washwizard-app-service-records
     type: html5
@@ -184,7 +180,6 @@ modules:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js washwizard-app-service-records
 
   - name: washwizard-app-shell
     type: html5
@@ -197,7 +192,6 @@ modules:
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js washwizard-app-shell
 
 resources:
   # HANA HDI Container

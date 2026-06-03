@@ -1,0 +1,19 @@
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "none",
+  "routes": [
+    {
+      "source": "^/odata/v4/wash-wizard/(.*)$",
+      "target": "/odata/v4/wash-wizard/$1",
+      "destination": "washwizard_backend_api"
+    },
+    {
+      "source": "^/app/(.*)$",
+      "localDir": "../app"
+    },
+    {
+      "source": "^/(.*)$",
+      "localDir": "../app"
+    }
+  ]
+}
