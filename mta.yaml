@@ -60,6 +60,8 @@ modules:
           content-target: true
     build-parameters:
       build-result: .
+      ignore:
+        - ".gitkeep"
       requires:
         - name: washwizard-app-admin
           artifacts:
