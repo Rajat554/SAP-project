@@ -53,38 +53,38 @@ modules:
   #    Uploads the 5 micro-app zip files to the HTML5 App Repository
   - name: sap-project-ui-deployer
     type: com.sap.application.content
-    path: .
+    path: ui-deployer
     requires:
       - name: sap-project-repo-host
         parameters:
           content-target: true
     build-parameters:
-      build-result: resources
+      build-result: .
       requires:
         - name: washwizard-app-admin
           artifacts:
             - washwizard-app-admin.zip
-          target-path: resources/
+          target-path: .
         - name: washwizard-app-analytics
           artifacts:
             - washwizard-app-analytics.zip
-          target-path: resources/
+          target-path: .
         - name: washwizard-app-catalog
           artifacts:
             - washwizard-app-catalog.zip
-          target-path: resources/
+          target-path: .
         - name: washwizard-app-service-entries
           artifacts:
             - washwizard-app-service-entries.zip
-          target-path: resources/
+          target-path: .
         - name: washwizard-app-service-records
           artifacts:
             - washwizard-app-service-records.zip
-          target-path: resources/
+          target-path: .
         - name: washwizard-app-shell
           artifacts:
             - washwizard-app-shell.zip
-          target-path: resources/
+          target-path: .
 
   # ── 4. Subaccount Destination Content Deployer ────────────────
   #    Registers destinations at Subaccount level for Work Zone
