@@ -119,53 +119,53 @@ modules:
   # ── 5. Individual HTML5 Micro-App Modules ─────────────────────
   - name: washwizard-app-admin
     type: html5
-    path: app/admin/webapp
+    path: app/admin
     build-parameters:
       supported-platforms: []
-      build-result: .
+      build-result: dist
       builder: custom
       commands:
-        - node ../../../zip.js admin
+        - npx ui5 build --dest dist
 
   - name: washwizard-app-analytics
     type: html5
-    path: app/analytics/webapp
+    path: app/analytics
     build-parameters:
       supported-platforms: []
-      build-result: .
+      build-result: dist
       builder: custom
       commands:
-        - node ../../../zip.js analytics
+        - npx ui5 build --dest dist
 
   - name: washwizard-app-catalog
     type: html5
-    path: app/catalog/webapp
+    path: app/catalog
     build-parameters:
       supported-platforms: []
-      build-result: .
+      build-result: dist
       builder: custom
       commands:
-        - node ../../../zip.js catalog
+        - npx ui5 build --dest dist
 
   - name: washwizard-app-service-entries
     type: html5
-    path: app/service-entries/webapp
+    path: app/service-entries
     build-parameters:
       supported-platforms: []
-      build-result: .
+      build-result: dist
       builder: custom
       commands:
-        - node ../../../zip.js service-entries
+        - npx ui5 build --dest dist
 
   - name: washwizard-app-service-records
     type: html5
-    path: app/service-records/webapp
+    path: app/service-records
     build-parameters:
       supported-platforms: []
-      build-result: .
+      build-result: dist
       builder: custom
       commands:
-        - node ../../../zip.js service-records
+        - npx ui5 build --dest dist
 
 resources:
   # HANA HDI Container
