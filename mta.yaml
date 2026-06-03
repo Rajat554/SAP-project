@@ -129,6 +129,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
+        - npm init -y
         - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-analytics
@@ -139,6 +140,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
+        - npm init -y
         - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-catalog
@@ -149,6 +151,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
+        - npm init -y
         - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-service-entries
@@ -159,6 +162,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
+        - npm init -y
         - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-service-records
@@ -169,6 +173,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
+        - npm init -y
         - npx @ui5/cli build --dest dist
 
   - name: washwizard-app-shell
@@ -179,6 +184,7 @@ modules:
       build-result: dist
       builder: custom
       commands:
+        - npm init -y
         - npx @ui5/cli build --dest dist
 
 resources:
