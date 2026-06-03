@@ -1,9 +1,0 @@
-VIEW WashWizardService_CarModelMasterSet AS SELECT
-  CarModelMaster_0.ID,
-  CarModelMaster_0.createdAt,
-  CarModelMaster_0.createdBy,
-  CarModelMaster_0.modifiedAt,
-  CarModelMaster_0.modifiedBy,
-  CarModelMaster_0.Brand,
-  CarModelMaster_0.ModelName
-FROM WashWizard_CarModelMaster AS CarModelMaster_0
