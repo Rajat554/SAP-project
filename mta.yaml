@@ -125,7 +125,7 @@ modules:
   # ── 5. Individual HTML5 Micro-App Modules ─────────────────────
   - name: washwizard-app-admin
     type: html5
-    path: app/admin
+    path: app/portal/webapp/admin
     build-parameters:
       supported-platforms: []
       build-result: dist

@@ -25,13 +25,16 @@ sap.ui.define([
             this._loadApp(sKey);
         },
 
-        _loadApp: function(sKey) {
+_loadApp: function(sKey) {
             var sPath;
-            // Check if we are running locally on cds-serve
-            if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+            var sHostname = window.location.hostname;
+            
+            // Check if running on local laptop OR inside SAP Business Application Studio (BAS)
+            if (sHostname === "localhost" || sHostname === "127.0.0.1" || sHostname.includes("applicationstudio.cloud.sap")) {
+                // Fixed: Matches the exact web routes exposed on your CAP server landing page!
                 sPath = "/" + sKey + "/webapp/index.html";
             } else {
-                // Production BTP Managed Approuter path
+                // Production BTP Managed Approuter path (Used after full mta deployment)
                 sPath = "/washwizard.app." + sKey + "/";
             }
             
