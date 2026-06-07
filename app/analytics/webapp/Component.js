@@ -1,6 +1,6 @@
 sap.ui.define(["sap/fe/core/AppComponent"], function (AppComponent) {
     "use strict";
-    return AppComponent.extend("analytics.Component", {
+    return AppComponent.extend("washwizard.app.analytics.Component", {
         metadata: { manifest: "json" }
     });
 });
