@@ -7,3 +7,5 @@ dependencyManagement:
     - path: app/analytics
     - path: app/service-entries
     - path: app/service-records
+    - path: app/catalog
+    - path: app/shell

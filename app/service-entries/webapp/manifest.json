@@ -63,7 +63,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "service-entries.i18n.i18n"
+          "bundleName": "washwizard.app.service-entries.i18n.i18n"
         }
       },
       "": {
