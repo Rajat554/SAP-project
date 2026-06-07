@@ -1,0 +1,245 @@
+### ===================================================================
+### WASWIZARD ODATA V4 API TEST SUITE
+### ===================================================================
+### This file contains HTTP requests to test the WashWizard CAP service.
+### It requires the REST Client extension in VS Code.
+### Make sure the CAP server is running locally on http://localhost:4004.
+### ===================================================================
+
+@baseUrl = http://localhost:4004/odata/v4/wash-wizard
+
+# User Roles Credentials
+# Admin: admin / admin123
+# Staff: staff / staff123
+
+###
+### 1. SERVICE METADATA & DOCUMENTATION
+###
+
+# @name getServiceDocument
+# Get service catalog and endpoints (No Auth required for base check, but standard is authenticated)
+GET {{baseUrl}}
+Authorization: Basic staff staff123
+
+###
+
+# @name getMetadata
+# Get OData metadata document
+GET {{baseUrl}}/$metadata
+Authorization: Basic staff staff123
+
+
+###
+### 2. SERVICE TASK ENTITY (ServiceTaskSet)
+###
+
+# @name getServiceTasks
+# Get all service records (Authorized for Admin and Staff)
+GET {{baseUrl}}/ServiceTaskSet
+Authorization: Basic staff staff123
+
+###
+
+# @name getServiceTasksWithFilters
+# Get pending service tasks with projection and filter
+GET {{baseUrl}}/ServiceTaskSet?$top=5&$filter=Status eq 'Pending'&$select=ID,CustomerName,CarModel,Amount,Status
+Authorization: Basic staff staff123
+
+###
+
+# @name getSingleServiceTask
+# Get a single active service task by ID (using seed data ID)
+GET {{baseUrl}}/ServiceTaskSet(ID=a1b2c3d4-1111-4000-8000-000000000021,IsActiveEntity=true)
+Authorization: Basic staff staff123
+
+###
+
+# @name createActiveServiceTaskDirectly
+# Create an active service task directly without draft process
+POST {{baseUrl}}/ServiceTaskSet
+Authorization: Basic staff staff123
+Content-Type: application/json
+
+{
+  "CustomerName": "Rajesh Kumar",
+  "Phone": "9812345678",
+  "CarModel": "Honda City",
+  "VehiclePlate": "DL 03 XY 5678",
+  "ServiceType": "Full Wash",
+  "PaymentMethod": "UPI",
+  "Status": "Pending",
+  "ServiceDate": "2026-06-07"
+}
+
+###
+
+# @name createDraftServiceTask
+# Step 1: Create a draft service task (IsActiveEntity=false)
+POST {{baseUrl}}/ServiceTaskSet
+Authorization: Basic staff staff123
+Content-Type: application/json
+
+{
+  "IsActiveEntity": false,
+  "CustomerName": "Draft Customer",
+  "Phone": "9000000000",
+  "CarModel": "Honda City",
+  "VehiclePlate": "GJ 01 XX 0000",
+  "ServiceType": "Full Wash"
+}
+
+###
+
+# @name patchDraftServiceTask
+# Step 2: Edit/PATCH the draft service task (e.g. changing ServiceType auto-populates price from catalog)
+# Replace the ID in URL with the ID returned by createDraftServiceTask
+PATCH {{baseUrl}}/ServiceTaskSet(ID=b7218fca-2db3-4c91-9e66-1c70e28f3214,IsActiveEntity=false)
+Authorization: Basic staff staff123
+Content-Type: application/json
+
+{
+  "ServiceType": "Ceramic Coating",
+  "PaymentMethod": "Card"
+}
+
+###
+
+# @name activateDraftServiceTask
+# Step 3: Activate the draft service task to make it a real entity
+# Replace the ID in URL with the ID returned by createDraftServiceTask
+POST {{baseUrl}}/ServiceTaskSet(ID=b7218fca-2db3-4c91-9e66-1c70e28f3214,IsActiveEntity=false)/WashWizardService.draftActivate
+Authorization: Basic staff staff123
+Content-Type: application/json
+
+{}
+
+###
+
+# @name completeServiceAction
+# Bound Action: completeService (Marks pending task as Completed and sets CompletedAt date)
+POST {{baseUrl}}/ServiceTaskSet(ID=a1b2c3d4-1111-4000-8000-000000000021,IsActiveEntity=true)/WashWizardService.completeService
+Authorization: Basic staff staff123
+Content-Type: application/json
+
+{}
+
+###
+
+# @name updateServiceTask
+# Update an active service task (e.g. changing Status)
+PATCH {{baseUrl}}/ServiceTaskSet(ID=a1b2c3d4-1111-4000-8000-000000000022,IsActiveEntity=true)
+Authorization: Basic staff staff123
+Content-Type: application/json
+
+{
+  "Status": "Completed",
+  "PaymentMethod": "Cash"
+}
+
+###
+
+# @name deleteServiceTask
+# Delete a service task
+DELETE {{baseUrl}}/ServiceTaskSet(ID=a1b2c3d4-1111-4000-8000-000000000025,IsActiveEntity=true)
+Authorization: Basic staff staff123
+
+
+###
+### 3. SERVICE CATALOG ENTITY (ServiceCatalogSet)
+###
+
+# @name getServiceCatalog
+# Get all service catalog items
+GET {{baseUrl}}/ServiceCatalogSet
+Authorization: Basic staff staff123
+
+###
+
+# @name createServiceCatalogItem
+# Create a new catalog item (Admin only)
+POST {{baseUrl}}/ServiceCatalogSet
+Authorization: Basic admin admin123
+Content-Type: application/json
+
+{
+  "Category": "Washing",
+  "ServiceName": "Steam Wash",
+  "Price": 500.00
+}
+
+###
+
+# @name deleteServiceCatalogItem
+# Delete a catalog item (Admin only)
+# Replace the ID in URL with the created catalog ID
+DELETE {{baseUrl}}/ServiceCatalogSet(ID=c0000001-0001-4000-8000-000000000020)
+Authorization: Basic admin admin123
+
+
+###
+### 4. CAR MODEL MASTER ENTITY (CarModelMasterSet)
+###
+
+# @name getCarModels
+# Get all car model master data
+GET {{baseUrl}}/CarModelMasterSet
+Authorization: Basic staff staff123
+
+###
+
+# @name createCarModel
+# Create a new car model master entry (Admin only)
+POST {{baseUrl}}/CarModelMasterSet
+Authorization: Basic admin admin123
+Content-Type: application/json
+
+{
+  "Brand": "Tesla",
+  "ModelName": "Model 3"
+}
+
+
+###
+### 5. USER ACCOUNTS ENTITY (UsersSet - ADMIN ONLY)
+###
+
+# @name getUsersAsAdmin
+# Get all users (Admin only)
+GET {{baseUrl}}/UsersSet
+Authorization: Basic admin admin123
+
+###
+
+# @name getUsersAsStaff
+# Get all users as Staff (Should be forbidden / 403)
+GET {{baseUrl}}/UsersSet
+Authorization: Basic staff staff123
+
+###
+
+# @name createUser
+# Create a user (Admin only)
+POST {{baseUrl}}/UsersSet
+Authorization: Basic admin admin123
+Content-Type: application/json
+
+{
+  "Username": "newstaff",
+  "Role": "Staff"
+}
+
+###
+
+# @name deleteUser
+# Delete a user (Admin only)
+DELETE {{baseUrl}}/UsersSet('newstaff')
+Authorization: Basic admin admin123
+
+
+###
+### 6. AUTHENTICATION & SECURITY CHECKS
+###
+
+# @name getServiceWithoutAuth
+# Call endpoint without Authorization header (Should return 401 Unauthorized)
+GET {{baseUrl}}/ServiceTaskSet

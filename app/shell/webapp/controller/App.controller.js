@@ -12,20 +12,20 @@ sap.ui.define([
             }.bind(this));
         },
 
-        onCollapseExpandPress: function () {
-            var oToolPage = this.byId("toolPage");
+        onButtonCollapseExpandPress: function () {
+            var oToolPage = this.byId("idToolPage");
             var bExpanded = oToolPage.getSideExpanded();
 
             oToolPage.setSideExpanded(!bExpanded);
         },
 
-        onItemSelect: function (oEvent) {
+        onNavigationListItemSelect: function (oEvent) {
             var oItem = oEvent.getParameter("item");
             var sKey = oItem.getKey();
             this._loadApp(sKey);
         },
 
-_loadApp: function(sKey) {
+        _loadApp: function(sKey) {
             var sPath;
             var sHostname = window.location.hostname;
             
@@ -38,9 +38,9 @@ _loadApp: function(sKey) {
                 sPath = "/washwizard.app." + sKey + "/";
             }
             
-            var oIframe = document.getElementById("appIframe");
-            if (oIframe) {
-                oIframe.src = sPath;
+            var oHTMLControl = this.byId("idAppIframeHTML");
+            if (oHTMLControl) {
+                oHTMLControl.setContent("<iframe class='fullHeightIFrame' src='" + sPath + "'></iframe>");
             }
         }
     });

@@ -149,3 +149,5 @@ dist/
 
 # Generated build output (rebuilt by `npx cds build` during MTA build)
 gen/
+# added by cds
+.cdsrc-private.json
