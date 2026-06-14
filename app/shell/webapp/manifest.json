@@ -23,6 +23,10 @@
       }
     }
   },
+  "sap.cloud": {
+    "public": true,
+    "service": "washwizard"
+  },
   "sap.ui": {
     "technology": "UI5",
     "icons": {
