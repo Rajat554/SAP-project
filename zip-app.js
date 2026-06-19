@@ -2,64 +2,49 @@ const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
 
-// Extract arguments passed from mta.yaml
-const distDir = process.argv[2]; // e.g. "dist"
-const zipName = process.argv[3]; // e.g. "washwizard-app-admin.zip"
+// Usage: node zip-app.js <src-dir> <out-dir> <zip-name>
+//   src-dir  – the built UI5 dist folder to zip up
+//   out-dir  – the output directory that will hold ONLY the zip
+//   zip-name – filename for the zip (e.g. washwizard-app-shell.zip)
+const srcDir  = process.argv[2];
+const outDir  = process.argv[3];
+const zipName = process.argv[4];
 
-if (!distDir || !zipName) {
-    console.error("Usage: node zip-app.js <dist-dir> <zip-name>");
+if (!srcDir || !outDir || !zipName) {
+    console.error('Usage: node zip-app.js <src-dir> <out-dir> <zip-name>');
     process.exit(1);
 }
 
-const zipPath = path.join(distDir, zipName);
-
-// Delete ANY existing .zip files in the dist folder to avoid nested zips
-const files = fs.readdirSync(distDir);
-for (const file of files) {
-    if (file.endsWith('.zip')) {
-        const oldZip = path.join(distDir, file);
-        console.log(`[ZIP] Deleting existing archive: ${oldZip}`);
-        fs.unlinkSync(oldZip);
+// Ensure output directory exists and is empty (no stale zips)
+if (fs.existsSync(outDir)) {
+    for (const f of fs.readdirSync(outDir)) {
+        if (f.endsWith('.zip')) {
+            fs.unlinkSync(path.join(outDir, f));
+            console.log(`[ZIP] Removed stale archive: ${path.join(outDir, f)}`);
+        }
     }
+} else {
+    fs.mkdirSync(outDir, { recursive: true });
 }
 
-// Write the zip to a temp file OUTSIDE the dist directory first,
-// so archiver doesn't accidentally include the zip inside itself.
-const tmpZipPath = path.join(path.dirname(distDir), `_tmp_${zipName}`);
+const zipPath = path.join(outDir, zipName);
+console.log(`[ZIP] Archiving: ${srcDir}  →  ${zipPath}`);
 
-console.log(`[ZIP] Archiving directory: ${distDir} into ${zipPath}`);
+const output  = fs.createWriteStream(zipPath);
+const archive = archiver('zip', { zlib: { level: 9 } });
 
-const output = fs.createWriteStream(tmpZipPath);
-const archive = archiver('zip', {
-    zlib: { level: 9 } // Sets the compression level.
+output.on('close', () => {
+    console.log(`[ZIP] Done — ${zipPath} (${archive.pointer()} bytes)`);
 });
 
-output.on('close', function() {
-    // Move the completed zip into the dist folder
-    fs.renameSync(tmpZipPath, zipPath);
-    console.log(`[ZIP] Successfully created ${zipPath} (${archive.pointer()} total bytes)`);
+archive.on('warning', (err) => {
+    if (err.code === 'ENOENT') { console.warn(err); }
+    else { throw err; }
 });
 
-archive.on('warning', function(err) {
-    if (err.code === 'ENOENT') {
-        console.warn(err);
-    } else {
-        // Clean up temp file on error
-        if (fs.existsSync(tmpZipPath)) fs.unlinkSync(tmpZipPath);
-        throw err;
-    }
-});
+archive.on('error', (err) => { throw err; });
 
-archive.on('error', function(err) {
-    if (fs.existsSync(tmpZipPath)) fs.unlinkSync(tmpZipPath);
-    throw err;
-});
-
-// pipe archive data to the temp file
 archive.pipe(output);
-
-// append files from the dist directory, putting its contents at the root of archive
-archive.directory(distDir, false);
-
-// finalize the archive (ie we are done appending files but streams have to finish yet)
+// Add all files from srcDir flat at the root of the zip
+archive.directory(srcDir, false);
 archive.finalize();

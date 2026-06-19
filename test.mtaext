@@ -1,21 +1,21 @@
 _schema-version: "3.2"
-ID: sap-project-dev
+ID: sap-project-test
 extends: sap-project
 
-# Development environment overrides
-# Usage: cf deploy sap-project.mtar -e dev.mtaext
+# Testing environment overrides
+# Usage: cf deploy sap-project.mtar -e test.mtaext
 
 modules:
   - name: sap-project-srv
     parameters:
-      memory: 256M
+      memory: 512M
       disk-quota: 512M
     properties:
-      CDS_ENV: development
+      CDS_ENV: testing
 
   - name: sap-project-db-deployer
     parameters:
       memory: 256M
       disk-quota: 512M
     properties:
-      CDS_ENV: development
+      CDS_ENV: testing

@@ -1,28 +1,105 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WashWizard Dashboard</title>
+    <script>
+        (function() {
+            window._networkLogs = [];
+            const originalOpen = XMLHttpRequest.prototype.open;
+            const originalSend = XMLHttpRequest.prototype.send;
+            XMLHttpRequest.prototype.open = function(method, url) {
+                this._url = url;
+                this._method = method;
+                originalOpen.apply(this, arguments);
+            };
+            XMLHttpRequest.prototype.send = function() {
+                const url = this._url;
+                const method = this._method;
+                console.log("[NET_REQ_SEND]", method, url);
+                const entry = {
+                    type: 'XHR',
+                    method: method,
+                    url: url,
+                    status: 'PENDING',
+                    timestamp: new Date().toISOString()
+                };
+                window._networkLogs.push(entry);
+                this.addEventListener('load', function() {
+                    entry.status = this.status;
+                    console.log("[NET_REQ_RECV]", method, url, "Status:", this.status);
+                    if (this.status >= 400) {
+                        console.error("[NET_REQ_ERROR]", method, url, "Status:", this.status, "Response:", this.responseText ? this.responseText.substring(0, 300) : "");
+                    }
+                });
+                this.addEventListener('error', function() {
+                    entry.status = 'ERROR';
+                    console.error("[NET_REQ_FAIL]", method, url);
+                });
+                originalSend.apply(this, arguments);
+            };
+
+            const originalFetch = window.fetch;
+            window.fetch = function(input, init) {
+                const url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+                const method = (init && init.method) || 'GET';
+                console.log("[NET_REQ_SEND]", method, url);
+                const entry = {
+                    type: 'Fetch',
+                    method: method,
+                    url: url,
+                    status: 'PENDING',
+                    timestamp: new Date().toISOString()
+                };
+                window._networkLogs.push(entry);
+                return originalFetch.apply(this, arguments).then(function(res) {
+                    const clone = res.clone();
+                    clone.text().then(function(text) {
+                        entry.status = res.status;
+                        console.log("[NET_REQ_RECV]", method, url, "Status:", res.status);
+                        if (res.status >= 400) {
+                            console.error("[NET_REQ_ERROR]", method, url, "Status:", res.status, "Response:", text.substring(0, 300));
+                        }
+                    });
+                    return res;
+                }).catch(function(err) {
+                    entry.status = 'ERROR';
+                    console.error("[NET_REQ_FAIL]", method, url, err);
+                    throw err;
+                });
+            };
+        })();
+    </script>
     <script id="sap-ui-bootstrap"
         src="https://ui5.sap.com/resources/sap-ui-core.js"
         data-sap-ui-theme="sap_horizon"
-        data-sap-ui-resourceroots='{"washwizard.app.shell": "./"}'
+        data-sap-ui-resourceroots='{
+            "washwizard.app.shell":           "./",
+            "washwizard.shell.service-records":  "./components/service-records/",
+            "washwizard.shell.service-entries":  "./components/service-entries/",
+            "washwizard.shell.analytics":        "./components/analytics/",
+            "washwizard.shell.catalog":          "./components/catalog/",
+            "washwizard.shell.admin":            "./components/admin/"
+        }'
         data-sap-ui-compatVersion="edge"
         data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
         data-sap-ui-async="true"
+        data-sap-ui-xx-componentPreload="off"
         data-sap-ui-frameOptions="trusted">
     </script>
     <style>
         html, body { height: 100%; margin: 0; }
-        .fullHeightIFrame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
     </style>
 </head>
 <body class="sapUiBody sapUiSizeCompact">
-    <div data-sap-ui-component data-name="washwizard.app.shell" data-id="container" data-settings='{"id" : "shell"}'></div>
+    <div style="height:100%"
+        data-sap-ui-component
+        data-name="washwizard.app.shell"
+        data-id="container"
+        data-settings='{"id": "WashWizard"}'
+        data-manifest="true"
+        data-height="100%">
+    </div>
 </body>
 </html>

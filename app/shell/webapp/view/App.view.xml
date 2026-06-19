@@ -3,12 +3,11 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:tnt="sap.tnt"
-    xmlns:core="sap.ui.core"
     displayBlock="true"
     height="100%">
     <App id="idApp">
         <pages>
-            <Page id="idPage" showHeader="false">
+            <Page id="idShellPage" showHeader="false">
                 <tnt:ToolPage id="idToolPage">
                     <tnt:header>
                         <tnt:ToolHeader>
@@ -24,19 +23,19 @@
                             <Title text="WashWizard" level="H1" />
                             <tnt:ToolHeaderUtilitySeparator />
                             <ToolbarSpacer />
-                            <SearchField width="200px" placeholder="Search..." />
+                            <SearchField id="idSearchField" width="200px" placeholder="Search..." />
                             <ToolbarSpacer width="20px" />
-                            <Button icon="sap-icon://bell" type="Transparent" />
-                            <Button icon="sap-icon://sys-help" type="Transparent" />
-                            <Avatar displaySize="XS" src="sap-icon://customer" />
+                            <Button id="idNotificationButton" icon="sap-icon://bell" type="Transparent" />
+                            <Button id="idHelpButton" icon="sap-icon://sys-help" type="Transparent" />
+                            <Avatar id="idUserAvatar" displaySize="XS" src="sap-icon://customer" />
                         </tnt:ToolHeader>
                     </tnt:header>
                     <tnt:sideContent>
-                        <tnt:SideNavigation>
+                        <tnt:SideNavigation id="idSideNavigation">
                             <tnt:item>
-                                <tnt:NavigationList itemSelect=".onNavigationListItemSelect" selectedKey="service-records">
-                                    <tnt:NavigationListItem text="Service Records" icon="sap-icon://request" key="service-records" />
-                                    <tnt:NavigationListItem text="Service Entries" icon="sap-icon://add-document" key="service-entries" />
+                                <tnt:NavigationList id="idNavigationList" itemSelect=".onNavigationListItemSelect" selectedKey="records">
+                                    <tnt:NavigationListItem text="Service Records" icon="sap-icon://request" key="records" />
+                                    <tnt:NavigationListItem text="Service Entries" icon="sap-icon://add-document" key="entries" />
                                     <tnt:NavigationListItem text="Analytics" icon="sap-icon://pie-chart" key="analytics" />
                                     <tnt:NavigationListItem text="Catalog" icon="sap-icon://list" key="catalog" />
                                     <tnt:NavigationListItem text="Admin" icon="sap-icon://action-settings" key="admin" />
@@ -45,13 +44,7 @@
                         </tnt:SideNavigation>
                     </tnt:sideContent>
                     <tnt:mainContents>
-                        <NavContainer id="idPageContainerNavContainer">
-                            <pages>
-                                <Page id="idIframePage" showHeader="false">
-                                    <core:HTML id="idAppIframeHTML" content='&lt;iframe class="fullHeightIFrame"&gt;&lt;/iframe&gt;'></core:HTML>
-                                </Page>
-                            </pages>
-                        </NavContainer>
+                        <Page id="idMainContentsPage" showHeader="false" />
                     </tnt:mainContents>
                 </tnt:ToolPage>
             </Page>

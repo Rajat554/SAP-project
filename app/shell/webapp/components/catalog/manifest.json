@@ -1,0 +1,79 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "washwizard.shell.catalog",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": { "version": "1.0.0" },
+    "title": "Service Catalog",
+    "description": "Manage wash packages and prices",
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/wash-wizard/",
+        "type": "OData",
+        "settings": { "annotations": [], "odataVersion": "4.0" }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.cloud": { "public": true, "service": "washwizard" },
+  "sap.ui5": {
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.fe.templates": {} }
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": { "operationMode": "Server", "autoExpandSelect": true, "earlyRequests": true }
+      }
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        { "pattern": ":?query:", "name": "ServiceCatalogList", "target": "ServiceCatalogList" },
+        { "pattern": "ServiceCatalogSet({key}):?query:", "name": "ServiceCatalogDetail", "target": "ServiceCatalogDetail" }
+      ],
+      "targets": {
+        "ServiceCatalogList": {
+          "type": "Component",
+          "id": "ServiceCatalogList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/ServiceCatalogSet",
+              "variantManagement": "Page",
+              "initialLoad": "Enabled",
+              "navigation": {
+                "ServiceCatalogSet": { "detail": { "route": "ServiceCatalogDetail" } }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": { "type": "ResponsiveTable", "enableExport": true, "personalization": true }
+                }
+              }
+            }
+          }
+        },
+        "ServiceCatalogDetail": {
+          "type": "Component",
+          "id": "ServiceCatalogDetail",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": { "editableHeaderContent": false, "contextPath": "/ServiceCatalogSet" }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": { "registrationIds": [], "archeType": "transactional" }
+}

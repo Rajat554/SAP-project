@@ -4,44 +4,25 @@
     "id": "washwizard.app.shell",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": {
-      "version": "1.0.0"
-    },
+    "applicationVersion": { "version": "1.0.0" },
     "title": "WashWizard Dashboard",
     "description": "Master Dashboard for WashWizard",
     "crossNavigation": {
       "inbounds": {
         "intent1": {
-          "signature": {
-            "parameters": {},
-            "additionalParameters": "allowed"
-          },
-          "semanticObject": "Shell",
+          "semanticObject": "washwizard",
           "action": "display",
-          "title": "Dashboard"
+          "title": "WashWizard Dashboard",
+          "icon": "sap-icon://home"
         }
       }
     }
   },
-  "sap.cloud": {
-    "public": true,
-    "service": "washwizard"
-  },
+  "sap.cloud": { "public": true, "service": "washwizard" },
   "sap.ui": {
     "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
+    "icons": { "icon": "sap-icon://home" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
   },
   "sap.ui5": {
     "flexEnabled": false,
@@ -49,26 +30,18 @@
       "minUI5Version": "1.120.0",
       "libs": {
         "sap.m": {},
+        "sap.f": {},
         "sap.ui.core": {},
         "sap.tnt": {}
       }
     },
-    "contentDensities": {
-      "compact": true,
-      "cozy": true
-    },
+    "contentDensities": { "compact": true, "cozy": true },
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "washwizard.app.shell.i18n.i18n"
-        }
+        "settings": { "bundleName": "washwizard.app.shell.i18n.i18n" }
       }
     },
-    "resources": {
-      "css": []
-    },
-
     "rootView": {
       "viewName": "washwizard.app.shell.view.App",
       "type": "XML",

@@ -11,8 +11,12 @@ modules:
       memory: 1024M
       disk-quota: 1024M
       instances: 2
+    properties:
+      CDS_ENV: production
 
   - name: sap-project-db-deployer
     parameters:
       memory: 512M
       disk-quota: 1024M
+    properties:
+      CDS_ENV: production

@@ -1,47 +1,52 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller"
-], function (Controller) {
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/core/ComponentContainer"
+], function (Controller, ComponentContainer) {
     "use strict";
+
+    // Map each nav key to its sub-component namespace
+    var mComponents = {
+        "records":   "washwizard.shell.service-records",
+        "entries":   "washwizard.shell.service-entries",
+        "analytics": "washwizard.shell.analytics",
+        "catalog":   "washwizard.shell.catalog",
+        "admin":     "washwizard.shell.admin"
+    };
 
     return Controller.extend("washwizard.app.shell.controller.App", {
 
         onInit: function () {
-            // Wait for the DOM to render the iframe, then load default app (service-records)
-            this.getView().attachAfterRendering(function() {
-                this._loadApp("service-records");
-            }.bind(this));
+            // Load default section on startup
+            this._loadSection("records");
         },
 
         onButtonCollapseExpandPress: function () {
             var oToolPage = this.byId("idToolPage");
-            var bExpanded = oToolPage.getSideExpanded();
-
-            oToolPage.setSideExpanded(!bExpanded);
+            oToolPage.setSideExpanded(!oToolPage.getSideExpanded());
         },
 
         onNavigationListItemSelect: function (oEvent) {
-            var oItem = oEvent.getParameter("item");
-            var sKey = oItem.getKey();
-            this._loadApp(sKey);
+            var sKey = oEvent.getParameter("item").getKey();
+            var oNavList = this.byId("idNavigationList");
+            oNavList.setSelectedKey(sKey);
+            this._loadSection(sKey);
         },
 
-        _loadApp: function(sKey) {
-            var sPath;
-            var sHostname = window.location.hostname;
-            
-            // Check if running on local laptop OR inside SAP Business Application Studio (BAS)
-            if (sHostname === "localhost" || sHostname === "127.0.0.1" || sHostname.includes("applicationstudio.cloud.sap")) {
-                // Fixed: Matches the exact web routes exposed on your CAP server landing page!
-                sPath = "/" + sKey + "/webapp/index.html";
-            } else {
-                // Production BTP Managed Approuter path (Used after full mta deployment)
-                sPath = "/washwizard.app." + sKey + "/";
-            }
-            
-            var oHTMLControl = this.byId("idAppIframeHTML");
-            if (oHTMLControl) {
-                oHTMLControl.setContent("<iframe class='fullHeightIFrame' src='" + sPath + "'></iframe>");
-            }
+        _loadSection: function (sKey) {
+            var oPage = this.byId("idMainContentsPage");
+            // Destroy the previous component container to free memory
+            oPage.destroyContent();
+
+            var oContainer = new ComponentContainer({
+                name: mComponents[sKey],
+                manifest: true,
+                async: true,
+                height: "100%",
+                width: "100%",
+                propagateModel: false
+            });
+
+            oPage.addContent(oContainer);
         }
     });
 });

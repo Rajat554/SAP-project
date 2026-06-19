@@ -1,19 +1,18 @@
 {
-  "welcomeFile": "/index.html",
-  "authenticationMethod": "none",
+  "welcomeFile": "/shell/webapp/index.html",
+  "authenticationMethod": "route",
   "routes": [
     {
       "source": "^/odata/v4/wash-wizard/(.*)$",
       "target": "/odata/v4/wash-wizard/$1",
-      "destination": "washwizard_backend_api"
-    },
-    {
-      "source": "^/app/(.*)$",
-      "localDir": "../app"
+      "destination": "washwizard_backend_api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
     },
     {
       "source": "^/(.*)$",
-      "localDir": "../app"
+      "localDir": "../app",
+      "authenticationType": "xsuaa"
     }
   ]
 }

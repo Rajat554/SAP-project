@@ -50,7 +50,7 @@ modules:
       - name: sap-project-hdi-container
 
   # ── 3. HTML5 App Content Deployer ─────────────────────────────
-  #    Uploads the 5 micro-app zip files to the HTML5 App Repository
+  #    Uploads the shell app zip file to the HTML5 App Repository
   - name: sap-project-ui-deployer
     type: com.sap.application.content
     path: ui-deployer
@@ -59,34 +59,12 @@ modules:
         parameters:
           content-target: true
     build-parameters:
-      build-result: .
-      ignore:
-        - ".gitkeep"
+      build-result: resources
       requires:
-        - name: washwizard-app-admin
-          artifacts:
-            - washwizard-app-admin.zip
-          target-path: .
-        - name: washwizard-app-analytics
-          artifacts:
-            - washwizard-app-analytics.zip
-          target-path: .
-        - name: washwizard-app-catalog
-          artifacts:
-            - washwizard-app-catalog.zip
-          target-path: .
-        - name: washwizard-app-service-entries
-          artifacts:
-            - washwizard-app-service-entries.zip
-          target-path: .
-        - name: washwizard-app-service-records
-          artifacts:
-            - washwizard-app-service-records.zip
-          target-path: .
         - name: washwizard-app-shell
           artifacts:
             - washwizard-app-shell.zip
-          target-path: .
+          target-path: resources
 
   # ── 4. Subaccount Destination Content Deployer ────────────────
   #    Registers destinations at Subaccount level for Work Zone
@@ -108,7 +86,7 @@ modules:
     parameters:
       content:
         subaccount:
-          existing_destinations_policy: ignore
+          existing_destinations_policy: update
           destinations:
             - Name: washwizard_backend_api
               Description: WashWizard CAP Backend OData Service
@@ -119,87 +97,31 @@ modules:
               HTML5.DynamicDestination: true
               HTML5.Timeout: 60000
               sap.cloud.service: washwizard
+            - Name: washwizard_html5_repo_host
+              ServiceInstanceName: sap-project-repo-host
+              ServiceKeyName: sap-project-repo-host-key
+              sap.cloud.service: washwizard
+            - Name: washwizard_uaa
+              ServiceInstanceName: sap-project-xsuaa
+              ServiceKeyName: sap-project-xsuaa-key
     build-parameters:
       no-source: true
 
   # ── 5. Individual HTML5 Micro-App Modules ─────────────────────
-  - name: washwizard-app-admin
-    type: html5
-    path: app/admin
-    build-parameters:
-      supported-platforms: []
-      build-result: dist
-      builder: custom
-      commands:
-        - npm init -y
-        - npx @ui5/cli build --dest dist
-        - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js dist washwizard-app-admin.zip
-
-  - name: washwizard-app-analytics
-    type: html5
-    path: app/analytics
-    build-parameters:
-      supported-platforms: []
-      build-result: dist
-      builder: custom
-      commands:
-        - npm init -y
-        - npx @ui5/cli build --dest dist
-        - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js dist washwizard-app-analytics.zip
-
-  - name: washwizard-app-catalog
-    type: html5
-    path: app/catalog
-    build-parameters:
-      supported-platforms: []
-      build-result: dist
-      builder: custom
-      commands:
-        - npm init -y
-        - npx @ui5/cli build --dest dist
-        - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js dist washwizard-app-catalog.zip
-
-  - name: washwizard-app-service-entries
-    type: html5
-    path: app/service-entries
-    build-parameters:
-      supported-platforms: []
-      build-result: dist
-      builder: custom
-      commands:
-        - npm init -y
-        - npx @ui5/cli build --dest dist
-        - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js dist washwizard-app-service-entries.zip
-
-  - name: washwizard-app-service-records
-    type: html5
-    path: app/service-records
-    build-parameters:
-      supported-platforms: []
-      build-result: dist
-      builder: custom
-      commands:
-        - npm init -y
-        - npx @ui5/cli build --dest dist
-        - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js dist washwizard-app-service-records.zip
 
   - name: washwizard-app-shell
     type: html5
     path: app/shell
     build-parameters:
       supported-platforms: []
-      build-result: dist
+      build-result: dist-zip
       builder: custom
       commands:
+        - npx shx rm -rf dist dist-zip
         - npm init -y
         - npx @ui5/cli build --dest dist
         - npx shx cp webapp/xs-app.json dist/xs-app.json
-        - node ../../zip-app.js dist washwizard-app-shell.zip
+        - node ../../zip-app.js dist dist-zip washwizard-app-shell.zip
 
 resources:
   # HANA HDI Container
