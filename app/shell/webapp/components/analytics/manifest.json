@@ -9,7 +9,7 @@
     "description": "Analyze revenue trends, service type distribution, and staff performance",
     "dataSources": {
       "mainService": {
-        "uri": "/odata/v4/wash-wizard/",
+        "uri": "../../odata/v4/wash-wizard/",
         "type": "OData",
         "settings": { "annotations": [], "odataVersion": "4.0" }
       }

@@ -9,7 +9,7 @@
     "description": "Manage wash packages and prices",
     "dataSources": {
       "mainService": {
-        "uri": "/odata/v4/wash-wizard/",
+        "uri": "../../odata/v4/wash-wizard/",
         "type": "OData",
         "settings": { "annotations": [], "odataVersion": "4.0" }
       }

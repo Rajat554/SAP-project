@@ -43,7 +43,7 @@ sap.ui.define([
                 async: true,
                 height: "100%",
                 width: "100%",
-                propagateModel: false
+                propagateModel: true
             });
 
             oPage.addContent(oContainer);

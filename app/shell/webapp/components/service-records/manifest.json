@@ -11,7 +11,7 @@
     "description": "View historical records of services performed",
     "dataSources": {
       "mainService": {
-        "uri": "/odata/v4/wash-wizard/",
+        "uri": "../../odata/v4/wash-wizard/",
         "type": "OData",
         "settings": {
           "annotations": [],
